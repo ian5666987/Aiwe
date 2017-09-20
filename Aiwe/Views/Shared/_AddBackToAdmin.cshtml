@@ -1,0 +1,21 @@
+﻿@{ 
+  string createLink = "../../../../../../" + (string)ViewBag.ControllerName + "/Create";
+  string backLink = "../../../../../../Admin/Index";
+}
+
+<div class="row">
+  <div class="col-md-2">
+    <a href="@createLink"
+       class="btn btn-success"
+       style="margin-top:5px;margin-right:5px;">
+      <span class="glyphicon glyphicon-plus"></span> Create New
+    </a>
+  </div>
+  <div class="col-md-2">
+    <a href="@backLink"
+       class="btn btn-primary"
+       style="margin-top:5px;margin-right:5px;">
+      <span class="glyphicon glyphicon-hand-left"></span> Back to Admin
+    </a>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+﻿@using Aiwe.Models;
+
+@model CreateEditInfo
+
+@{
+  ViewBag.Title = "Edit";
+  ViewBag.LabelClasses = "col-md-" + Model.CreateEditLabelPortion;
+  ViewBag.EditorClass = "col-md-" + (12 - Model.CreateEditLabelPortion);
+}
+
+<h2>@Model.TableDisplayName <small>(@ViewBag.Title)</small></h2>
+<br />
+
+@using (Html.BeginForm("Edit", "Common", FormMethod.Post, new { id = "commonForm", enctype = "multipart/form-data" })) {
+  <input type="hidden" name="Cid" value="@TempData["Cid"]"/>
+  @Html.Partial("_CreateEditPart")
+  <div class="row">
+    <div class="form-group">
+      <div class="@ViewBag.LabelClasses"></div>
+      <div class="btn btn-success col-md-1" style="margin-left:12px; margin-right:8px; margin-top:15px;" onclick="submitCommonForm()">
+        <span class="glyphicon glyphicon-save"><font style="font-family:verdana;"> Save</font></span>
+      </div>
+      <a href="../../../../../../Common/Index/@Model.TableName"
+         class="btn btn-primary col-md-2"
+         style="margin-left:12px; margin-top:15px;">
+        <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> Back To List</font></span>
+      </a>
+    </div>
+    <br />
+  </div>
+}

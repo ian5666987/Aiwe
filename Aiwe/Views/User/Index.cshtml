@@ -1,0 +1,19 @@
+﻿@using Aiwe.Models.ViewModels
+@using Aibe.Models
+@model List<ApplicationUserViewModel>
+@{
+  ViewBag.Title = "Users";
+  ViewBag.PageTitle = "Users";
+  ViewBag.ActionName = "Index";
+  ViewBag.ControllerName = "User";
+  ViewBag.FilterName = "ApplicationUser"; //used for correct filter rendering in the common
+  ViewBag.SenderName = "user";
+  ViewBag.TablePartialViewName = "_Table";
+  ViewBag.NavPartialViewName = "_AddBackToAdmin";
+  NavDataModel navData = (NavDataModel)ViewBag.NavData;
+  if (navData != null && navData.QueryCount > 0) {
+    navData.DataName = "User"; //for giving name below
+  }
+}
+
+@Html.Partial("_SharedBody")

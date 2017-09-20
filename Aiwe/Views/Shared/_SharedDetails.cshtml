@@ -1,0 +1,12 @@
+﻿<h2>@ViewBag.ControllerName <small>(@ViewBag.Title)</small></h2>
+<hr />
+
+<div>
+  @Html.Partial("_DetailsPart")
+</div>
+<br />
+
+<a href="@Url.Action("Index", (string)ViewBag.ControllerName)"
+   class="btn btn-primary">
+  <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> Back To List</font></span>
+</a>

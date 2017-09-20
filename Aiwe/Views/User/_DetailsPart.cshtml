@@ -1,0 +1,51 @@
+﻿@model Aiwe.Models.ViewModels.ApplicationUserViewModel
+@{ 
+
+}
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.FullName)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.FullName)</div>
+  <br />
+</div>
+
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.DisplayName)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.DisplayName)</div>
+  <br />
+</div>
+
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.Email)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.Email)</div>
+  <br />
+</div>
+
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.Team)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.Team)</div>
+  <br />
+</div>
+
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.WorkingRole)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.WorkingRole)</div>
+  <br />
+</div>
+
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.AdminRole)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.AdminRole)</div>
+  <br />
+</div>
+
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.RegistrationDate)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.RegistrationDate)</div>
+  <br />
+</div>
+
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.LastLogin)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.LastLogin)</div>
+  <br />
+</div>

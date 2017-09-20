@@ -1,0 +1,283 @@
+﻿@using Extension.String
+@using Aibe.Models.DB
+@using Aibe.Models.Filters
+@model MetaFilter
+@{
+  ViewBag.LabelClasses = "col-md-5";
+  ViewBag.EditorClass = "col-md-7";  
+}
+
+<div class="form-horizontal">
+  @Html.HiddenFor(m => m.Page, htmlAttributes: new { id = (string)ViewBag.SenderName + "-page", @class = "uncounted-filter-item" })
+  @Html.HiddenFor(m => m.No, htmlAttributes: new { id = (string)ViewBag.SenderName + "-filter-no", @class = "uncounted-filter-item" })
+  @Html.HiddenFor(m => m.Msg, htmlAttributes: new { id = (string)ViewBag.SenderName + "-filter-msg", @class = "uncounted-filter-item" })
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Table Name</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.EditorFor(model => model.TableName, new { htmlAttributes = new { @class = "form-control form-control-plus" } })
+      @Html.ValidationMessageFor(model => model.TableName, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Display Name</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.EditorFor(model => model.DisplayName, new { htmlAttributes = new { @class = "form-control form-control-plus" } })
+      @Html.ValidationMessageFor(model => model.DisplayName, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Items Per Page (from-to)</label>
+    <div class="@ViewBag.EditorClass">
+      <div class="row form-control-plus form-inline" style="margin-left:0px;">
+        @Html.EditorFor(model => model.ItemsPerPageFrom, new { htmlAttributes = new { @class = "form-control form-control-minus", min = "0" } }) -
+        @Html.EditorFor(model => model.ItemsPerPageTo, new { htmlAttributes = new { @class = "form-control form-control-minus", min = "0" } })
+      </div>
+      @Html.ValidationMessageFor(model => model.ItemsPerPageFrom, "", new { @class = "text-danger" })
+      @Html.ValidationMessageFor(model => model.ItemsPerPageTo, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Order By</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.EditorFor(model => model.OrderBy, new { htmlAttributes = new { @class = "form-control form-control-plus" } })
+      @Html.ValidationMessageFor(model => model.OrderBy, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Action List</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.ActionList, new { @class = "form-control form-control-plus", @rows = 4 } )
+      @Html.ValidationMessageFor(model => model.ActionList, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Default Action List</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.DefaultActionList, new { @class = "form-control form-control-plus", @rows = 2 })
+      @Html.ValidationMessageFor(model => model.DefaultActionList, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Table Action List</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.TableActionList, new { @class = "form-control form-control-plus", @rows = 4 })
+      @Html.ValidationMessageFor(model => model.TableActionList, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Default Table Action List</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.DefaultTableActionList, new { @class = "form-control form-control-plus", @rows = 2 })
+      @Html.ValidationMessageFor(model => model.DefaultTableActionList, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Text Field Columns</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.TextFieldColumns, new { @class = "form-control form-control-plus", @rows = 2 })
+      @Html.ValidationMessageFor(model => model.TextFieldColumns, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Picture Columns)</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.PictureColumns, new { @class = "form-control form-control-plus", @rows = 2 })
+      @Html.ValidationMessageFor(model => model.PictureColumns, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Index Shown Picture Columns</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.IndexShownPictureColumns, new { @class = "form-control form-control-plus", @rows = 2 })
+      @Html.ValidationMessageFor(model => model.IndexShownPictureColumns, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Required Columns</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.RequiredColumns, new { @class = "form-control form-control-plus", @rows = 3 })
+      @Html.ValidationMessageFor(model => model.RequiredColumns, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Number Limit Columns</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.NumberLimitColumns, new { @class = "form-control form-control-plus", @rows = 3 })
+      @Html.ValidationMessageFor(model => model.NumberLimitColumns, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Regex Checked Columns</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.RegexCheckedColumns, new { @class = "form-control form-control-plus", @rows = 6 })
+      @Html.ValidationMessageFor(model => model.RegexCheckedColumns, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Regex Checked Column Examples</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.RegexCheckedColumnExamples, new { @class = "form-control form-control-plus", @rows = 6 })
+      @Html.ValidationMessageFor(model => model.RegexCheckedColumnExamples, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">User Related Filters</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.UserRelatedFilters, new { @class = "form-control form-control-plus", @rows = 6 })
+      @Html.ValidationMessageFor(model => model.UserRelatedFilters, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  @{ 
+    List<SelectListItem> dfs = new List<SelectListItem> {
+      new SelectListItem {Text = null, Value = null },
+      new SelectListItem {Text = "True", Value = "True" },
+      new SelectListItem {Text = "False", Value = "False" },
+    };
+  }
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Disable Filter</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.DropDownList(Html.NameFor(m => m.DisableFilter).ToString(), dfs, new { @class = "form-control form-control-plus" })
+      @Html.ValidationMessageFor(model => model.DisableFilter, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Column Exclusion List</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.ColumnExclusionList, new { @class = "form-control form-control-plus", @rows = 4 })
+      @Html.ValidationMessageFor(model => model.ColumnExclusionList, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Filter Exclusion List</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.FilterExclusionList, new { @class = "form-control form-control-plus", @rows = 4 })
+      @Html.ValidationMessageFor(model => model.FilterExclusionList, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Details Exclusion List</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.DetailsExclusionList, new { @class = "form-control form-control-plus", @rows = 4 })
+      @Html.ValidationMessageFor(model => model.DetailsExclusionList, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Create Edit Exclusion List</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.CreateEditExclusionList, new { @class = "form-control form-control-plus", @rows = 4 })
+      @Html.ValidationMessageFor(model => model.CreateEditExclusionList, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Access Exclusion List</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.AccessExclusionList, new { @class = "form-control form-control-plus", @rows = 4 })
+      @Html.ValidationMessageFor(model => model.AccessExclusionList, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Basic Coloring List</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.BasicColoringList, new { @class = "form-control form-control-plus", @rows = 6 })
+      @Html.ValidationMessageFor(model => model.BasicColoringList, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Filter DropDown Lists</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.FilterDropDownLists, new { @class = "form-control form-control-plus", @rows = 5 })
+      @Html.ValidationMessageFor(model => model.FilterDropDownLists, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Create Edit DropDown Lists</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.CreateEditDropDownLists, new { @class = "form-control form-control-plus", @rows = 5 })
+      @Html.ValidationMessageFor(model => model.CreateEditDropDownLists, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Prefixes of Columns</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.PrefixesOfColumns, new { @class = "form-control form-control-plus", @rows = 3 })
+      @Html.ValidationMessageFor(model => model.PrefixesOfColumns, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Postfixes of Columns</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.PostfixesOfColumns, new { @class = "form-control form-control-plus", @rows = 3 })
+      @Html.ValidationMessageFor(model => model.PostfixesOfColumns, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">List Columns</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.ListColumns, new { @class = "form-control form-control-plus", @rows = 6 })
+      @Html.ValidationMessageFor(model => model.ListColumns, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Time Stamp Columns</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.TimeStampColumns, new { @class = "form-control form-control-plus", @rows = 4 })
+      @Html.ValidationMessageFor(model => model.TimeStampColumns, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">History Table</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.HistoryTable, new { @class = "form-control form-control-plus", @rows = 4 })
+      @Html.ValidationMessageFor(model => model.HistoryTable, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">History Trigger</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.HistoryTrigger, new { @class = "form-control form-control-plus", @rows = 6 })
+      @Html.ValidationMessageFor(model => model.HistoryTrigger, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Auto Generated Columns</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.AutoGeneratedColumns, new { @class = "form-control form-control-plus", @rows = 4 })
+      @Html.ValidationMessageFor(model => model.AutoGeneratedColumns, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,45 @@
+﻿@using Aiwe.Models;
+@using Extension.String;
+
+@model DetailsInfo
+
+@{
+  ViewBag.LabelClasses = "col-md-2";
+  ViewBag.EditorClass = "col-md-10";
+}
+
+@if (TempData == null) {
+  <h4 style="color:red">No record found</h4>
+} else {
+  if (TempData.Count <= 0) {
+    <h4 style="color:red">No record found on Table @Model.TableDisplayName with Cid = @Model.Cid</h4>
+  } else {
+    foreach (var data in TempData) {
+      if(!Model.IsColumnIncludedInDetails(data.Key, User)) {
+        continue;
+      }
+      <div class="row">
+        <div class="@ViewBag.LabelClasses"><b>@data.Key.ToCamelBrokenString()</b></div>
+          
+        @if (Model.Meta.IsPictureColumn(data.Key)) {
+          int imgWidth = Model.Meta.GetImageWidth(data.Key);
+          if (data.Value is DBNull || data.Value == null || string.IsNullOrWhiteSpace(data.Value.ToString())) {            
+            <i>[no picture]</i>
+          } else if (data.Value.ToString().Contains("/") || data.Value.ToString().Contains("\\")) { //longer relative path
+            <img src="~/Images/@data.Value" width="@imgWidth" title="@data.Value" />
+          } else {
+            <img src="~/Images/@Model.TableName/@Model.Cid/@data.Value" width="@imgWidth" title="@data.Value" />
+          }
+        } else {
+          if (Model.Meta.IsListColumn(data.Key)) {
+            string dataValue = data.Value == null ? string.Empty : data.Value.ToString();
+            @Html.Raw(Model.GetListColumnDetailsHTML(data.Key, dataValue));
+          } else {
+            <div class="@ViewBag.EditorClass">@data.Value</div>
+          }
+        }
+
+      </div>
+    }
+  }
+}

@@ -1,0 +1,10 @@
+﻿@model Aiwe.Models.Team
+@{
+  ViewBag.Title = "Delete";
+  ViewBag.ControllerName = "Team";
+  int labelPortion = 2;
+  ViewBag.LabelClasses = "col-md-" + labelPortion;
+  ViewBag.EditorClass = "col-md-" + (12 - labelPortion);
+}
+
+@Html.Partial("_SharedDelete")

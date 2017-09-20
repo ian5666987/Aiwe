@@ -1,0 +1,5 @@
+D:\Dev\Project13\20170829\MMSRedesignTest\EmailSender\bin\Release\EmailSender.exe.config
+D:\Dev\Project13\20170829\MMSRedesignTest\EmailSender\bin\Release\EmailSender.exe
+D:\Dev\Project13\20170829\MMSRedesignTest\EmailSender\bin\Release\EmailSender.pdb
+D:\Dev\Project13\20170829\MMSRedesignTest\EmailSender\obj\Release\EmailSender.exe
+D:\Dev\Project13\20170829\MMSRedesignTest\EmailSender\obj\Release\EmailSender.pdb

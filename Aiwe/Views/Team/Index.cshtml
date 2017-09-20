@@ -1,0 +1,19 @@
+﻿@using Aiwe.Models
+@using Aibe.Models
+@model List<Team>
+@{
+  ViewBag.Title = "Teams";
+  ViewBag.PageTitle = "Teams";
+  ViewBag.ActionName = "Index";
+  ViewBag.ControllerName = "Team";
+  ViewBag.FilterName = "Team"; //used for correct filter rendering in the common
+  ViewBag.SenderName = "team";
+  ViewBag.TablePartialViewName = "_Table";
+  ViewBag.NavPartialViewName = "_AddBackToAdmin";
+  NavDataModel navData = (NavDataModel)ViewBag.NavData;
+  if (navData != null && navData.QueryCount > 0) {
+    navData.DataName = "Team"; //for giving name below
+  }
+}
+
+@Html.Partial("_SharedBody")

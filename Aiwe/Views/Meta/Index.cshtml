@@ -1,0 +1,19 @@
+﻿@using Aibe.Models;
+@using Aibe.Models.DB;
+@model List<MetaItem>
+@{
+  ViewBag.Title = "Meta";
+  ViewBag.PageTitle = "Meta";
+  ViewBag.ActionName = "Index";
+  ViewBag.ControllerName = "Meta";
+  ViewBag.FilterName = "Meta"; //used for correct filter rendering in the common
+  ViewBag.SenderName = "meta";
+  ViewBag.TablePartialViewName = "_Table";
+  ViewBag.NavPartialViewName = "_AddBackToAdmin";
+  NavDataModel navData = (NavDataModel)ViewBag.NavData;
+  if (navData != null && navData.QueryCount > 0) {
+    navData.DataName = "Meta"; //for giving name below
+  }
+}
+
+@Html.Partial("_SharedBody")

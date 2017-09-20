@@ -1,0 +1,10 @@
+﻿@model Aiwe.Models.ViewModels.ApplicationUserViewModel
+@{
+  ViewBag.Title = "Details";
+  ViewBag.ControllerName = "User";
+  int labelPortion = 2;
+  ViewBag.LabelClasses = "col-md-" + labelPortion;
+  ViewBag.EditorClass = "col-md-" + (12 - labelPortion);
+}
+
+@Html.Partial("_SharedDetails")

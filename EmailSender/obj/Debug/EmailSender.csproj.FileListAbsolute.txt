@@ -1,0 +1,6 @@
+D:\Dev\Project13\20170829\MMSRedesignTest\EmailSender\bin\Debug\EmailSender.exe.config
+D:\Dev\Project13\20170829\MMSRedesignTest\EmailSender\bin\Debug\EmailSender.exe
+D:\Dev\Project13\20170829\MMSRedesignTest\EmailSender\bin\Debug\EmailSender.pdb
+D:\Dev\Project13\20170829\MMSRedesignTest\EmailSender\obj\Debug\EmailSender.exe
+D:\Dev\Project13\20170829\MMSRedesignTest\EmailSender\obj\Debug\EmailSender.pdb
+D:\Dev\Project13\20170829\MMSRedesignTest\EmailSender\obj\Debug\EmailSender.csprojResolveAssemblyReference.cache

@@ -1,0 +1,22 @@
+﻿@using Aibe.Models.Filters
+<br />
+<h2>
+  List of @ViewBag.PageTitle
+  &nbsp;
+  <span class="btn btn-default"
+        data-toggle="modal"
+        data-target="#modal-for-@ViewBag.SenderName">
+    <span class="glyphicon glyphicon-filter"></span> Filter
+  </span>
+  <small>
+    <span id="span-for-@ViewBag.SenderName-filter">
+      @if (ViewBag.Filter != null) {
+        BaseFilter filter = (BaseFilter)ViewBag.Filter;
+        if (filter != null && filter.No > 0) {
+          <span class="glyphicon glyphicon-ok-circle text-success" title="@filter.Msg"></span> <span title="Filter element(s)">@filter.No</span>        
+        }
+      }
+    </span>
+  </small>
+</h2>
+<br />

@@ -1,0 +1,100 @@
+﻿@using Aiwe.Models.ViewModels
+@using Aiwe.Models
+@using Aibe;
+
+@model ApplicationUserCreateViewModel
+
+<div class="form-horizontal">
+  @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+  <div class="form-group">
+    @Html.LabelFor(model => model.FullName, htmlAttributes: new { @class = ViewBag.LabelClasses })
+    <div class="@ViewBag.EditorClass">
+      @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control" } })
+      @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    @Html.LabelFor(model => model.DisplayName, htmlAttributes: new { @class = ViewBag.LabelClasses })
+    <div class="@ViewBag.EditorClass">
+      @Html.EditorFor(model => model.DisplayName, new { htmlAttributes = new { @class = "form-control" } })
+      @Html.ValidationMessageFor(model => model.DisplayName, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = ViewBag.LabelClasses })
+    <div class="@ViewBag.EditorClass">
+      @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+      @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  @{
+    List<SelectListItem> adminRoles = new List<SelectListItem> {
+      new SelectListItem {Text = null, Value = null },
+      new SelectListItem {Text = DH.AdminRole, Value = DH.AdminRole },
+    };
+
+    ApplicationDbContext context = new ApplicationDbContext();
+    List<SelectListItem> workingRoles = context.Roles
+      .ToList()
+      .Where(x => !DH.AdminRoles.Contains(x.Name))
+      .Select(x => new SelectListItem { Text = x.Name, Value = x.Name })
+      .ToList();
+    workingRoles.Insert(0, new SelectListItem { Text = null, Value = null });
+
+    List<SelectListItem> teams = context.Teams
+      .Select(x => new SelectListItem { Text = x.Name, Value = x.Name })
+      .ToList();
+    teams.Insert(0, new SelectListItem { Text = null, Value = null });
+  }
+
+  <div class="form-group">
+    @Html.LabelFor(model => model.Team, htmlAttributes: new { @class = ViewBag.LabelClasses })
+    <div class="@ViewBag.EditorClass">
+      @Html.DropDownList(Html.NameFor(m => m.Team).ToString(), teams, new { @class = "form-control" })
+      @Html.ValidationMessageFor(model => model.Team, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = ViewBag.LabelClasses })
+    <div class="@ViewBag.EditorClass">
+      @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+      @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = ViewBag.LabelClasses })
+    <div class="@ViewBag.EditorClass">
+      @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
+      @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    @Html.LabelFor(model => model.WorkingRole, htmlAttributes: new { @class = ViewBag.LabelClasses })
+    <div class="@ViewBag.EditorClass">
+      @Html.DropDownList(Html.NameFor(m => m.WorkingRole).ToString(), workingRoles, new { @class = "form-control" })
+      @Html.ValidationMessageFor(model => model.WorkingRole, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    @Html.LabelFor(model => model.AdminRole, htmlAttributes: new { @class = ViewBag.LabelClasses })
+    <div class="@ViewBag.EditorClass">
+      @Html.DropDownList(Html.NameFor(m => m.AdminRole).ToString(), adminRoles, new { @class = "form-control" })
+      @Html.ValidationMessageFor(model => model.AdminRole, "", new { @class = "text-danger" })
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="@ViewBag.LabelClasses"></div>
+    <div class="@ViewBag.EditorClass">
+      <p>
+        <i>Notes: * required field, ** at least <b>one</b> must be filled</i>
+      </p>
+    </div>
+  </div>
+</div>

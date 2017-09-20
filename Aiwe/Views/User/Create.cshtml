@@ -1,0 +1,11 @@
+﻿@model Aiwe.Models.ViewModels.ApplicationUserCreateViewModel
+@{
+  ViewBag.Title = "Create";
+  ViewBag.ControllerName = "User";
+  int labelPortion = 2;
+  ViewBag.LabelClasses = "control-label col-md-" + labelPortion;
+  ViewBag.EditorClass = "col-md-" + (12 - labelPortion);
+  ViewBag.CreatePartialName = "_CreatePart";
+}
+
+@Html.Partial("_SharedCreate")

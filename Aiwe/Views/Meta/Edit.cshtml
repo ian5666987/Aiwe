@@ -1,0 +1,11 @@
+﻿@model Aibe.Models.DB.MetaItem
+@{
+  ViewBag.Title = "Edit";
+  ViewBag.ControllerName = "Meta";
+  int labelPortion = 3;
+  ViewBag.LabelClasses = "control-label col-md-" + labelPortion;
+  ViewBag.EditorClass = "col-md-" + (12 - labelPortion);
+  ViewBag.EditPartialName = "_CreateEditPart";
+}
+
+@Html.Partial("_SharedEdit")

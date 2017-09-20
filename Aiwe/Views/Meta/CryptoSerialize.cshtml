@@ -1,0 +1,40 @@
+﻿@model Aibe.Models.DB.MetaItem
+@{
+  ViewBag.Title = "CryptoSerialize";
+  ViewBag.ControllerName = "Meta";
+  int labelPortion = 3;
+  ViewBag.LabelClasses = "col-md-" + labelPortion;
+  ViewBag.EditorClass = "col-md-" + (12 - labelPortion);
+}
+
+<h2>@ViewBag.ControllerName <small>(@ViewBag.Title)</small></h2>
+<h3 class="text-success"><span class="glyphicon glyphicon-qrcode text-success"></span> Are you sure to serialize and to encrypt this data?</h3>
+<hr />
+
+<div>
+  @Html.Partial("_DetailsPart")
+</div>
+<br />
+
+<div class="row">
+  @using (Html.BeginForm("CryptoSerialize", (string)ViewBag.ControllerName, FormMethod.Post, new { id = "csForm" })) {
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+      <button class="btn btn-success col-md-2" style="margin-left:12px; margin-right:8px; margin-top:15px;" onclick="submitCSForm()">
+        <span class="glyphicon glyphicon-qrcode"><font style="font-family:verdana;"> Crypto-Serialize</font></span>
+      </button>
+      <a href="@Url.Action("Index", (string)ViewBag.ControllerName)"
+         class="btn btn-primary col-md-2"
+         style="margin-left:12px; margin-top:15px;">
+        <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> Back To List</font></span>
+      </a>
+    </div>
+  }
+  <br />
+</div>
+
+<script>
+  function submitCSForm() {
+    document.getElementById('csForm').submit();
+  }
+</script>

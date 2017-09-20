@@ -1,0 +1,44 @@
+﻿@using Aiwe.Models.ViewModels
+@using Aibe
+@model List<ApplicationUserViewModel>
+<table class="table table-bordered table-striped">
+  <tr>
+    <th>No</th>
+    <th>Full Name</th>
+    <th>Display Name</th>
+    <th>Email</th>
+    <th>Team</th>
+    <th>Working Role</th>
+    <th>Admin Role</th>
+    <th>Last Login</th>
+    <th>Registration Date</th>
+    <th>Actions</th>
+  </tr>
+
+  @if (Model != null) {
+    for (int i = 0; i < Model.Count(); ++i) {
+      <tr>
+        <td>@((i + 1).ToString())</td>
+        <td>@Model[i].FullName</td>
+        <td>@Model[i].DisplayName</td>
+        <td>@Model[i].Email</td>
+        <td>@Model[i].Team</td>
+        <td>@Model[i].WorkingRole</td>
+        <td>@Model[i].AdminRole</td>
+        <td>@Model[i].LastLogin</td>
+        <td>@Model[i].RegistrationDate</td>
+
+        <td>
+          @Html.ActionLink("Details", "Details", new { id = Model[i].Id }) |
+          @if (DH.MainAdminRoles.Contains(Model[i].AdminRole) || Model[i].Email == User?.Identity?.Name) {
+            <span style="color:lightgray">Edit</span> @:|
+            <span style="color:lightgray">Delete</span>
+          } else {
+            @Html.ActionLink("Edit", "Edit", new { id = Model[i].Id }) @:|
+            @Html.ActionLink("Delete", "Delete", new { id = Model[i].Id })
+          }
+        </td>
+      </tr>
+    }
+  }
+</table>

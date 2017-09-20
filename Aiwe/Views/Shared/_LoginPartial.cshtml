@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNet.Identity
+@using Aiwe.Extensions
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-left" }))
+    {
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav navbar-left">
+        <li>
+            @Html.ActionLink("Hello " + User.Identity.GetDisplayName() + "!", "Index", "Manage", routeValues: null, 
+         htmlAttributes: new { title = "Manage You Account", style = "margin-top:20px;font-size:20px;color:grey" })
+        </li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()" style="margin-top:20px;font-size:20px;color:grey">Log off</a></li>
+    </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-left">
+      <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", style = "margin-top:20px;font-size:20px;color:grey" })</li>
+    </ul>
+}
+

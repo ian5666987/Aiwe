@@ -1,0 +1,130 @@
+﻿@using Aibe;
+@using Aibe.Helpers;
+@using Aiwe.Models;
+@using Extension.String;
+@using System.Data;
+
+@model FilterIndexInfo
+
+@{
+  ViewBag.LabelClasses = "col-md-" + Model.FilterLabelPortion;
+  ViewBag.EditorClass = "col-md-" + (12 - Model.FilterLabelPortion);
+}
+
+<div class="form-horizontal">
+  <input type="hidden" name="@(DH.BaseFilterAppendixName + "Page")" id="@ViewBag.SenderName-page" class="uncounted-filter-item" value="@Model.NavData.CurrentPage"/>
+  <input type="hidden" name="@(DH.BaseFilterAppendixName + "No")" id="@ViewBag.SenderName-filter-no" class="uncounted-filter-item" />
+  <input type="hidden" name="@(DH.BaseFilterAppendixName + "Msg")" id="@ViewBag.SenderName-filter-msg" class="uncounted-filter-item" />
+  <input type="hidden" name="@(DH.BaseFilterAppendixName + "UserName")" id="@ViewBag.SenderName-username" class="uncounted-filter-item" />
+  <input type="hidden" name="@(DH.BaseFilterAppendixName + "Type")" id="@ViewBag.SenderName-type" class="uncounted-filter-item" />
+
+  @foreach (var column in Model.FilterColumns) {
+    string dataType = column.DataType.ToString().Substring("System.".Length);
+    if (dataType == "String") { //If the data type is string
+      string dataValue = TempData[column.ColumnName]?.ToString();
+      <div class="form-group">
+        <label class="control-label @ViewBag.LabelClasses">@column.ColumnName.ToCamelBrokenString()</label>
+        <div class="@ViewBag.EditorClass">
+          @if (!Model.Meta.IsFilterDropDownColumn(column.ColumnName)) {
+            <input type="text" name="@column.ColumnName" class="form-control form-control-medium-plus" value="@dataValue" />
+          } else {
+            List<string> dropdowns = DropDownHelper.GetStaticFilterDropDownFor(Model.TableName, column.ColumnName, "string");
+            if (dropdowns == null || dropdowns.Count <= 0) {
+              <input type="text" name="@column.ColumnName" class="form-control form-control-medium-plus" value="@dataValue" />
+            } else { //string dropdown case
+              List<SelectListItem> dropdownItems = new List<SelectListItem> {
+                new SelectListItem { Text = null, Value = null },
+              };
+              dropdownItems.AddRange(dropdowns.Select(x => new SelectListItem { Text = x, Value = x }).ToArray());
+              SelectListItem item = dropdownItems.FirstOrDefault(x => x.Text == dataValue);
+              if (item != null && !string.IsNullOrWhiteSpace(dataValue)) {
+                item.Selected = true;
+              }
+              @Html.DropDownList(column.ColumnName, dropdownItems, new { @class = "form-control form-control-medium-plus" })
+            }
+          }          
+          @Html.ValidationMessage(column.ColumnName, new { @class = "text-danger" })
+        </div>
+      </div>
+    } else if (DH.NumberDataTypes.Contains(dataType)) {
+      string dataNameFrom = string.Concat(column.ColumnName, DH.BaseFilterAppendixName, dataType, DH.FromName);
+      string dataValueFrom = TempData[dataNameFrom]?.ToString();
+      string dataNameTo = string.Concat(column.ColumnName, DH.BaseFilterAppendixName, dataType, DH.ToName);
+      string dataValueTo = TempData[dataNameTo]?.ToString();
+      <div class="form-group">
+        <label class="control-label @ViewBag.LabelClasses">@column.ColumnName.ToCamelBrokenString() (from-to)</label>
+        <div class="@ViewBag.EditorClass">
+          <div class="row form-control-medium-plus form-inline" style="margin-left:0px;">
+            <input type="number" name="@dataNameFrom" class="form-control form-control-medium-minus" value="@dataValueFrom" /> -
+            <input type="number" name="@dataNameTo" class="form-control form-control-medium-minus" value="@dataValueTo" />
+          </div>
+          @Html.ValidationMessage(dataNameFrom, new { @class = "text-danger" })
+          @Html.ValidationMessage(dataNameTo, new { @class = "text-danger" })
+        </div>
+      </div>
+    } else if (dataType == "DateTime") {
+      string dataNameFrom = column.ColumnName + DH.FilterDateAppendixFrontName + DH.FromName;
+      string dataValueRawFrom = TempData[dataNameFrom]?.ToString();
+      DateTime? dataValueDtFrom = string.IsNullOrWhiteSpace(dataValueRawFrom) ? null : new DateTime?(DateTime.Parse(dataValueRawFrom));
+      string dataValueFrom = dataValueDtFrom.HasValue ? dataValueDtFrom.Value.ToString("yyyy-MM-dd") : string.Empty;
+      string dataTimeNameFrom = column.ColumnName + DH.FilterTimeAppendixFrontName + DH.FromName;
+      string dataTimeValueFrom = dataValueDtFrom.HasValue ?
+      dataValueDtFrom.Value.ToString("HH:mm") : null;
+
+      string dataNameTo = column.ColumnName + DH.FilterDateAppendixFrontName + DH.ToName;
+      string dataValueRawTo = TempData[dataNameTo]?.ToString();
+      DateTime? dataValueDtTo = string.IsNullOrWhiteSpace(dataValueRawTo) ? null : new DateTime?(DateTime.Parse(dataValueRawTo));
+      string dataValueTo = dataValueDtTo.HasValue ? dataValueDtTo.Value.ToString("yyyy-MM-dd") : string.Empty;
+      string dataTimeNameTo = column.ColumnName + DH.FilterTimeAppendixFrontName + DH.ToName;
+      string dataTimeValueTo = dataValueDtTo.HasValue ?
+      dataValueDtTo.Value.ToString("HH:mm") : null;
+      <div class="form-group">
+        <label class="control-label @ViewBag.LabelClasses">@column.ColumnName.ToCamelBrokenString() (from)</label>
+        <div class="@ViewBag.EditorClass">
+          <div class="row form-control-medium-plus form-inline" style="margin-left:0px;">            
+            <input type="date" name="@dataNameFrom" class="form-control form-control-medium-plus" value="@dataValueFrom"/>
+            <input type="time" name="@dataTimeNameFrom" class="form-control form-control-medium-plus" value="@dataTimeValueFrom"/>
+          </div>
+          @Html.ValidationMessage(dataNameFrom, new { @class = "text-danger" })
+          @Html.ValidationMessage(dataTimeNameFrom, new { @class = "text-danger" })
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label @ViewBag.LabelClasses">@column.ColumnName.ToCamelBrokenString() (to)</label>
+        <div class="@ViewBag.EditorClass">
+          <div class="row form-control-medium-plus form-inline" style="margin-left:0px;">
+            <input type="date" name="@dataNameTo" class="form-control form-control-medium-plus" value="@dataValueTo" />
+            <input type="time" name="@dataTimeNameTo" class="form-control form-control-medium-plus" value="@dataTimeValueTo" />
+          </div>
+          @Html.ValidationMessage(dataNameTo, new { @class = "text-danger" })
+          @Html.ValidationMessage(dataTimeNameTo, new { @class = "text-danger" })
+        </div>
+      </div>
+    } else if (dataType == "Boolean") {
+      string dataName = string.Concat(column.ColumnName, DH.BaseFilterAppendixName, dataType);
+      string dataValue = TempData[dataName]?.ToString();
+      List<SelectListItem> dropdownItems = new List<SelectListItem> {
+        new SelectListItem { Text = null, Value = null },
+        new SelectListItem { Text = "True", Value = "true" },
+        new SelectListItem { Text = "False", Value = "false" },
+      };
+
+      SelectListItem item = dropdownItems.FirstOrDefault(x => x.Text == dataValue);
+      if (item != null) {
+        item.Selected = true;
+      }
+
+      <div class="form-group">
+        <label class="control-label @ViewBag.LabelClasses">@column.ColumnName.ToCamelBrokenString()</label>
+        <div class="@ViewBag.EditorClass">
+          @Html.DropDownList(dataName, dropdownItems, new { @class = "form-control form-control-medium-plus" })
+          @Html.ValidationMessage(dataName, new { @class = "text-danger" })
+        </div>
+      </div>
+    } else {
+      <p>Name: @column.ColumnName, Type: @dataType</p>
+    }
+  }
+  @Html.ValidationMessage("UnknownColumn", new { @class = "text-danger" })
+</div>
+

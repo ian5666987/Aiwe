@@ -1,0 +1,20 @@
+﻿@using Aibe.Models.Filters
+@model RoleFilter
+@{
+  ViewBag.LabelClasses = "col-md-4";
+  ViewBag.EditorClass = "col-md-8";  
+}
+
+<div class="form-horizontal">
+  @Html.HiddenFor(m => m.Page, htmlAttributes: new { id = (string)ViewBag.SenderName + "-page", @class = "uncounted-filter-item" })
+  @Html.HiddenFor(m => m.No, htmlAttributes: new { id = (string)ViewBag.SenderName + "-filter-no", @class = "uncounted-filter-item" })
+  @Html.HiddenFor(m => m.Msg, htmlAttributes: new { id = (string)ViewBag.SenderName + "-filter-msg", @class = "uncounted-filter-item" })
+
+  <div class="form-group">
+    <label class="control-label @ViewBag.LabelClasses">Name</label>
+    <div class="@ViewBag.EditorClass">
+      @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control form-control-plus" } })
+      @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+    </div>
+  </div>
+</div>

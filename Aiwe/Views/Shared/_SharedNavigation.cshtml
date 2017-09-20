@@ -1,0 +1,70 @@
+﻿@model Aibe.Models.NavDataModel
+<div class="row">
+  <div class="col-lg-2">
+    <span onclick="submitFilterForm('1', '@ViewBag.SenderName')"
+        class="btn btn-default btn-xs"
+        title="First page">
+      first
+    </span>
+    @if (Model.MaxPage > 100) {
+      <span onclick="submitFilterForm('@Model.Prev100Page.ToString()', '@ViewBag.SenderName')"
+          class="btn btn-default btn-xs"
+          title="Previous 100 pages">
+        &#x25c0&#x25c0&#x25c0
+      </span>
+    }
+    @if (Model.MaxPage > 10) {
+      <span onclick="submitFilterForm('@Model.Prev10Page.ToString()', '@ViewBag.SenderName')"
+          class="btn btn-default btn-xs"
+          title="Previous 10 pages">
+        &#x25c0&#x25c0
+      </span>
+    }
+    <span onclick="submitFilterForm('@Model.PrevPage.ToString()', '@ViewBag.SenderName')"
+        class="btn btn-default btn-xs"
+        title="Previous page">
+      &#x25c0
+    </span>
+  </div>
+  <div class="col-lg-2">
+    <span id="currentPageId">
+      Page @Model.CurrentPage / @Model.MaxPage
+    </span>
+  </div>
+  <div class="col-lg-2">
+    <span onclick="submitFilterForm('@Model.NextPage.ToString()', '@ViewBag.SenderName')"
+        class="btn btn-default btn-xs"
+        title="Next page">
+      &#x25b6
+    </span>
+    @if (Model.MaxPage > 10) {
+      <span onclick="submitFilterForm('@Model.Next10Page.ToString()', '@ViewBag.SenderName')"
+          class="btn btn-default btn-xs"
+          title="Next 10 pages">
+        &#x25b6&#x25b6
+      </span>
+    }
+    @if (Model.MaxPage > 100) {
+      <span onclick="submitFilterForm('@Model.Next100Page.ToString()', '@ViewBag.SenderName')"
+         class="btn btn-default btn-xs"
+         title="Next 100 pages">
+        &#x25b6&#x25b6&#x25b6
+      </span>
+    }
+    <span onclick="submitFilterForm('@Model.MaxPage.ToString()', '@ViewBag.SenderName')"
+       class="btn btn-default btn-xs"
+       title="Last page">
+      last
+    </span>
+</div>
+
+  <div class="col-lg-3">
+    @if (Model.KeysUsed) {
+      <span><i>(@Model.DataName [@Model.ItemNoInPageFirst] @Model.FirstKey - [@Model.ItemNoInPageLast] @Model.LastKey of <b>@Model.QueryCount</b> @Model.DataName.ToLower())</i></span>
+    } else if (Model.DataNameUsed) {
+      <span><i>(@Model.DataName [@Model.ItemNoInPageFirst] - [@Model.ItemNoInPageLast] of <b>@Model.QueryCount</b> @Model.DataName)</i></span>
+    } else {
+      <span><i>(Data [@Model.ItemNoInPageFirst] - [@Model.ItemNoInPageLast] of <b>@Model.QueryCount</b> Data)</i></span>
+    }
+  </div>
+</div>

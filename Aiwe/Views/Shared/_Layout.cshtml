@@ -1,0 +1,53 @@
+﻿@using Aibe.Helpers
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@ViewBag.Title - Aiwe</title>
+  @Styles.Render("~/Content/css")
+  @Scripts.Render("~/bundles/modernizr")
+  <!--#1a3a89-->
+</head>
+<body style="background-color:#f3f3f3">
+  <div class="navbar navbar-inverse custom-navbar navbar-fixed-top" style="background-color:#FFFFFF;border-color:black">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"
+                style="background-color:#FFFFFF;border-color:black;color:black">          
+          <span class="icon-bar" style="background-color:black"></span>
+          <span class="icon-bar" style="background-color:black"></span>
+          <span class="icon-bar" style="background-color:black"></span>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse"
+           style="background-color:#FFFFFF;border-color:black;">
+        @Html.Partial("_LoginPartial")
+        <ul class="nav navbar-nav navbar-right">
+          @if (UserHelper.UserHasAdminRight(User)) {
+            <li>@Html.ActionLink("Admin", "Index", "Admin", routeValues: null, htmlAttributes: new { style = "margin-top:20px;font-size:20px;color:grey" })</li>
+          }
+          <li>@Html.ActionLink("Home", "Index", "Home", routeValues: null, htmlAttributes: new { style = "margin-top:20px;font-size:20px;color:grey" })</li>                    
+          <li>
+            <img class="nav navbar-nav navbar-left"
+                 src="../../../../Images/feinmetall-logo.png" height="50px;" width="170px;" style="margin-top:10px;margin-bottom:10px;margin-right:10px;margin-left:15px;background-color:white" />
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="container body-content">
+    <br />
+    @RenderBody()
+    <hr />
+    <footer>
+      <p>&copy; @DateTime.Now.Year - Powered by ASTrio Pte Ltd</p>
+    </footer>
+  </div>
+
+  @Scripts.Render("~/bundles/jquery")
+  @Scripts.Render("~/bundles/bootstrap")
+  @Scripts.Render("~/bundles/site")
+  @RenderSection("scripts", required: false)
+</body>
+</html>

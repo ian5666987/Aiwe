@@ -1,0 +1,234 @@
+﻿@using Aibe.Models;
+@using Aiwe.Models;
+@using Extension.String;
+@using System.Data;
+
+@model FilterIndexInfo
+
+@{
+  //initialize variables
+  ViewBag.Title = "Index";
+  ViewBag.SenderName = Model.TableName.ToLower(); //for javascript use
+  TempData["DataTableForExcel"] = Model.Table;
+}
+
+<!--The header-->
+<h2>
+  @ViewBag.Title - @Model.TableDisplayName
+  &nbsp;
+
+  <!--The filter button-->
+  @if (!Model.Meta.FilterIsDisabled) {
+    <span class="btn btn-default"
+          data-toggle="modal"
+          data-target="#modal-for-@ViewBag.SenderName">
+      <span class="glyphicon glyphicon-filter"></span> Filter
+    </span>
+    <small>
+      <span id="span-for-@ViewBag.SenderName-filter">
+        @if (ViewBag.FilterNo != null && (int)ViewBag.FilterNo > 0) {
+          <span class="glyphicon glyphicon-ok-circle text-success" title="@ViewBag.FilterMsg"></span> <span title="Filter elements">@ViewBag.FilterNo</span>
+        }
+      </span>
+    </small>
+  }
+</h2>
+<br />
+
+@if (!Model.HasTable) {
+  <h4 style="color:red">No data table found</h4>
+} else {
+  <!--The data presentation-->
+  List<int> excludedColumnNo = new List<int>();
+
+  using (Html.BeginForm("Index", "Common", FormMethod.Post, new { id = "filterForm" })) {
+
+  <!--The filter-->
+
+    if (!Model.Meta.FilterIsDisabled) {
+      <div id="modal-for-@ViewBag.SenderName" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color:#e9e9e9">
+              <button type="button" class="close" data-dismiss="modal"
+                      id="@ViewBag.SenderName-filter-cross-button"
+                      onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
+                &times;
+              </button>
+              <h4 class="modal-title" id="modal-for-@ViewBag.SenderName-header">Filter for @Model.TableDisplayName</h4>
+            </div>
+            <div class="modal-body">
+              @Html.Partial("_Filter", Model)
+            </div>
+            <div class="modal-footer" style="background-color:#e9e9e9">
+              <button type="button" class="btn btn-default" data-dismiss="modal"
+                      id="@ViewBag.SenderName-filter-use-button"
+                      title="Use this button to apply the filter form"
+                      onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
+                Apply
+              </button>
+              <button type="button" class="btn btn-default" data-dismiss="modal"
+                      id="@ViewBag.SenderName-filter-close-button"
+                      title="Use this button to close the filter form"
+                      onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    if (Model.RowNo <= 0) {
+      string addFilterString = !Model.Meta.FilterIsDisabled && ViewBag.FilterNo != null && ((int)ViewBag.FilterNo) > 0 ?
+        "matching the applied filter(s)" : string.Empty;
+      <h4 style="color:red">No record found in table [@Model.TableDisplayName] @addFilterString</h4>
+      <br/>
+    }
+
+  <!--The form-->
+
+      <!--The upper navigation-->
+      @Html.Partial(ViewBag.NavigationUsed == null ? "_SharedNavigation" : (string)ViewBag.NavigationUsed, Model.NavData)
+      <br />
+
+    <!--The table-->
+
+      int count = 0;
+      <table class="table table-bordered table-striped">
+        <tr>
+          @foreach (ColumnInfo column in Model.ColumnInfos.Where(x => x.IsIndexIncluded)) {
+            <th>@column.DisplayName</th>
+          }
+          @if (Model.Meta.HasNonCreateAction) {
+            <th>Action</th>
+          }
+        </tr>
+        @foreach (DataRow row in Model.IndexRows) {          
+          
+          <tr>
+            @{
+              int id = 0; //record Id
+              count = 0;
+            }
+            
+            @foreach (object val in row.ItemArray) {
+              if (count == 0) {
+                id = (int)val;
+              }
+              if (!Model.IndexExcludedColumnNos.Contains(count)) {
+                ColumnInfo columnInfo = Model.ColumnInfos[count];
+                if (columnInfo.IsIndexShowImage) {                  
+                  <td>
+                    @if (val is DBNull || val == null || string.IsNullOrWhiteSpace(val.ToString())) {
+                      <i>[no picture]</i>
+                    } else if (val.ToString().Contains("/") || val.ToString().Contains("\\")) { //longer relative path
+                      <img src="~/Images/@val" width="@columnInfo.ImageWidth" />
+                    } else {
+                      <img src="~/Images/@Model.TableName/@id/@val" width="@columnInfo.ImageWidth" />
+                    }
+                  </td>
+                } else {
+                  if (columnInfo.IsListColumn) {
+                    string dataValue = val == null ? string.Empty : val.ToString();
+                    <td>
+                      @Html.Raw(Model.GetListColumnDetailsHTML(columnInfo.Name, dataValue))
+                    </td>
+                  } else {
+                    //List<ColoringItem> colorItems = columnInfo.CreateColorItems(id);
+                    if (columnInfo.Colorings == null) {
+                      <td>@val</td>
+                    } else if (columnInfo.Colorings.Any(x => x.CheckConditionMet(columnInfo.DataType, val, id))) {
+                      ColoringInfo colorItem = columnInfo.Colorings.FirstOrDefault(x => x.CheckConditionMet(columnInfo.DataType, val, id));
+                      <td style="background-color:@colorItem.Color">@val</td>
+                    } else {
+                      <td>@val</td>
+                    }
+
+                  }
+                }
+              }
+              count++;
+            }
+            @if (Model.Meta.HasNonCreateAction) {
+              int actCount = 0;
+              <td>
+                @foreach (var action in Model.Meta.NonCreateActions) {                  
+                  if (Model.IsAllowedToCallAction(action.Name)) {
+                    if (actCount > 0) {
+                      @:|
+                    }
+
+                    if (Model.Meta.IsDefaultAction(action.Name)) { //actions with default action links
+                      if (id == 0) {
+                      <a href="../../../../../../Common/@action.Name/@Model.TableName">@action.Name.ToCamelBrokenString()</a>
+                      } else {
+                      <a href="../../../../../../Common/@action.Name/@Model.TableName/@id">@action.Name.ToCamelBrokenString()</a>
+                      }
+                    } else { //action with customized custom link
+                      if (id == 0) {
+                      <a href="../../../../../../@Model.TableName/@action.Name">@action.Name.ToCamelBrokenString()</a>
+                      } else {
+                      <a href="../../../../../../@Model.TableName/@action.Name/@id">@action.Name.ToCamelBrokenString()</a>
+                      }
+                    }
+                    actCount++;
+                  }
+                }
+              </td>
+
+            } else {
+              
+
+            }
+
+          </tr>
+
+              }
+
+      </table>
+
+      <!--The lower data navigation-->
+      @Html.Partial(ViewBag.NavigationUsed == null ? "_SharedNavigation" : (string)ViewBag.NavigationUsed, Model.NavData)
+      <br />
+
+    if (Model.Meta.HasCreateAction) {      
+      if (Model.IsAllowedToCallAction("Create")){
+        bool defaultCreateAction = Model.Meta.IsDefaultAction("create");
+        string createLink = defaultCreateAction ? "../../../../../../Common/Create/" + Model.TableName :
+          "../../../../../../" + Model.TableName + "/Create";
+        <div class="row">
+          <div class="col-md-3">
+            <a href="@createLink"
+                class="btn btn-success"
+                style="margin-top:5px;margin-right:5px;">
+              <span class="glyphicon glyphicon-plus"></span> Create New
+            </a>
+          </div>
+        </div>
+      }
+    }
+
+    if (Model.Meta.HasTableAction) {
+      <div class="row">
+        @foreach (var tableAction in Model.Meta.TableActions) {          
+          if (Model.IsAllowedToCallTableAction(tableAction.Name)) {
+            <div class="col-md-2">
+              @if (Model.Meta.IsDefaultTableAction(tableAction.Name)) {
+                <a href="../../../../../Common/@tableAction.Name/@Model.TableName" class="btn btn-primary btn-block" style="margin-top:5px;margin-right:5px;">
+                  @tableAction.Name.ToCamelBrokenString()
+                </a>
+              } else {
+                <a href="../../../../../@Model.TableName/@tableAction.Name" class="btn btn-primary btn-block" style="margin-top:5px;margin-right:5px;">
+                  @tableAction.Name.ToCamelBrokenString()
+                </a>
+              }
+            </div>
+          }
+        }
+      </div>
+      <br />
+    }
+  }
+}
+

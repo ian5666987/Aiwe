@@ -1,0 +1,130 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.form-control-medium-plus {
+    max-width:303px;
+}
+
+.form-control-common-plus {
+    max-width:324px;
+}
+
+.form-control-plus {
+    max-width:340px;
+}
+
+.form-control-minus {
+    max-width:162px;
+}
+
+.form-control-medium-minus {
+    max-width:145px;
+}
+
+.module-button {
+    color:lightgray;
+    padding-left: 10px;
+}
+
+.module-div {    
+    padding-bottom: 10px;
+    /*border-bottom:1px solid darkgray;*/
+}
+
+.module-header{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-top:1px solid darkgray;
+    border-bottom:1px solid darkgray;
+}
+
+body .modal-admin {
+    /* new custom width */
+    width: 700px;
+    /* must be half of the width, minus scrollbar on the left (30px) */
+    /*margin-left: -280px;*/
+}
+
+.custom-navbar .navbar-right {
+	    float: right;
+      margin-right: 0;
+      padding-left: 10px;
+    }
+
+.button-odd-feinmetall {
+  background-color: #1a3a89;
+  border-color: #1a3a89
+}
+
+.button-even-feinmetall {
+  background-color: #737373;
+  border-color: #737373
+}
+
+hr {
+    border-color:black;
+}
+
+@media (max-width:767px) {
+	.custom-navbar .navbar-right {
+	    float: left;
+	    padding-left: 10px;
+          margin-top: -7.5px;
+	}
+	.custom-navbar .nav.navbar-nav.navbar-right li {
+	    //float: left;
+	}
+  	.custom-navbar .nav.navbar-nav.navbar-right li > a {
+	    padding:8px 5px;
+	}
+	.custom-navbar .navbar-toggle {
+	    float: left;
+      margin-right: 0
+	}
+	.custom-navbar .navbar-header {
+	    float: left;
+        margin-left: 0px;
+	    width: auto!important;
+	}
+	.custom-navbar .navbar-collapse {
+	    clear: both;
+	    float: none;
+	}
+	ul > li > a {
+  		float: none;
+}
+}
+
+#button-image-special {
+    width:40px;
+    height:40px;
+    background-image: url(../Images/Fmlogo.png);    
+}
+
+.my-top-bar-font {
+  margin-top: 20px;
+  font-size: 20px;
+  color: black;
+}

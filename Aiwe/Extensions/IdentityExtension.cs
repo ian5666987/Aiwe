@@ -1,0 +1,19 @@
+﻿using System;
+using System.Security.Claims;
+using System.Security.Principal;
+using Microsoft.AspNet.Identity;
+
+namespace Aiwe.Extensions {
+  public static partial class IdentityExtension {
+    public static string GetDisplayName(this IIdentity identity) {
+      if (identity == null) {
+        throw new ArgumentNullException("identity");
+      }
+      var ci = identity as ClaimsIdentity;
+      if (ci != null) {
+        return ci.FindFirstValue("DisplayName");
+      }
+      return null;
+    }
+  }
+}

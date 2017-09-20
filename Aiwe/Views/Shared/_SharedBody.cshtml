@@ -1,0 +1,29 @@
+﻿@using Aibe.Models
+@using Aibe.Models.Filters
+@Html.Partial("_SharedBodyHeader")
+
+@using (Html.BeginForm((string)ViewBag.ActionName, (string)ViewBag.ControllerName, FormMethod.Post, new { id = "filterForm" })) {
+  @Html.Partial("_SharedFilterModal")
+  NavDataModel navData = (NavDataModel)ViewBag.NavData;
+  if (navData != null && navData.QueryCount > 0) {
+    @Html.Partial(ViewBag.NavigationUsed == null ? "_SharedNavigation" : (string)ViewBag.NavigationUsed, navData);
+    <br />
+    @Html.Partial((string)ViewBag.TablePartialViewName);
+    @Html.Partial(ViewBag.NavigationUsed == null ? "_SharedNavigation" : (string)ViewBag.NavigationUsed, navData);
+    <br />
+  } else {
+    <h4 style="color:red">
+      No record found in [@ViewBag.PageTitle]
+      @if (ViewBag.Filter != null) {
+        BaseFilter filter = (BaseFilter)ViewBag.Filter;
+        if (filter != null && filter.No > 0) {
+          @:matching the applied filter(s)
+    }
+      }
+      </h4>
+      <br/>
+  }
+
+  @Html.Partial((string)ViewBag.NavPartialViewName);
+  <br />
+}

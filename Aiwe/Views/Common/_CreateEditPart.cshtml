@@ -1,0 +1,221 @@
+﻿@using Aibe;
+@using Aibe.Models;
+@using Aiwe.Models;
+@using Extension.String;
+@using Aibe.Helpers;
+@using Aiwe.Extensions;
+@using System.Data;
+
+@model CreateEditInfo
+
+<div class="form-horizontal">
+  @foreach (DataColumn column in Model.DataColumns) {
+    string controlClasses = "form-control form-control-common-plus";
+    string dataType = column.DataType.ToString().Substring(DH.SharedPrefixDataType.Length);
+    if (!Model.IsColumnIncludedInCreateEdit(column, User)) { //skipped columns
+      if (column.ColumnName != "Cid") { //all non-edited items must exist but is hidden
+        if (dataType.EqualsIgnoreCase(DH.DateTimeDataType)) { //The only data type that is quite problematic to deal with
+          string dataValueRaw = TempData[column.ColumnName]?.ToString();
+          DateTime? dataValueDt = string.IsNullOrWhiteSpace(dataValueRaw) ? null : new DateTime?(DateTime.Parse(dataValueRaw));
+          string dataValue = dataValueDt.HasValue ? dataValueDt.Value.ToString("yyyy-MM-dd") : string.Empty;
+          string dataTimeName = column.ColumnName + DH.CreateEditTimeAppendixName;
+          string dataTimeValue = (string)TempData[dataTimeName] ?? (dataValueDt.HasValue ?
+            dataValueDt.Value.ToString("HH:mm:ss") : null); //TempData[dataTimeName]?.ToString();
+          <input type="hidden" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
+          <input type="hidden" name="@dataTimeName" class="@controlClasses" value="@dataTimeValue" />
+        } else { //straight forward to deal with
+          string dataValue = TempData[column.ColumnName]?.ToString();
+          <input type="hidden" name="@column.ColumnName" value="@dataValue" />
+        }
+      }
+      continue;
+    }
+
+    if (dataType.EqualsIgnoreCase(DH.StringDataType)) { //String type
+      string dataValue = TempData[column.ColumnName]?.ToString();
+      if (Model.ActionType == "create" && string.IsNullOrWhiteSpace(dataValue)) { //only for create. The edit does not have, only if the previous dataValue is empty
+        string prefix = Model.Meta.GetPrefix(column.ColumnName);
+        string postfix = Model.Meta.GetPostfix(column.ColumnName);
+        //according to http://stackoverflow.com/questions/637308/why-is-adding-null-to-a-string-legal
+        //The addition of null using + is legal;
+        dataValue = prefix + dataValue + postfix;
+      }
+      <div class="form-group">
+        <label class="control-label @ViewBag.LabelClasses">@column.ColumnName.ToCamelBrokenString()</label>
+        <div class="@ViewBag.EditorClass">
+          @if (!Model.Meta.IsCreateEditDropDownColumn(column.ColumnName)) {
+            if (!Model.Meta.IsTextField(column.ColumnName)) { //string, not column and not TextField
+              if (Model.Meta.IsPictureColumn(column.ColumnName)) { //picture
+                string picColumnName = column.ColumnName + DH.CreateEditPictureLinkAppendixName;
+                string picColumnValue = (string)TempData[picColumnName];
+                string columnValue = TempData[column.ColumnName] is DBNull || TempData[column.ColumnName] == null ? string.Empty : (string)TempData[column.ColumnName];
+                <div style="margin-top:7px">
+                  @if (!string.IsNullOrWhiteSpace(columnValue)) { //try to load the image
+                    string cid = TempData["Cid"] is DBNull || TempData["Cid"] == null ? "0" : ((int)TempData["Cid"]).ToString();
+                    if (columnValue.Contains("/") || columnValue.Contains("\\")) { //longer relative (folder-contain) path
+                      <img src="../../../Images/@columnValue" style="width:100px" id="picturedisplay-@column.ColumnName" />
+                    } else {
+                      <img src="../../../Images/@Model.TableName/@cid/@columnValue" style="width:100px" id="picturedisplay-@column.ColumnName" />
+                    }
+                    <button class="common-remove-picture" type="button" id="pictureremove-@column.ColumnName">remove</button>
+                  } else {
+                    <img src="" style="width:100px" id="picturedisplay-@column.ColumnName" hidden="hidden"/>
+                    <button class="common-remove-picture" type="button" id="pictureremove-@column.ColumnName" hidden="hidden">remove</button>
+                  }
+                  <input type="file" name="@picColumnName" accept="image/*" class="common-input-picture" id="picture-@column.ColumnName"/>
+                  @if (!string.IsNullOrWhiteSpace(columnValue) && Model.ActionType.ToLower() == "edit") {
+                    <span class="text-danger" id="pictureinfotext-@column.ColumnName"> 
+                      DO NOT BOTHER the 'No file chosen' phrase. If you see a picture, it means THERE IS a picture linked to the data.
+                    </span>
+                  } else {
+                    <span class="text-danger" id="pictureinfotext-@column.ColumnName" hidden="hidden">
+                      DO NOT BOTHER the 'No file chosen' phrase. If you see a picture, it means THERE IS a picture linked to the data.
+                    </span>
+                  }
+                  <input class="@controlClasses"
+                         type="hidden" name="@column.ColumnName" value="@columnValue"
+                         id="common-string-picture-@column.ColumnName" />
+                </div>
+              } else {
+                if (Model.Meta.IsListColumn(column.ColumnName)) { //it is a list column
+                  string lcType = Model.Meta.GetListColumnType(column.ColumnName);
+                  bool hasStaticTemplate = string.IsNullOrWhiteSpace(dataValue) &&
+                    Model.Meta.ListColumnHasStaticTemplate(column.ColumnName);
+                  string usedDataValue = hasStaticTemplate ? 
+                    Model.Meta.GetColumnStaticTemplate(column.ColumnName) : dataValue;
+                  ListColumnInfo info = Model.Meta.GetListColumnInfo(column.ColumnName);
+                  <div id="common-subcolumn-datavalue-@column.ColumnName">
+                    <input type="hidden" name="@column.ColumnName" id="common-subcolumn-content-@column.ColumnName" value="@usedDataValue" />
+                  </div>                  
+                  <span hidden id="common-subcolumn-span-@column.ColumnName">@lcType</span>
+                  <span hidden id="common-subcolumn-portion-@column.ColumnName">@Model.CreateEditLabelPortion</span>
+                  <div id="common-subcolumn-div-@column.ColumnName">
+                    @Html.Raw(info.GetHTML(usedDataValue))
+                  </div>
+                } else { //normal string
+                  <input type="text" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
+                }
+              }
+            } else { //TextField              
+              <textarea class="@controlClasses"
+                        rows="@Model.Meta.GetTextFieldRowSize(column.ColumnName)"                                                
+                        name="@column.ColumnName">@dataValue</textarea> //must be written this way and cannot be auto adjusted. Otherwise the dataValue will be put in the centre of the area (not in the beginning)
+            }
+          } else { //dropdown
+            List<string> dropdowns = DropDownHelper.GetStaticCreateEditDropDownFor(Model.TableName, column.ColumnName, dataValue, "string");
+            if (dropdowns == null || dropdowns.Count <= 0) {
+              <input type="text" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
+            } else { //string dropdown case
+              <div id="live-dd-@column.ColumnName" class="live-dd" commondatatype="string">
+                @{ 
+                  List<SelectListItem> dropdownItems = new List<SelectListItem> {
+                    new SelectListItem { Text = null, Value = null },
+                  };
+                  dropdownItems.AddRange(dropdowns.Select(x => new SelectListItem { Text = x, Value = x }).ToArray());
+                  SelectListItem item = dropdownItems.FirstOrDefault(x => x.Text == dataValue);
+                  if (item != null && !string.IsNullOrWhiteSpace(dataValue)) {
+                    item.Selected = true;
+                  }
+                }
+                @Html.DropDownList(column.ColumnName, dropdownItems, new { @class = controlClasses + " common-column-dropdown",
+                  id = "common-column-dropdown-" + column.ColumnName })
+               </div>
+              <input type="text" class="common-column-dropdown-original" id="common-column-dropdown-original-@column.ColumnName" value="@dataValue" hidden="hidden" />
+                    }
+                  }
+          @Html.ValidationMessage(column.ColumnName, new { @class = "text-danger" })
+        </div>
+      </div>
+    } else if (DH.NumberDataTypes.Contains(dataType)) { //Integer/UInt/Other numbers type
+      string dataValue = TempData[column.ColumnName]?.ToString();
+
+      if (Model.Meta.IsAutoGeneratedAppliedFor(column.ColumnName, Model.ActionType)){
+        <input type="hidden" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
+
+      } else {
+        <div class="form-group">
+          <label class="control-label @ViewBag.LabelClasses">@column.ColumnName.ToCamelBrokenString()</label>
+          <div class="@ViewBag.EditorClass">
+            @if (!Model.Meta.IsCreateEditDropDownColumn(column.ColumnName)) {
+              <input type="number" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
+            } else {
+              List<string> dropdowns = DropDownHelper.GetStaticCreateEditDropDownFor(Model.TableName, column.ColumnName, dataValue);
+              if (dropdowns == null || dropdowns.Count <= 0) {
+                <input type="number" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
+              } else { //number dropdown case
+                <div id="live-dd-@column.ColumnName" class="live-dd" commondatatype="number">
+                  @{
+                    List<SelectListItem> dropdownItems = new List<SelectListItem> {
+                      new SelectListItem { Text = null, Value = null },
+                    };
+                    dropdownItems.AddRange(dropdowns.Select(x => new SelectListItem { Text = x, Value = x }).ToArray());
+                    SelectListItem item = dropdownItems.FirstOrDefault(x => x.Text == dataValue);
+                    if (item != null) {
+                      item.Selected = true;
+                    }
+                  }
+                  @Html.DropDownList(column.ColumnName, dropdownItems, new { @class = controlClasses + " common-column-dropdown",
+                    id = "common-column-dropdown-" + column.ColumnName })
+                </div>
+                <input type="text" class="common-column-dropdown-original" id="common-column-dropdown-original-@column.ColumnName" value="@dataValue" hidden="hidden" />
+                      }
+                    }
+            @Html.ValidationMessage(column.ColumnName, new { @class = "text-danger" })
+          </div>
+        </div>
+      }
+    } else if (dataType == "DateTime") { //DateTime type
+      string dataValueRaw = TempData[column.ColumnName]?.ToString();
+      DateTime? dataValueDt = string.IsNullOrWhiteSpace(dataValueRaw) ? null : new DateTime?(DateTime.Parse(dataValueRaw));
+      string dataValue = dataValueDt.HasValue ? dataValueDt.Value.ToString("yyyy-MM-dd") : string.Empty;
+      string dataTimeName = column.ColumnName + DH.CreateEditTimeAppendixName;
+      string dataTimeValue = (string)TempData[dataTimeName] ?? (dataValueDt.HasValue ?
+        dataValueDt.Value.ToString("HH:mm:ss") : null); //TempData[dataTimeName]?.ToString();
+
+      if (Model.Meta.IsTimeStampAppliedFor(column.ColumnName, Model.ActionType)) { //if it is timestamp column for the particular column and action, don't use it
+        <input type="hidden" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
+        <input type="hidden" name="@dataTimeName" class="@controlClasses" value="@dataTimeValue" />
+        
+      } else {
+
+        <div class="form-group">
+          <label class="control-label @ViewBag.LabelClasses">@column.ColumnName.ToCamelBrokenString()</label>
+          <div class="@ViewBag.EditorClass">
+            <div class="row form-inline" style="margin-left:0px;">
+              <input type="date" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
+              <input type="time" step="1" name="@dataTimeName" class="@controlClasses" value="@dataTimeValue" />
+            </div>
+            @Html.ValidationMessage(column.ColumnName, new { @class = "text-danger" })
+            @Html.ValidationMessage(dataTimeName, new { @class = "text-danger" })
+          </div>
+        </div>
+
+      }
+    } else if (dataType == "Boolean") {
+      string dataValue = TempData[column.ColumnName]?.ToString();
+      List<SelectListItem> dropdownItems = new List<SelectListItem> {
+        new SelectListItem { Text = null, Value = null },
+        new SelectListItem { Text = "True", Value = "true" },
+        new SelectListItem { Text = "False", Value = "false" },
+      };
+
+      SelectListItem item = dropdownItems.FirstOrDefault(x => x.Text == dataValue);
+      if (item != null) {
+        item.Selected = true;
+      }
+
+      <div class="form-group">
+        <label class="control-label @ViewBag.LabelClasses">@column.ColumnName.ToCamelBrokenString()</label>
+        <div class="@ViewBag.EditorClass">          
+          @Html.DropDownList(column.ColumnName, dropdownItems, new { @class = controlClasses })
+          @Html.ValidationMessage(column.ColumnName, new { @class = "text-danger" })
+        </div>
+      </div>
+    } else {
+      <p> Name: @column.ColumnName, Type: @dataType</p>
+    }
+  }
+  <div id="common-table-name" hidden>@Model.TableName</div>
+  @Html.ValidationMessage("UnknownColumn", new { @class = "text-danger" })
+</div>
+

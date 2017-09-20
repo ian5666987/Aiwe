@@ -1,0 +1,162 @@
+﻿@model Aibe.Models.DB.MetaItem
+
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.TableName)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.TableName)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.DisplayName)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.DisplayName)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.ItemsPerPage)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.ItemsPerPage)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.OrderBy)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.OrderBy)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.ActionList)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.ActionList)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.DefaultActionList)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.DefaultActionList)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.TableActionList)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.TableActionList)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.DefaultTableActionList)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.DefaultTableActionList)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.TextFieldColumns)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.TextFieldColumns)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.PictureColumns)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.PictureColumns)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.IndexShownPictureColumns)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.IndexShownPictureColumns)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.RequiredColumns)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.RequiredColumns)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.NumberLimitColumns)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.NumberLimitColumns)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.RegexCheckedColumns)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.RegexCheckedColumns)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.RegexCheckedColumnExamples)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.RegexCheckedColumnExamples)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.UserRelatedFilters)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.UserRelatedFilters)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.DisableFilter)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.DisableFilter)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.ColumnExclusionList)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.ColumnExclusionList)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.FilterExclusionList)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.FilterExclusionList)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.DetailsExclusionList)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.DetailsExclusionList)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.CreateEditExclusionList)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.CreateEditExclusionList)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.AccessExclusionList)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.AccessExclusionList)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.BasicColoringList)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.BasicColoringList)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.FilterDropDownLists)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.FilterDropDownLists)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.CreateEditDropDownLists)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.CreateEditDropDownLists)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.PrefixesOfColumns)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.PrefixesOfColumns)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.PostfixesOfColumns)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.PostfixesOfColumns)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.ListColumns)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.ListColumns)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.TimeStampColumns)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.TimeStampColumns)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.HistoryTable)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.HistoryTable)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.HistoryTrigger)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.HistoryTrigger)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.AutoGeneratedColumns)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.AutoGeneratedColumns)</div>
+  <br />
+</div>

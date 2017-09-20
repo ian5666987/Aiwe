@@ -1,0 +1,19 @@
+﻿@using Aiwe.Models.ViewModels
+@using Aibe.Models;
+@model List<RoleViewModel>
+@{
+  ViewBag.Title = "Roles";
+  ViewBag.PageTitle = "Roles";
+  ViewBag.ActionName = "Index";
+  ViewBag.ControllerName = "Role";
+  ViewBag.FilterName = "Role"; //used for correct filter rendering in the common
+  ViewBag.SenderName = "role";
+  ViewBag.TablePartialViewName = "_Table";
+  ViewBag.NavPartialViewName = "_AddBackToAdmin";
+  NavDataModel navData = (NavDataModel)ViewBag.NavData;
+  if (navData != null && navData.QueryCount > 0) {
+    navData.DataName = "Role"; //for giving name below
+  }
+}
+
+@Html.Partial("_SharedBody")

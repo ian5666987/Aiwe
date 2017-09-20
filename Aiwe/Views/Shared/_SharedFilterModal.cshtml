@@ -1,0 +1,31 @@
+﻿<div id="modal-for-@ViewBag.SenderName" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#e9e9e9">
+        <button type="button" class="close" data-dismiss="modal"
+                id="@ViewBag.SenderName-filter-cross-button"
+                onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
+          &times;
+        </button>
+        <h4 class="modal-title" id="modal-for-@ViewBag.SenderName-header">Filter for @ViewBag.Title</h4>
+      </div>
+      <div class="modal-body">
+        @Html.Partial("_SharedFilterConverter")
+      </div>
+      <div class="modal-footer" style="background-color:#e9e9e9">
+        <button type="button" class="btn btn-default" data-dismiss="modal"
+                id="@ViewBag.SenderName-filter-use-button"
+                title="Use this button to apply the filter form"
+                onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
+          Apply
+        </button>
+        <button type="button" class="btn btn-default" data-dismiss="modal"
+                id="@ViewBag.SenderName-filter-close-button"
+                title="Use this button to close the filter form"
+                onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

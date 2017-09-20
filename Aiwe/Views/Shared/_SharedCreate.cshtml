@@ -1,0 +1,21 @@
+﻿<h2>@ViewBag.ControllerName <small>(@ViewBag.Title)</small></h2>
+<hr />
+
+@using (Html.BeginForm("Create", (string)ViewBag.ControllerName, FormMethod.Post, new { id = "commonForm" })) { 
+  @Html.AntiForgeryToken()
+  @Html.Partial((string)ViewBag.CreatePartialName)
+  <div class="row">
+    <div class="form-group">
+      <div class="@ViewBag.LabelClasses"></div>
+      <button class="btn btn-success col-md-1" style="margin-left:12px; margin-right:8px; margin-top:15px;" onclick="submitCommonForm()"> 
+        <span class="glyphicon glyphicon-plus"><font style="font-family:verdana;"> Create</font></span>
+      </button>
+      <a href="../../../../../../@((string)ViewBag.ControllerName)/Index"
+         class="btn btn-primary col-md-2"
+         style="margin-left:12px; margin-top:15px;">
+        <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> Back To List</font></span>
+      </a>
+    </div>
+    <br />
+  </div>
+}

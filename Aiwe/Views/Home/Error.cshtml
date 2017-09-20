@@ -1,0 +1,14 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+  ViewBag.Title = "Error";
+}
+
+<h1 class="text-danger" title="Base Error">@ViewBag.Title</h1>
+<h2 class="text-danger">There was an error occurred while we were processing your request</h2>
+@if (ViewBag.Error != null) {
+  <p style="color:red;">@Html.Raw((string)ViewBag.Error)</p>
+}
+<p><a href="@Url.Action("Index", "Home")">&laquo; Back to Home</a></p>
+
+
