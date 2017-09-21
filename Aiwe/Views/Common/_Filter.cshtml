@@ -1,10 +1,8 @@
-﻿@using Aibe;
-@using Aibe.Helpers;
-@using Aiwe.Models;
+﻿@using Aibe.Helpers;
 @using Extension.String;
 @using System.Data;
 
-@model FilterIndexInfo
+@model Aiwe.Models.FilterIndexInfo
 
 @{
   ViewBag.LabelClasses = "col-md-" + Model.FilterLabelPortion;
@@ -12,11 +10,11 @@
 }
 
 <div class="form-horizontal">
-  <input type="hidden" name="@(DH.BaseFilterAppendixName + "Page")" id="@ViewBag.SenderName-page" class="uncounted-filter-item" value="@Model.NavData.CurrentPage"/>
-  <input type="hidden" name="@(DH.BaseFilterAppendixName + "No")" id="@ViewBag.SenderName-filter-no" class="uncounted-filter-item" />
-  <input type="hidden" name="@(DH.BaseFilterAppendixName + "Msg")" id="@ViewBag.SenderName-filter-msg" class="uncounted-filter-item" />
-  <input type="hidden" name="@(DH.BaseFilterAppendixName + "UserName")" id="@ViewBag.SenderName-username" class="uncounted-filter-item" />
-  <input type="hidden" name="@(DH.BaseFilterAppendixName + "Type")" id="@ViewBag.SenderName-type" class="uncounted-filter-item" />
+  <input type="hidden" name="@(Aibe.DH.BaseFilterAppendixName + "Page")" id="@ViewBag.SenderName-page" class="uncounted-filter-item" value="@Model.NavData.CurrentPage"/>
+  <input type="hidden" name="@(Aibe.DH.BaseFilterAppendixName + "No")" id="@ViewBag.SenderName-filter-no" class="uncounted-filter-item" />
+  <input type="hidden" name="@(Aibe.DH.BaseFilterAppendixName + "Msg")" id="@ViewBag.SenderName-filter-msg" class="uncounted-filter-item" />
+  <input type="hidden" name="@(Aibe.DH.BaseFilterAppendixName + "UserName")" id="@ViewBag.SenderName-username" class="uncounted-filter-item" />
+  <input type="hidden" name="@(Aibe.DH.BaseFilterAppendixName + "Type")" id="@ViewBag.SenderName-type" class="uncounted-filter-item" />
 
   @foreach (var column in Model.FilterColumns) {
     string dataType = column.DataType.ToString().Substring("System.".Length);
@@ -46,10 +44,10 @@
           @Html.ValidationMessage(column.ColumnName, new { @class = "text-danger" })
         </div>
       </div>
-    } else if (DH.NumberDataTypes.Contains(dataType)) {
-      string dataNameFrom = string.Concat(column.ColumnName, DH.BaseFilterAppendixName, dataType, DH.FromName);
+    } else if (Aibe.DH.NumberDataTypes.Contains(dataType)) {
+      string dataNameFrom = string.Concat(column.ColumnName, Aibe.DH.BaseFilterAppendixName, dataType, Aibe.DH.FromName);
       string dataValueFrom = TempData[dataNameFrom]?.ToString();
-      string dataNameTo = string.Concat(column.ColumnName, DH.BaseFilterAppendixName, dataType, DH.ToName);
+      string dataNameTo = string.Concat(column.ColumnName, Aibe.DH.BaseFilterAppendixName, dataType, Aibe.DH.ToName);
       string dataValueTo = TempData[dataNameTo]?.ToString();
       <div class="form-group">
         <label class="control-label @ViewBag.LabelClasses">@column.ColumnName.ToCamelBrokenString() (from-to)</label>
@@ -63,19 +61,19 @@
         </div>
       </div>
     } else if (dataType == "DateTime") {
-      string dataNameFrom = column.ColumnName + DH.FilterDateAppendixFrontName + DH.FromName;
+      string dataNameFrom = column.ColumnName + Aibe.DH.FilterDateAppendixFrontName + Aibe.DH.FromName;
       string dataValueRawFrom = TempData[dataNameFrom]?.ToString();
       DateTime? dataValueDtFrom = string.IsNullOrWhiteSpace(dataValueRawFrom) ? null : new DateTime?(DateTime.Parse(dataValueRawFrom));
       string dataValueFrom = dataValueDtFrom.HasValue ? dataValueDtFrom.Value.ToString("yyyy-MM-dd") : string.Empty;
-      string dataTimeNameFrom = column.ColumnName + DH.FilterTimeAppendixFrontName + DH.FromName;
+      string dataTimeNameFrom = column.ColumnName + Aibe.DH.FilterTimeAppendixFrontName + Aibe.DH.FromName;
       string dataTimeValueFrom = dataValueDtFrom.HasValue ?
       dataValueDtFrom.Value.ToString("HH:mm") : null;
 
-      string dataNameTo = column.ColumnName + DH.FilterDateAppendixFrontName + DH.ToName;
+      string dataNameTo = column.ColumnName + Aibe.DH.FilterDateAppendixFrontName + Aibe.DH.ToName;
       string dataValueRawTo = TempData[dataNameTo]?.ToString();
       DateTime? dataValueDtTo = string.IsNullOrWhiteSpace(dataValueRawTo) ? null : new DateTime?(DateTime.Parse(dataValueRawTo));
       string dataValueTo = dataValueDtTo.HasValue ? dataValueDtTo.Value.ToString("yyyy-MM-dd") : string.Empty;
-      string dataTimeNameTo = column.ColumnName + DH.FilterTimeAppendixFrontName + DH.ToName;
+      string dataTimeNameTo = column.ColumnName + Aibe.DH.FilterTimeAppendixFrontName + Aibe.DH.ToName;
       string dataTimeValueTo = dataValueDtTo.HasValue ?
       dataValueDtTo.Value.ToString("HH:mm") : null;
       <div class="form-group">
@@ -101,7 +99,7 @@
         </div>
       </div>
     } else if (dataType == "Boolean") {
-      string dataName = string.Concat(column.ColumnName, DH.BaseFilterAppendixName, dataType);
+      string dataName = string.Concat(column.ColumnName, Aibe.DH.BaseFilterAppendixName, dataType);
       string dataValue = TempData[dataName]?.ToString();
       List<SelectListItem> dropdownItems = new List<SelectListItem> {
         new SelectListItem { Text = null, Value = null },

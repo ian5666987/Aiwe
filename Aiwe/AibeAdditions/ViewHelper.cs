@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Configuration;
 using System;
-using Aibe.Models;
+using Aibe.Models.Core;
 
 namespace Aibe.Helpers {
   public partial class ViewHelper {

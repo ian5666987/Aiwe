@@ -5,7 +5,6 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Aibe;
 using Aibe.Models.DB;
 using Aibe.Helpers;
 using Aiwe.Models;
@@ -70,7 +69,7 @@ namespace Aiwe.Controllers {
       //var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
       var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
 
-      if (!DH.DeveloperNames.Any(x => x.EqualsIgnoreCase(model.Email)))
+      if (!Aiwe.DH.DeveloperNames.Any(x => x.EqualsIgnoreCase(model.Email)))
         LogHelper.Access(model.Email, "Log-In", result.ToString());
 
       switch (result) {

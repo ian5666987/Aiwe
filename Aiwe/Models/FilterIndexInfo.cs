@@ -3,8 +3,8 @@ using System.Linq;
 using Extension.String;
 using System.Data;
 using System.Security.Principal;
-using Aibe;
 using Aibe.Models;
+using Aibe.Models.Core;
 using Aibe.Helpers;
 
 namespace Aiwe.Models {
@@ -67,10 +67,10 @@ namespace Aiwe.Models {
       //Specific filter usage
       List<string> filterColumnNames = FilterColumns.Select(x => x.ColumnName.ToCamelBrokenString()).ToList();
       List<string> filterDateTimeColumnNames = FilterColumns.Where(x =>
-        x.DataType.ToString().Substring(DH.SharedPrefixDataType.Length).EqualsIgnoreCase(DH.DateTimeDataType))
+        x.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length).EqualsIgnoreCase(Aibe.DH.DateTimeDataType))
         .Select(x => x.ColumnName.ToCamelBrokenString()).ToList();
       List<string> filterNumberColumnNames = FilterColumns.Where(x =>
-        DH.NumberDataTypes.Contains(x.DataType.ToString().Substring(DH.SharedPrefixDataType.Length)))
+        Aibe.DH.NumberDataTypes.Contains(x.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length)))
         .Select(x => x.ColumnName.ToCamelBrokenString()).ToList();
 
       //TODO, currently all these are hardcoded, not put in DH

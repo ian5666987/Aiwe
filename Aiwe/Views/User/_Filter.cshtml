@@ -1,5 +1,4 @@
 ﻿@using Aiwe.Models.Filters
-@using Aibe
 @model ApplicationUserFilter
 @{
   ViewBag.LabelClasses = "col-md-4";
@@ -49,8 +48,8 @@
 
     List<SelectListItem> adminRoles = new List<SelectListItem> {
       new SelectListItem {Text = null, Value = null },
-      new SelectListItem {Text = DH.AdminRole, Value = DH.AdminRole },
-      new SelectListItem {Text = DH.MainAdminRole, Value = DH.MainAdminRole },
+      new SelectListItem {Text = Aibe.DH.AdminRole, Value = Aibe.DH.AdminRole },
+      new SelectListItem {Text = Aibe.DH.MainAdminRole, Value = Aibe.DH.MainAdminRole },
     };
 
     List<SelectListItem> teams = new List<SelectListItem> { //TODO Bad! next time, has to be replaced with list of items from the datatable

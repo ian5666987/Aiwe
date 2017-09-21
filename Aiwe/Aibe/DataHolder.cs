@@ -2,7 +2,7 @@
 using System.Configuration;
 
 namespace Aibe {
-  public partial class DH { //can be extended as wanted
+  public class DH { //can be extended as wanted
     //User related global items
     public const string DevFullName = "Ian Kamajaya";
     public const string DevDisplayName = "developer";

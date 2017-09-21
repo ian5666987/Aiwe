@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using Extension.Database.SqlServer;
-using Aibe;
 using Extension.String;
 
-namespace Aibe.Models {
+namespace Aibe.Models.Core {
   public partial class KeyInfo {
     //TODO datetime data parsing could be problematic if not standardized
     public static object ExtractValueAsObjectForWebApi(string dataType, string dataValue, DateTime refDtNow,
@@ -155,13 +154,13 @@ namespace Aibe.Models {
             return valDecimalFilter;
           else return null;
         } else if (DataType.EqualsIgnoreCase(DH.DateTimeDataType)) {
-          DateTime valDt; //this is going to be quite tricky
           string dtStr = value;
           string timeStr = AddKeyName.EndsWith(DH.FromName) ? //get the time string
             collections[PureKeyName + DH.FilterTimeAppendixFrontName + DH.FromName] :
             collections[PureKeyName + DH.FilterTimeAppendixFrontName + DH.ToName];
           if (!string.IsNullOrWhiteSpace(timeStr)) //time string exists
             dtStr += " " + timeStr;
+          DateTime valDt;
           parseResult = DateTime.TryParse(dtStr, out valDt);
           if (parseResult)
             return valDt;

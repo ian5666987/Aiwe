@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using System.Collections.Generic;
-using Aibe;
-using Aibe.Models;
+using Aibe.Models.Core;
 
 namespace Aiwe.Models {
   public class ColumnInfo {
@@ -18,7 +17,7 @@ namespace Aiwe.Models {
     private DataColumn column;
     public ColumnInfo(DataColumn column) {
       this.column = column;
-      DataType = column.DataType.ToString().Substring(DH.SharedPrefixDataType.Length);
+      DataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
     }
   }
 }

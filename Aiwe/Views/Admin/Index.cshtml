@@ -1,5 +1,4 @@
-﻿@using Aibe
-@using Aibe.Helpers
+﻿@using Aibe.Helpers
 @{
   ViewBag.Title = "Admin Page";
   bool isDebug = false;
@@ -38,7 +37,7 @@
       </a>
     </div>
   </div>
-  @if (User.IsInRole(DH.DevRole)) { //only developer can create new roles as of now
+  @if (User.IsInRole(Aibe.DH.DevRole)) { //only developer can create new roles as of now
     <div class="col-md-3">
       <h4 class="module-header">
         <span class="glyphicon glyphicon-equalizer text-danger"></span>

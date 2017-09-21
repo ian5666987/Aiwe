@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Extension.String;
 using System.Data;
+using Aibe.Models.Core;
 using Aibe.Models.DB;
 using Aibe.Helpers;
 using Extension.Database.SqlServer;
-using System;
+using Extension.String;
 
 namespace Aibe.Models {
   public partial class MetaInfo {
@@ -51,7 +51,7 @@ namespace Aibe.Models {
     public bool HasAction { get { return Actions != null && Actions.Any(); } }
     public bool HasCreateAction { get { return Actions != null && Actions.Any(x => x.Name.EqualsIgnoreCaseTrim(DH.CreateActionName)); } }
     public bool HasTableAction { get { return TableActions != null && TableActions.Any(); } }
-    public List<ActionInfo> NonCreateActions { get { return Actions == null ? null : Actions.Where(x => !x.Name.EqualsIgnoreCaseTrim(DH.CreateActionName)).ToList(); } }
+    public List<ActionInfo> NonCreateActions { get { return Actions?.Where(x => !x.Name.EqualsIgnoreCaseTrim(DH.CreateActionName)).ToList(); } }
     public bool HasNonCreateAction { get { return Actions != null && Actions.Any(x => !x.Name.EqualsIgnoreCaseTrim(DH.CreateActionName)); } }
 
     public MetaInfo (MetaItem metaItem) {
@@ -214,7 +214,7 @@ namespace Aibe.Models {
     }
 
     public ListColumnInfo GetListColumnInfo(string columnName) {
-      return ListColumns == null ? null : ListColumns.FirstOrDefault(x => x.Name.EqualsIgnoreCaseTrim(columnName));
+      return ListColumns?.FirstOrDefault(x => x.Name.EqualsIgnoreCaseTrim(columnName));
     }
     #endregion ListColumns
 
@@ -321,7 +321,7 @@ namespace Aibe.Models {
     }
 
     private DropDownInfo getDropDownColumnInfo(List<DropDownInfo> dropdowns, string columnName) {
-      return dropdowns == null ? null : dropdowns.FirstOrDefault(x => x.Name.EqualsIgnoreCase(columnName));
+      return dropdowns?.FirstOrDefault(x => x.Name.EqualsIgnoreCase(columnName));
     }
 
     public bool IsCreateEditDropDownColumn(string columnName) {
@@ -388,11 +388,11 @@ namespace Aibe.Models {
 
     #region Regexes
     public RegexCheckedColumnInfo GetRegexCheckedColumn(string columnName) {
-      return RegexCheckedColumns == null ? null : RegexCheckedColumns.FirstOrDefault(x => x.Name.EqualsIgnoreCase(columnName));
+      return RegexCheckedColumns?.FirstOrDefault(x => x.Name.EqualsIgnoreCase(columnName));
     }
 
     public RegexCheckedColumnExampleInfo GetRegexCheckedColumnExample(string columnName) {
-      return RegexCheckedColumnExamples == null ? null : RegexCheckedColumnExamples.FirstOrDefault(x => x.Name.EqualsIgnoreCase(columnName));
+      return RegexCheckedColumnExamples?.FirstOrDefault(x => x.Name.EqualsIgnoreCase(columnName));
     }
 
     public bool IsRegexCheckedColumn(string columnName) {
@@ -406,7 +406,7 @@ namespace Aibe.Models {
 
     #region NumberLimits
     public NumberLimitColumnInfo GetNumberLimitColumn(string columnName) {
-      return NumberLimitColumns == null ? null : NumberLimitColumns.FirstOrDefault(x => x.Name.EqualsIgnoreCase(columnName));
+      return NumberLimitColumns?.FirstOrDefault(x => x.Name.EqualsIgnoreCase(columnName));
     }
 
     public bool IsNumberLimitColumn(string columnName) {

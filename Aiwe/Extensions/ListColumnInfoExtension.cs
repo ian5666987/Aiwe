@@ -4,7 +4,7 @@ using System.Linq;
 using Extension.String;
 using System.Text;
 using System.Data;
-using Aibe.Models;
+using Aibe.Models.Core;
 
 namespace Aiwe.Extensions {
   public static partial class ListColumnInfoExtension {

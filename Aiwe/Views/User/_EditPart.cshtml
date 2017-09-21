@@ -1,6 +1,5 @@
 ﻿@using Aiwe.Models
 @using Aiwe.Models.ViewModels
-@using Aibe
 
 @model ApplicationUserEditViewModel
 
@@ -33,7 +32,7 @@
   @{
     List<SelectListItem> adminRoles = new List<SelectListItem> {
       new SelectListItem {Text = null, Value = null },
-      new SelectListItem {Text = DH.AdminRole, Value = DH.AdminRole },
+      new SelectListItem {Text = Aibe.DH.AdminRole, Value = Aibe.DH.AdminRole },
     };
 
     ApplicationDbContext context = new ApplicationDbContext();

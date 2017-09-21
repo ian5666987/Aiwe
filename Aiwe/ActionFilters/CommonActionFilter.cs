@@ -6,9 +6,9 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Aibe;
 using Aibe.Helpers;
 using Aibe.Models;
+using Aibe.Models.Core;
 using Aibe.Models.DB;
 using Aiwe.Extensions;
 
@@ -24,7 +24,7 @@ namespace Aiwe.ActionFilters {
     public override void OnActionExecuting(ActionExecutingContext filterContext) {
       //Table validity checking (checked)
       object value = filterContext.ActionParameters
-        .FirstOrDefault(x => x.Key.EqualsIgnoreCaseTrim(DH.TableNameParameterName))
+        .FirstOrDefault(x => x.Key.EqualsIgnoreCaseTrim(Aibe.DH.TableNameParameterName))
         .Value;
       string controllerName = filterContext.ActionDescriptor.ControllerDescriptor.ControllerName;
       string actionName = filterContext.ActionDescriptor.ActionName;
@@ -40,18 +40,19 @@ namespace Aiwe.ActionFilters {
       string userName = string.IsNullOrWhiteSpace(user.Identity.Name) ? string.Empty : user.Identity.Name;
 
       if (!UserHelper.UserIsDeveloper(user) && //the developer does not need log
-        !DH.NonRecordedActions.Any(x => x.EqualsIgnoreCase(actionName)) && //the action must not be excluded for record
-        method?.ToUpper() == DH.PostRequest && //only post is recorded
+        !Aibe.DH.NonRecordedActions.Any(x => x.EqualsIgnoreCase(actionName)) && //the action must not be excluded for record
+        method != null &&
+        method.EqualsIgnoreCase(Aiwe.DH.PostRequest) && //only post is recorded
           (string.IsNullOrWhiteSpace(tableName) || 
-          !DH.CoreTableNames.Contains(tableName))) { //the table name is either null or it is not excluded
+          !Aibe.DH.CoreTableNames.Contains(tableName))) { //the table name is either null or it is not excluded
 
         StringBuilder sb = new StringBuilder();
 
-        if (actionName.EqualsIgnoreCase(DH.DeleteActionName))
+        if (actionName.EqualsIgnoreCase(Aibe.DH.DeleteActionName))
           sb.Append("Id: " + id?.ToString());
         if (collections != null && 
-          (actionName.EqualsIgnoreCase(DH.CreateActionName) ||
-          actionName.EqualsIgnoreCase(DH.EditActionName))) {
+          (actionName.EqualsIgnoreCase(Aibe.DH.CreateActionName) ||
+          actionName.EqualsIgnoreCase(Aibe.DH.EditActionName))) {
           FormCollection colls = (FormCollection)collections;
           if (colls != null) {
             int index = 0;
@@ -89,7 +90,7 @@ namespace Aiwe.ActionFilters {
 
       //Access checking (checked)
       if (meta.AccessExclusions != null) { //there is access exclusion and user role is supposed to be excluded
-        if (meta.AccessExclusions.Contains(DH.AnonymousRole) && !user.Identity.IsAuthenticated) { //unauthorized is excluded here and user is not authenticated
+        if (meta.AccessExclusions.Contains(Aibe.DH.AnonymousRole) && !user.Identity.IsAuthenticated) { //unauthorized is excluded here and user is not authenticated
           filterContext.Result = redirectTo("InsufficientAccessRightPage", -1);
           return;
         }
@@ -101,7 +102,7 @@ namespace Aiwe.ActionFilters {
       }
 
       //Action and table action checking
-      if (DH.OnlyAccessCheckingActions.Any(x => x.EqualsIgnoreCase(actionName))) //Index action only needs as far as access checking
+      if (Aiwe.DH.OnlyAccessCheckingActions.Any(x => x.EqualsIgnoreCase(actionName))) //Index action only needs as far as access checking
         return;
 
       //Action checking (checked)

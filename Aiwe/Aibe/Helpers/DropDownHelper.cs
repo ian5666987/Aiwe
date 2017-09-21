@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Aibe.Models;
+using Aibe.Models.Core;
 using System.Data.SqlClient;
 using System.Text;
 using System.Data;

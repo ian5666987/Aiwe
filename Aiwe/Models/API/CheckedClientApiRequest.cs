@@ -1,7 +1,7 @@
 ﻿using Extension.Database.SqlServer;
-using Aibe;
 using Aibe.Helpers;
 using Aibe.Models;
+using Aibe.Models.Core;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,7 +9,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using Extension.String;
-using Aiwe.Extensions;
 
 namespace Aiwe.Models.API {
   public class CheckedClientApiRequest {
@@ -50,7 +49,7 @@ namespace Aiwe.Models.API {
 
       TableName = clientRequest.TableName; //table name must exists since it will already be filtered before this is called
       ColumnNamesDesc = clientRequest.ColumnNames;
-      columns = SQLServerHandler.GetColumns(DH.DataDBConnectionString, TableName);
+      columns = SQLServerHandler.GetColumns(Aibe.DH.DataDBConnectionString, TableName);
       columnNames = columns.Select(x => x.ColumnName).ToList();
 
       if (!string.IsNullOrWhiteSpace(ColumnNamesDesc)) {
@@ -281,7 +280,7 @@ namespace Aiwe.Models.API {
       return components;
     }
 
-    static List<string> allowedOrderByNonColumnNameComponents = new List<string> { ",", DH.AscOrderWord, DH.DescOrderWord };
+    static List<string> allowedOrderByNonColumnNameComponents = new List<string> { ",", Aibe.DH.AscOrderWord, Aibe.DH.DescOrderWord };
     private bool checkOrderByDesc(string desc, out string errorMsg) {
       errorMsg = string.Empty;
       try {
@@ -429,7 +428,7 @@ namespace Aiwe.Models.API {
             return null; //then fails it
 
           //get the Value
-          string dataType = column.DataType.ToString().Substring(DH.SharedPrefixDataType.Length);
+          string dataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
 
           //additional info to extract auto-generated object
           string actionName = isInsert ? "create" : "edit";

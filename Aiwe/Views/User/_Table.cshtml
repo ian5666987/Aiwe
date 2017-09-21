@@ -1,5 +1,4 @@
 ﻿@using Aiwe.Models.ViewModels
-@using Aibe
 @model List<ApplicationUserViewModel>
 <table class="table table-bordered table-striped">
   <tr>
@@ -30,7 +29,7 @@
 
         <td>
           @Html.ActionLink("Details", "Details", new { id = Model[i].Id }) |
-          @if (DH.MainAdminRoles.Contains(Model[i].AdminRole) || Model[i].Email == User?.Identity?.Name) {
+          @if (Aibe.DH.MainAdminRoles.Contains(Model[i].AdminRole) || Model[i].Email == User?.Identity?.Name) {
             <span style="color:lightgray">Edit</span> @:|
             <span style="color:lightgray">Delete</span>
           } else {

@@ -11,9 +11,9 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Extension.Database.SqlServer;
 using Extension.String;
-using Aibe;
 using Aibe.Helpers;
 using Aibe.Models;
+using Aibe.Models.Core;
 using Aiwe.ActionFilters;
 using Aiwe.Extensions;
 using Aiwe.Models;
@@ -31,7 +31,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       FilterIndexInfo model;
 
       int usedPage = page.HasValue && page.Value > 0 ? page.Value : 1;
-      using (SqlConnection conn = new SqlConnection(DH.DataDBConnectionString)) {
+      using (SqlConnection conn = new SqlConnection(Aibe.DH.DataDBConnectionString)) {
         conn.Open();
 
         //Script initialization
@@ -57,7 +57,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       DateTime now = DateTime.Now;
 
       int usedPage = commonDataFilterPage.HasValue && commonDataFilterPage.Value > 0 ? commonDataFilterPage.Value : 1;
-      using (SqlConnection conn = new SqlConnection(DH.DataDBConnectionString)) {
+      using (SqlConnection conn = new SqlConnection(Aibe.DH.DataDBConnectionString)) {
         conn.Open();
 
         //Script initialization
@@ -86,7 +86,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     public ActionResult Create(string tableName) {
       TempData.Clear();
       MetaInfo meta = TableHelper.GetMeta(tableName);
-      CreateEditInfo model = new CreateEditInfo(meta, DH.CreateActionName);
+      CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.CreateActionName);
       return View(model);
     }
 
@@ -101,18 +101,18 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         ModelState.Add(new KeyValuePair<string, ModelState>(
           item.ToString(), new ModelState()));
 
-      List<string> checkExclusions = new List<string> { DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
+      List<string> checkExclusions = new List<string> { Aibe.DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
 
       //Check model state's validity
-      checkModelValidity(tableName, meta.DataColumns, collections, meta, checkExclusions, now, DH.CreateActionName);
+      checkModelValidity(tableName, meta.DataColumns, collections, meta, checkExclusions, now, Aibe.DH.CreateActionName);
       if (!ModelState.IsValid) {
-        CreateEditInfo ceInfo = new CreateEditInfo(meta, DH.CreateActionName);
+        CreateEditInfo ceInfo = new CreateEditInfo(meta, Aibe.DH.CreateActionName);
         fillDetailsFromCollectionsToTempData(collections, checkExclusions);        
         return View(ceInfo);
       }
 
       //Only if model state is correct that we could get valid key infos safely
-      var completeKeyInfo = getCompleteKeyInfo(tableName, collections, collections.AllKeys, meta.DataColumns, filterStyle: false, meta: meta, actionType: DH.CreateActionName);
+      var completeKeyInfo = getCompleteKeyInfo(tableName, collections, collections.AllKeys, meta.DataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.CreateActionName);
 
       if (completeKeyInfo == null || completeKeyInfo.ValidKeys == null || !completeKeyInfo.ValidKeys.Any()) {
         ViewBag.ErrorMessage = string.Concat("Invalid/Empty parameters for [", tableName, "]");
@@ -125,7 +125,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       // -> likely done in the meta table
 
       object generatedId = (int)0;
-      using (SqlConnection conn = new SqlConnection(DH.DataDBConnectionString)) {
+      using (SqlConnection conn = new SqlConnection(Aibe.DH.DataDBConnectionString)) {
         conn.Open();
         StringBuilder openingScript = new StringBuilder(string.Concat("INSERT INTO [", tableName, "] ("));
         StringBuilder insertParNamesScript = new StringBuilder();
@@ -162,7 +162,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     public ActionResult Edit(string tableName, int id) {
       MetaInfo meta = TableHelper.GetMeta(tableName);
       fillDetailsFromTableToTempData(tableName, id); //TempData is prepared inside!
-      CreateEditInfo model = new CreateEditInfo(meta, DH.EditActionName);
+      CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.EditActionName);
       return View(model);
     }
 
@@ -177,18 +177,18 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         ModelState.Add(new KeyValuePair<string, ModelState>(
           item.ToString(), new ModelState()));
 
-      List<string> checkExclusions = new List<string> { DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
+      List<string> checkExclusions = new List<string> { Aibe.DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
 
       //Check model state's validity
-      checkModelValidity(tableName, meta.DataColumns, collections, meta, checkExclusions, now, DH.EditActionName);
+      checkModelValidity(tableName, meta.DataColumns, collections, meta, checkExclusions, now, Aibe.DH.EditActionName);
       if (!ModelState.IsValid) {
-        CreateEditInfo model = new CreateEditInfo(meta, DH.EditActionName);
+        CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.EditActionName);
         fillDetailsFromCollectionsToTempData(collections, checkExclusions);        
         return View(model);
       }
 
       var filteredKeys = collections.AllKeys.Where(x => !x.EqualsIgnoreCase("Cid")); //everything filled but the Cid
-      var completeKeyInfo = getCompleteKeyInfo(tableName, collections, filteredKeys, meta.DataColumns, filterStyle: false, meta: meta, actionType: DH.EditActionName);
+      var completeKeyInfo = getCompleteKeyInfo(tableName, collections, filteredKeys, meta.DataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.EditActionName);
 
       if (completeKeyInfo == null || completeKeyInfo.ValidKeys == null || !completeKeyInfo.ValidKeys.Any()) {
         ViewBag.ErrorMessage = string.Concat("Invalid/Empty parameters for [", tableName, "]");
@@ -212,7 +212,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         } else
           addNullUpdateParameter(updateScript, nullifiedKeyInfo, ref count);
 
-      using (SqlConnection conn = new SqlConnection(DH.DataDBConnectionString)) {
+      using (SqlConnection conn = new SqlConnection(Aibe.DH.DataDBConnectionString)) {
         conn.Open();
         using (SqlCommand command = new SqlCommand(string.Concat(
           updateScript, whereScript), conn)) {
@@ -488,7 +488,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     #region private methods
     //Base code by: ZYS
     //Edited by: Ian
-    public byte[] exportToExcelFile(DataTable tbl, string excelFilePath) {
+    private byte[] exportToExcelFile(DataTable tbl, string excelFilePath) {
       if (tbl == null) {
         return null;
       }
@@ -587,16 +587,16 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       var keyInfos = usedKeys.Select(x => new KeyInfo(tableName, x)).Where(x => columnNames.Any(y => y.EqualsIgnoreCase(x.PureKeyName))).ToList();
       var nullifiedKeyInfos = columnNames.Except(usedKeys).Select(x => new KeyInfo(tableName, x) { IsNullified = true }).ToList();
       if (!filterStyle) {
-        keyInfos = keyInfos.Where(x => !x.AddKeyName.EqualsIgnoreCase(DH.CreateEditTimeAppendixName) &&
-        !x.AddKeyName.EqualsIgnoreCase(DH.CreateEditPictureLinkAppendixName)).ToList();
+        keyInfos = keyInfos.Where(x => !x.AddKeyName.EqualsIgnoreCase(Aibe.DH.CreateEditTimeAppendixName) &&
+        !x.AddKeyName.EqualsIgnoreCase(Aibe.DH.CreateEditPictureLinkAppendixName)).ToList();
         foreach (var keyInfo in keyInfos) {
           DataColumn column = columns.FirstOrDefault(x => x.ColumnName.EqualsIgnoreCase(keyInfo.PureKeyName));
-          keyInfo.DataType = column.DataType.ToString().Substring(DH.SharedPrefixDataType.Length);
+          keyInfo.DataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
           keyInfo.UpdateTimeStampAndAutoGenerated(meta, column.ColumnName, actionType);
         }
         foreach (var nullifiedKeyInfo in nullifiedKeyInfos) {
           DataColumn column = columns.FirstOrDefault(x => x.ColumnName.EqualsIgnoreCase(nullifiedKeyInfo.PureKeyName));
-          nullifiedKeyInfo.DataType = column.DataType.ToString().Substring(DH.SharedPrefixDataType.Length);
+          nullifiedKeyInfo.DataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
           nullifiedKeyInfo.UpdateTimeStampAndAutoGenerated(meta, column.ColumnName, actionType);
         }
       }
@@ -607,14 +607,14 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     private CompleteKeyInfo getCompleteKeyInfo(string tableName, FormCollection collections,
       IEnumerable<string> filteredKeys,
       bool filterStyle = false) {
-      return getCompleteKeyInfo(tableName, collections, filteredKeys, SQLServerHandler.GetColumns(DH.DataDBConnectionString, tableName), filterStyle);
+      return getCompleteKeyInfo(tableName, collections, filteredKeys, SQLServerHandler.GetColumns(Aibe.DH.DataDBConnectionString, tableName), filterStyle);
     }
 
     private void addFiltersOnScript(StringBuilder queryScript, MetaInfo meta,
       SqlConnection conn, FormCollection collections, List<SqlParameter> pars, List<SqlParameter> copiesPars,
       DateTime refDtNow) {
       //Filters
-      var filteredKeys = collections.AllKeys.Except(DH.ExemptedFilterFormCollection);
+      var filteredKeys = collections.AllKeys.Except(Aibe.DH.ExemptedFilterFormCollection);
       int filterNo = 0;
       var completeKeyInfo = getCompleteKeyInfo(meta.TableName, collections, filteredKeys, filterStyle: true);
 
@@ -675,9 +675,9 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         userRelatedInfos != null && userRelatedInfos.Count > 0) { //there is a user related info
         //Get user info here!
         List<DataColumn> userColumns = new List<DataColumn>();
-        string userQueryScript = "SELECT TOP 1 * FROM [" + DH.UserTableName + "] WHERE [" + DH.UserNameColumnName + "] = " + 
+        string userQueryScript = "SELECT TOP 1 * FROM [" + Aibe.DH.UserTableName + "] WHERE [" + Aibe.DH.UserNameColumnName + "] = " + 
           StringHelper.ProcessAsSqlStringValue(User.Identity.Name);
-        DataTable userDataTable = SQLServerHandler.GetDataTable(DH.UserDBConnectionString, userQueryScript);
+        DataTable userDataTable = SQLServerHandler.GetDataTable(Aibe.DH.UserDBConnectionString, userQueryScript);
 
         foreach (DataColumn column in userDataTable.Columns)
           userColumns.Add(column);
@@ -796,7 +796,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         //If not filter style, then update the data type from the column given
         //filter style would already have correct data type
         if (!filterStyle)
-          keyInfo.DataType = column.DataType.ToString().Substring(DH.SharedPrefixDataType.Length);
+          keyInfo.DataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
 
         //If column names is not found, assumes it is an unknown injection
         if (column == null) {
@@ -821,10 +821,10 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
         //These must be checked AFTER the check for required/not-required, because if they are required, they cannot be skipped
         //Check if the items are implicitly excluded, filter or not, these keys don't matter to be further checked
-        if (key.EndsWith(DH.CreateEditTimeAppendixName) ||
-            DH.FilterTimeAppendixNames.Any(x => key.EndsWith(x)) ||
-            DH.FilterDateAppendixNames.Any(x => key.EndsWith(x)) ||
-            key.EndsWith(DH.CreateEditPictureLinkAppendixName)) //picture name is also unchecked from here onwards
+        if (key.EndsWith(Aibe.DH.CreateEditTimeAppendixName) ||
+            Aibe.DH.FilterTimeAppendixNames.Any(x => key.EndsWith(x)) ||
+            Aibe.DH.FilterDateAppendixNames.Any(x => key.EndsWith(x)) ||
+            key.EndsWith(Aibe.DH.CreateEditPictureLinkAppendixName)) //picture name is also unchecked from here onwards
           continue; //some null/non-null items like datetime need not to be further checked
 
         //From this point onwards, the item is not null or empty and is ont excluded explicitly or implicitly (that is, not datetime)
@@ -843,7 +843,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
             "]. Please correct your input data format"));
 
         //Now, check if string length is violated against the length specified
-        if (keyInfo.DataType.EqualsIgnoreCase(DH.StringDataType) || keyInfo.DataType.EqualsIgnoreCase(DH.CharDataType)) {
+        if (keyInfo.DataType.EqualsIgnoreCase(Aibe.DH.StringDataType) || keyInfo.DataType.EqualsIgnoreCase(Aibe.DH.CharDataType)) {
           //Painfully gets length by reflection, column.MaxLength does NOT show desired string length's limit!!
           int length = getStringLengthFor(meta.TableName, keyInfo.PureKeyName);
           string strVal = value.ToString();
@@ -887,7 +887,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         //lastly, check number limits if data type is number types
         //ColumnName1=min:23.555|max:75.112;ColumnName2=max:36.991
         NumberLimitColumnInfo numberLimitInfo = meta.GetNumberLimitColumn(keyInfo.PureKeyName);
-        if (DH.NumberDataTypes.Contains(keyInfo.DataType) && //if it is indeed number data types
+        if (Aibe.DH.NumberDataTypes.Contains(keyInfo.DataType) && //if it is indeed number data types
           numberLimitInfo != null) { //And the limit keys contain pure key name
           double columnValue;
           bool result = double.TryParse(value.ToString(), out columnValue);
@@ -930,7 +930,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     private bool columnIsNullableByClass(string tableName, string columnName) {
       PropertyInfo propertyInfo = getColumnPropertyInfo(tableName, columnName);
       string propertyType = propertyInfo.PropertyType.ToString();
-      return DH.NullableIndicators.Any(x => propertyType.StartsWith(DH.SharedPrefixDataType + x));
+      return Aibe.DH.NullableIndicators.Any(x => propertyType.StartsWith(Aibe.DH.SharedPrefixDataType + x));
     }
 
     private int getStringLengthFor(string tableName, string columnName) {
@@ -987,7 +987,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
       //Script making
       StringBuilder queryScript = new StringBuilder(string.Concat("SELECT * FROM [", tableName, "] WHERE Cid = ", cid));
-      DataTable dataTable = SQLServerHandler.GetDataTable(DH.DataDBConnectionString, queryScript.ToString()); //new DataTable();
+      DataTable dataTable = SQLServerHandler.GetDataTable(Aibe.DH.DataDBConnectionString, queryScript.ToString()); //new DataTable();
 
       if (dataTable != null && dataTable.Rows.Count > 0) //only if there is some result
         foreach (DataColumn column in dataTable.Columns)
@@ -996,7 +996,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
     private void deleteItem(string tableName, int cid) {
       StringBuilder queryScript = new StringBuilder(string.Concat("DELETE FROM [", tableName, "] WHERE Cid = ", cid));
-      SQLServerHandler.ExecuteScript(queryScript.ToString(), DH.DataDBConnectionString);
+      SQLServerHandler.ExecuteScript(queryScript.ToString(), Aibe.DH.DataDBConnectionString);
     }
 
     #endregion

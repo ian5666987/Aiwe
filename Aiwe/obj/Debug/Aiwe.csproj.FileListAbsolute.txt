@@ -25,6 +25,7 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Antlr3.Runtime.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\EntityFramework.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\EntityFramework.SqlServer.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Cryptography.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.SqlServer.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.String.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.AI.Agent.Intercept.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.AI.DependencyCollector.dll
@@ -107,6 +108,7 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.VisualStudio.TextManager.Interop.10
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\VSLangProj2.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\System.Collections.Immutable.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Cryptography.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.SqlServer.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.String.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.AI.DependencyCollector.xml
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.AI.ServerTelemetryChannel.xml
@@ -219,6 +221,3 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\zh-HANS\Microsoft.ReportViewer.WinForms.resou
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\zh-HANT\Microsoft.ReportViewer.WinForms.resources.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.pdb
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.SqlServer.dll
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.SqlServer.pdb
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csprojResolveAssemblyReference.cache

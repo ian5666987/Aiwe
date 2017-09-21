@@ -3,14 +3,13 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Data;
 using System.Data.Entity.Migrations;
-using Aibe;
 using Aibe.Helpers;
 using Aiwe.Helpers;
 using Aiwe.Models;
 using Aiwe.Models.Filters;
 
 namespace Aiwe.Controllers {
-  [Authorize(Roles = DH.AdminAuthorizedRoles)]
+  [Authorize(Roles = Aiwe.DH.AdminAuthorizedRoles)]
   public class TeamController : Controller {
 
     ApplicationDbContext context = new ApplicationDbContext();

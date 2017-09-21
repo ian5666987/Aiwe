@@ -9,8 +9,8 @@ using Aiwe.Models;
 using Aiwe.Extensions;
 using Extension.Cryptography;
 using Extension.String;
-using Aibe;
 using Aibe.Models;
+using Aibe.Models.Core;
 
 namespace Aiwe.ActionFilters {
   public partial class ValuesActionFilterAttribute : ActionFilterAttribute {
@@ -20,7 +20,7 @@ namespace Aiwe.ActionFilters {
     //Probably worth to look at
     //http://stackoverflow.com/questions/38661090/token-based-authentication-in-web-api-without-any-user-interface
     public override void OnActionExecuting(HttpActionContext actionContext) {
-      if (actionContext.ActionDescriptor.ActionName.EqualsIgnoreCase(DH.AuthenticateActionName)) //authenticate action cannot have error here.
+      if (actionContext.ActionDescriptor.ActionName.EqualsIgnoreCase(Aibe.DH.AuthenticateActionName)) //authenticate action cannot have error here.
         return;
 
       string errorName = "ValuesActionFilterError";
@@ -72,7 +72,7 @@ namespace Aiwe.ActionFilters {
       if (!UserHelper.UserIsDeveloper(user))
         LogHelper.Action(user.UserName, "Web Api", "Values", request.TableName, request.RequestType, request.CreateLogValue(3000)); //TODO as of now 3000 is hardcoded
 
-      if (!DH.RequestToActionDict.Any(x => x.Key.EqualsIgnoreCase(request.RequestType))) {
+      if (!Aiwe.DH.RequestToActionDict.Any(x => x.Key.EqualsIgnoreCase(request.RequestType))) {
         actionContext.Request.Properties.Add(new KeyValuePair<string, object>(errorName, ValuesActionFilterResult.InvalidRequestType));
         return;
       }
@@ -82,20 +82,20 @@ namespace Aiwe.ActionFilters {
 
       //Unlike action which is supposed to be case-insensitive, role is NOT relaxed in use of capital/small letters (case sensitive)
       if (meta.AccessExclusions != null) { //there is access exclusion and user role is supposed to be excluded
-        if (meta.AccessExclusions.Any(x => x.EqualsIgnoreCase(DH.AnonymousRole)) && user == null) { //unauthorized is excluded here and user is not authenticated
+        if (meta.AccessExclusions.Any(x => x.EqualsIgnoreCase(Aibe.DH.AnonymousRole)) && user == null) { //unauthorized is excluded here and user is not authenticated
           actionContext.Request.Properties.Add(new KeyValuePair<string, object>(errorName, ValuesActionFilterResult.AnonymousUserNotAllowed));
           return;
         }
 
-        if (meta.AccessExclusions.Any(x => x.EqualsIgnoreCase(DH.MobileAppRole))) //special user role, mobile app must be present for any user in mobile app to be forbidden
+        if (meta.AccessExclusions.Any(x => x.EqualsIgnoreCase(Aibe.DH.MobileAppRole))) //special user role, mobile app must be present for any user in mobile app to be forbidden
           if (meta.AccessExclusions.Any(x => x.EqualsIgnoreCase(user.WorkingRole) || x.EqualsIgnoreCase(user.AdminRole))) {
             actionContext.Request.Properties.Add(new KeyValuePair<string, object>(errorName, ValuesActionFilterResult.InsufficientAccessRight));
             return;
           }
       }
 
-      string actionName = DH.RequestToActionDict.FirstOrDefault(x => x.Key.EqualsIgnoreCase(request.RequestType)).Value;
-      if (actionName.EqualsIgnoreCase(DH.IndexActionName)) //Index action only needs as far as access checking
+      string actionName = Aiwe.DH.RequestToActionDict.FirstOrDefault(x => x.Key.EqualsIgnoreCase(request.RequestType)).Value;
+      if (actionName.EqualsIgnoreCase(Aibe.DH.IndexActionName)) //Index action only needs as far as access checking
         return;
 
       if (meta.Actions == null || meta.Actions.Count <= 0) {

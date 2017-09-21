@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Web.Mvc;
 using System.Data;
-using Aibe;
 using Aibe.Helpers;
 using Aibe.Models;
 using Aibe.Models.DB;
@@ -12,7 +11,7 @@ using Extension.Cryptography;
 using Extension.String;
 
 namespace Aiwe.Controllers {
-  [Authorize(Roles = DH.DevRole)]
+  [Authorize(Roles = Aibe.DH.DevRole)]
   public class MetaController : Controller {
     CoreDataModel db = new CoreDataModel();
 #if DEBUG

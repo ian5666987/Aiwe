@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Security.Principal;
 using Extension.String;
-using Aibe.Models;
+using Aibe.Models.Core;
 
 namespace Aiwe.Extensions {
   public static partial class ActionInfoExtension {

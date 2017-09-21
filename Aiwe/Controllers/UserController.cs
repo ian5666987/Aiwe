@@ -10,12 +10,11 @@ using Aiwe.Models.Filters;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Extension.String;
-using Aibe;
 using Aibe.Helpers;
 using Aibe.Models.DB;
 
 namespace Aiwe.Controllers {
-  [Authorize(Roles = DH.AdminAuthorizedRoles)]
+  [Authorize(Roles = Aiwe.DH.AdminAuthorizedRoles)]
   public class UserController : Controller {
     ApplicationDbContext context = new ApplicationDbContext();
     private ApplicationUserManager _userManager;
@@ -31,10 +30,10 @@ namespace Aiwe.Controllers {
 
     //EqualsIgnoreCase cannot be used here because it is LINQ to entity
     public ActionResult Index(int? page) {      
-      var users = context.Users.Where(x => x.AdminRole != DH.DevRole)
+      var users = context.Users.Where(x => x.AdminRole != Aibe.DH.DevRole)
         //.ToList() //this may make EqualsIgnoreCase work, but wasting time in a way
         //.OrderByDescending(x => x.AdminRole.EqualsIgnoreCase(DH.MainAdminRole))
-        .OrderByDescending(x => x.AdminRole.ToLower() == DH.MainAdminRole.ToLower())
+        .OrderByDescending(x => x.AdminRole.ToLower() == Aibe.DH.MainAdminRole.ToLower())
         .ThenBy(x => x.FullName);
 
       IEnumerable<ApplicationUserViewModel> userViewModels = ViewHelper.PrepareUserViewModels(page, users, ViewBag);
@@ -44,12 +43,12 @@ namespace Aiwe.Controllers {
 
     [HttpPost]
     public ActionResult Index(ApplicationUserFilter filter) {
-      var unfiltereds = context.Users.Where(x => x.AdminRole != DH.DevRole)
-        .OrderByDescending(x => x.AdminRole.ToLower() == DH.MainAdminRole.ToLower())
+      var unfiltereds = context.Users.Where(x => x.AdminRole != Aibe.DH.DevRole)
+        .OrderByDescending(x => x.AdminRole.ToLower() == Aibe.DH.MainAdminRole.ToLower())
         .ThenBy(x => x.FullName);
       var filtereds = DataFilterHelper.ApplyUserFilter(unfiltereds, filter);
       var unordereds = filtereds
-        .OrderByDescending(x => x.AdminRole.ToLower() == DH.MainAdminRole.ToLower())
+        .OrderByDescending(x => x.AdminRole.ToLower() == Aibe.DH.MainAdminRole.ToLower())
         .ThenBy(x => x.FullName);
       ViewBag.Filter = filter;
       IEnumerable<ApplicationUserViewModel> results = ViewHelper.PrepareUserViewModels(filter.Page, unordereds, ViewBag);
@@ -100,13 +99,13 @@ namespace Aiwe.Controllers {
 
         if (result.Succeeded) {
           if (!string.IsNullOrWhiteSpace(model.WorkingRole) &&
-            DH.WorkingRoles.Any(x => x.EqualsIgnoreCase(model.WorkingRole))) {
+            Aiwe.DH.WorkingRoles.Any(x => x.EqualsIgnoreCase(model.WorkingRole))) {
             var addRoleResult = UserManager.AddToRole(user.Id, model.WorkingRole);
             if (!addRoleResult.Succeeded)
               return RedirectToAction("ErrorLocal");
           }
           if (!string.IsNullOrWhiteSpace(model.AdminRole) &&
-            DH.AllowedAdminRoles.Any(x => x.EqualsIgnoreCase(model.AdminRole))) {
+            Aibe.DH.AllowedAdminRoles.Any(x => x.EqualsIgnoreCase(model.AdminRole))) {
             var addRoleResult = UserManager.AddToRole(user.Id, model.AdminRole);
             if (!addRoleResult.Succeeded)
               return RedirectToAction("ErrorLocal");
@@ -207,7 +206,7 @@ namespace Aiwe.Controllers {
 
         if (oldAdminRole != model.AdminRole && //old role is different from the current role
           !string.IsNullOrWhiteSpace(model.AdminRole) && //new role is not empty
-          DH.AllowedAdminRoles.Any(x => x.EqualsIgnoreCase(model.AdminRole))) { //just add new role
+          Aibe.DH.AllowedAdminRoles.Any(x => x.EqualsIgnoreCase(model.AdminRole))) { //just add new role
           var addRoleResult = UserManager.AddToRole(user.Id, model.AdminRole);
           if (!addRoleResult.Succeeded)
             return RedirectToAction("ErrorLocal");

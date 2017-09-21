@@ -7,8 +7,7 @@ namespace Aiwe.Migrations {
   using System;
   using System.Data.Entity.Migrations;
   using System.Linq;
-  using Aibe;
-
+  
   internal sealed class Configuration : DbMigrationsConfiguration<Aiwe.Models.ApplicationDbContext> {
     public Configuration() {
       AutomaticMigrationsEnabled = true;
@@ -32,73 +31,73 @@ namespace Aiwe.Migrations {
       //
 
       context.Roles.AddOrUpdate(r => r.Name,
-        new IdentityRole { Name = DH.DevRole },
-        new IdentityRole { Name = DH.MainAdminRole },
-        new IdentityRole { Name = DH.AdminRole },
+        new IdentityRole { Name = Aibe.DH.DevRole },
+        new IdentityRole { Name = Aibe.DH.MainAdminRole },
+        new IdentityRole { Name = Aibe.DH.AdminRole },
         new IdentityRole { Name = "Manager" },
         new IdentityRole { Name = "Supervisor" },
         new IdentityRole { Name = "User" }
       );
 
-      bool adminExist = context.Users.Any(t => t.UserName == DH.MainAdminName);
-      bool devExist = context.Users.Any(t => t.UserName == DH.DevName);
-      bool sharedDevExist = context.Users.Any(t => t.UserName == DH.SharedDevName);
+      bool adminExist = context.Users.Any(t => t.UserName == Aiwe.DH.MainAdminName);
+      bool devExist = context.Users.Any(t => t.UserName == Aibe.DH.DevName);
+      bool sharedDevExist = context.Users.Any(t => t.UserName == Aiwe.DH.SharedDevName);
       if (!adminExist || !devExist || !sharedDevExist) {
         var userStore = new UserStore<ApplicationUser>(context);
         var userManager = new UserManager<ApplicationUser>(userStore);
         DateTime now = DateTime.Now;
         if (!devExist) {
           ApplicationUser ian = new ApplicationUser {
-            FullName = DH.DevFullName,
-            UserName = DH.DevName,
-            DisplayName = DH.DevDisplayName,
-            Email = DH.DevName,
+            FullName = Aibe.DH.DevFullName,
+            UserName = Aibe.DH.DevName,
+            DisplayName = Aibe.DH.DevDisplayName,
+            Email = Aibe.DH.DevName,
             EmailConfirmed = true,
             LockoutEnabled = false,
             Team = "Home",
-            AdminRole = DH.DevRole,
+            AdminRole = Aibe.DH.DevRole,
             RegistrationDate = now,
             LastLogin = now,
           };
-          userManager.Create(ian, DH.DevPass);
-          userManager.AddToRole(ian.Id, DH.DevRole);
-          UserHelper.CreateUserMap(db, ian.UserName, DH.DevPass);
+          userManager.Create(ian, Aibe.DH.DevPass);
+          userManager.AddToRole(ian.Id, Aibe.DH.DevRole);
+          UserHelper.CreateUserMap(db, ian.UserName, Aibe.DH.DevPass);
         }
 
         if (!adminExist) {
           ApplicationUser admin = new ApplicationUser {
-            FullName = DH.MainAdminFullName,
-            UserName = DH.MainAdminName,
-            DisplayName = DH.MainAdminDisplayName,
-            Email = DH.MainAdminName,
+            FullName = Aibe.DH.MainAdminFullName,
+            UserName = Aiwe.DH.MainAdminName,
+            DisplayName = Aibe.DH.MainAdminDisplayName,
+            Email = Aiwe.DH.MainAdminName,
             EmailConfirmed = true,
             LockoutEnabled = false,
             Team = "Home",
-            AdminRole = DH.MainAdminRole,
+            AdminRole = Aibe.DH.MainAdminRole,
             RegistrationDate = now,
             LastLogin = now,
           };
-          userManager.Create(admin, DH.MainAdminPass);
-          userManager.AddToRole(admin.Id, DH.MainAdminRole);
-          UserHelper.CreateUserMap(db, admin.UserName, DH.MainAdminPass);
+          userManager.Create(admin, Aiwe.DH.MainAdminPass);
+          userManager.AddToRole(admin.Id, Aibe.DH.MainAdminRole);
+          UserHelper.CreateUserMap(db, admin.UserName, Aiwe.DH.MainAdminPass);
         }
 
         if (!sharedDevExist) {
           ApplicationUser developer = new ApplicationUser {
-            FullName = DH.SharedDevFullName,
-            UserName = DH.SharedDevName,
-            DisplayName = DH.DevDisplayName,
-            Email = DH.SharedDevName,
+            FullName = Aiwe.DH.SharedDevFullName,
+            UserName = Aiwe.DH.SharedDevName,
+            DisplayName = Aibe.DH.DevDisplayName,
+            Email = Aiwe.DH.SharedDevName,
             EmailConfirmed = true,
             LockoutEnabled = false,
             Team = "Home",
-            AdminRole = DH.DevRole,
+            AdminRole = Aibe.DH.DevRole,
             RegistrationDate = now,
             LastLogin = now,
           };
-          userManager.Create(developer, DH.SharedDevPass);
-          userManager.AddToRole(developer.Id, DH.DevRole);
-          UserHelper.CreateUserMap(db, developer.UserName, DH.SharedDevPass);
+          userManager.Create(developer, Aiwe.DH.SharedDevPass);
+          userManager.AddToRole(developer.Id, Aibe.DH.DevRole);
+          UserHelper.CreateUserMap(db, developer.UserName, Aiwe.DH.SharedDevPass);
         }
 
         context.SaveChanges();

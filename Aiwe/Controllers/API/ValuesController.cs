@@ -12,7 +12,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
-using Aibe;
 using Aibe.Models.DB;
 using Extension.Database.SqlServer;
 using Extension.String;
@@ -178,8 +177,8 @@ namespace Aiwe.Controllers {
       try {
         ApiRequestResult result = new ApiRequestResult();
         int val = checkedRequest.RequestType == ApiRequestType.Create ?  //if it is create, execute scalar with SELECT SCOPE_IDENTITY() to get the latest cid created
-          int.Parse(SQLServerHandler.ExecuteScalar(string.Concat(sqlString, "; SELECT SCOPE_IDENTITY()"), DH.DataDBConnectionString, pars).ToString()) :
-          SQLServerHandler.ExecuteScript(sqlString, DH.DataDBConnectionString, pars);
+          int.Parse(SQLServerHandler.ExecuteScalar(string.Concat(sqlString, "; SELECT SCOPE_IDENTITY()"), Aibe.DH.DataDBConnectionString, pars).ToString()) :
+          SQLServerHandler.ExecuteScript(sqlString, Aibe.DH.DataDBConnectionString, pars);
 
         result.Success = val > 0;
         if (checkedRequest.RequestType == ApiRequestType.Create)
@@ -232,7 +231,7 @@ namespace Aiwe.Controllers {
 
     private HttpResponseMessage createGetTypeResponse(CheckedClientApiRequest checkedRequest, string queryString) {
       try {
-        DataTable table = SQLServerHandler.GetDataTable(DH.DataDBConnectionString, queryString);
+        DataTable table = SQLServerHandler.GetDataTable(Aibe.DH.DataDBConnectionString, queryString);
         ApiRequestResult result = new ApiRequestResult(checkedRequest, table);
 
         if (!result.Success)
