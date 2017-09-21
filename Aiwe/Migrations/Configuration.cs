@@ -2,7 +2,7 @@ namespace Aiwe.Migrations {
   using Aibe.Helpers;
   using Microsoft.AspNet.Identity;
   using Microsoft.AspNet.Identity.EntityFramework;
-  using Aibe.Models.DB;
+  using Aiwe.Models.DB;
   using Models;
   using System;
   using System.Data.Entity.Migrations;
@@ -61,7 +61,7 @@ namespace Aiwe.Migrations {
           };
           userManager.Create(ian, Aibe.DH.DevPass);
           userManager.AddToRole(ian.Id, Aibe.DH.DevRole);
-          UserHelper.CreateUserMap(db, ian.UserName, Aibe.DH.DevPass);
+          UserHelper.CreateUserMap(ian.UserName, Aibe.DH.DevPass);
         }
 
         if (!adminExist) {
@@ -79,7 +79,7 @@ namespace Aiwe.Migrations {
           };
           userManager.Create(admin, Aiwe.DH.MainAdminPass);
           userManager.AddToRole(admin.Id, Aibe.DH.MainAdminRole);
-          UserHelper.CreateUserMap(db, admin.UserName, Aiwe.DH.MainAdminPass);
+          UserHelper.CreateUserMap(admin.UserName, Aiwe.DH.MainAdminPass);
         }
 
         if (!sharedDevExist) {
@@ -97,7 +97,7 @@ namespace Aiwe.Migrations {
           };
           userManager.Create(developer, Aiwe.DH.SharedDevPass);
           userManager.AddToRole(developer.Id, Aibe.DH.DevRole);
-          UserHelper.CreateUserMap(db, developer.UserName, Aiwe.DH.SharedDevPass);
+          UserHelper.CreateUserMap(developer.UserName, Aiwe.DH.SharedDevPass);
         }
 
         context.SaveChanges();

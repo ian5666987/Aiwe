@@ -4,14 +4,15 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Data;
+using Aiwe.Helpers;
 using Aiwe.Models;
-using Aiwe.Models.ViewModels;
+using Aiwe.Models.DB;
 using Aiwe.Models.Filters;
+using Aiwe.Models.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Extension.String;
 using Aibe.Helpers;
-using Aibe.Models.DB;
 
 namespace Aiwe.Controllers {
   [Authorize(Roles = Aiwe.DH.AdminAuthorizedRoles)]
@@ -36,7 +37,7 @@ namespace Aiwe.Controllers {
         .OrderByDescending(x => x.AdminRole.ToLower() == Aibe.DH.MainAdminRole.ToLower())
         .ThenBy(x => x.FullName);
 
-      IEnumerable<ApplicationUserViewModel> userViewModels = ViewHelper.PrepareUserViewModels(page, users, ViewBag);
+      IEnumerable<ApplicationUserViewModel> userViewModels = AiweViewHelper.PrepareUserViewModels(page, users, ViewBag);
 
       return userViewModels == null ? View() : View(userViewModels.ToList());
     }
@@ -46,12 +47,12 @@ namespace Aiwe.Controllers {
       var unfiltereds = context.Users.Where(x => x.AdminRole != Aibe.DH.DevRole)
         .OrderByDescending(x => x.AdminRole.ToLower() == Aibe.DH.MainAdminRole.ToLower())
         .ThenBy(x => x.FullName);
-      var filtereds = DataFilterHelper.ApplyUserFilter(unfiltereds, filter);
+      var filtereds = AiweDataFilterHelper.ApplyUserFilter(unfiltereds, filter);
       var unordereds = filtereds
         .OrderByDescending(x => x.AdminRole.ToLower() == Aibe.DH.MainAdminRole.ToLower())
         .ThenBy(x => x.FullName);
       ViewBag.Filter = filter;
-      IEnumerable<ApplicationUserViewModel> results = ViewHelper.PrepareUserViewModels(filter.Page, unordereds, ViewBag);
+      IEnumerable<ApplicationUserViewModel> results = AiweViewHelper.PrepareUserViewModels(filter.Page, unordereds, ViewBag);
       return results == null ? View() : View(results.ToList());
     }
 
@@ -111,7 +112,7 @@ namespace Aiwe.Controllers {
               return RedirectToAction("ErrorLocal");
           }
 
-          UserHelper.CreateUserMap(db, model.Email, model.Password);
+          UserHelper.CreateUserMap(model.Email, model.Password);
 
           return RedirectToAction("Index");
         }
@@ -147,9 +148,9 @@ namespace Aiwe.Controllers {
       ApplicationUser user = UserManager.Users.FirstOrDefault(x => x.Id == id);
       if (user == null)
         return redirectToError("User Id not found");      
-      if (UserHelper.UserHasMainAdminRight(user))
+      if (AiweUserHelper.UserHasMainAdminRight(user))
         return redirectToError(user.AdminRole + " User cannot be edited or deleted");
-      UserHelper.DeleteUserMap(db, user.UserName);
+      UserHelper.DeleteUserMap(user.UserName);
       var result = UserManager.Delete(user);
       if (!result.Succeeded)
         return redirectToError("User manager fails to delete the user. Errors: " +
@@ -179,7 +180,7 @@ namespace Aiwe.Controllers {
         return View(model);
       if (user == null)
         return redirectToError("User Id not found");
-      if (UserHelper.UserHasMainAdminRight(user))
+      if (AiweUserHelper.UserHasMainAdminRight(user))
         return redirectToError(user.AdminRole + " User cannot be edited or deleted");
 
       string oldAdminRole = user.AdminRole;
@@ -226,7 +227,7 @@ namespace Aiwe.Controllers {
         }
       }
 
-      UserHelper.EditUserMapName(db, oldUserName, model.Email);
+      UserHelper.EditUserMapName(oldUserName, model.Email);
       return RedirectToAction("Index");
     }
   }

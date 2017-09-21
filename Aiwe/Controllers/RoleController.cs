@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using System.Data;
+using Aiwe.Helpers;
 using Aiwe.Models;
 using Aiwe.Models.ViewModels;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -25,7 +26,7 @@ namespace Aiwe.Controllers {
         .AsQueryable()
         .OrderBy(x => x.Name);
       List<RoleViewModel> viewModels = ((IEnumerable<RoleViewModel>)
-        ViewHelper.PrepareRoleViewModels(page, roles, ViewBag)).ToList();
+        AiweViewHelper.PrepareRoleViewModels(page, roles, ViewBag)).ToList();
       return viewModels == null ? View() : View(viewModels);
     }
 
@@ -36,11 +37,11 @@ namespace Aiwe.Controllers {
         .Where(x => !Aibe.DH.AdminRoles.Any(y => y.EqualsIgnoreCase(x.Name)))
         .AsQueryable()
         .OrderBy(x => x.Name);
-      var filtereds = DataFilterHelper.ApplyRoleFilter(unfiltereds, filter);
+      var filtereds = AiweDataFilterHelper.ApplyRoleFilter(unfiltereds, filter);
       var unordereds = filtereds
         .OrderBy(x => x.Name);
       ViewBag.Filter = filter;
-      IEnumerable<ApplicationUserViewModel> results = ViewHelper.PrepareRoleViewModels(filter.Page, unordereds, ViewBag);
+      IEnumerable<ApplicationUserViewModel> results = AiweViewHelper.PrepareRoleViewModels(filter.Page, unordereds, ViewBag);
       return results == null ? View() : View(results.ToList());
     }
 

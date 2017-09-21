@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using Extension.String;
-using Aibe.Helpers;
 using Aibe.Models;
 using Aibe.Models.Core;
 using Aiwe.Extensions;
+using Aiwe.Helpers;
 using System.Security.Principal;
 using System.Collections.Generic;
 
@@ -45,7 +45,7 @@ namespace Aiwe.Models {
     }
 
     public virtual bool IsColumnIncludedInIndex(string columnName, IPrincipal user) {
-      if (UserHelper.UserHasMainAdminRight(user)) //if user is in main admin rights, it is always true
+      if (AiweUserHelper.UserHasMainAdminRight(user)) //if user is in main admin rights, it is always true
         return true;
       return IsColumnIncluded(Meta.ColumnExclusions, columnName, user);
     }

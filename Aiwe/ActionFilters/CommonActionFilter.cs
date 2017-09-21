@@ -9,11 +9,12 @@ using System.Web.Routing;
 using Aibe.Helpers;
 using Aibe.Models;
 using Aibe.Models.Core;
-using Aibe.Models.DB;
+using Aiwe.Models.DB;
 using Aiwe.Extensions;
+using Aiwe.Helpers;
 
 namespace Aiwe.ActionFilters {
-  public partial class CommonActionFilterAttribute : ActionFilterAttribute {
+  public class CommonActionFilterAttribute : ActionFilterAttribute {
     private ActionResult redirectTo(string action, int? errorNo) {
       return new RedirectToRouteResult(
           new RouteValueDictionary(new { controller = "Home", action = action, errorNo = errorNo })
@@ -39,7 +40,7 @@ namespace Aiwe.ActionFilters {
       IPrincipal user = HttpContext.Current.User;
       string userName = string.IsNullOrWhiteSpace(user.Identity.Name) ? string.Empty : user.Identity.Name;
 
-      if (!UserHelper.UserIsDeveloper(user) && //the developer does not need log
+      if (!AiweUserHelper.UserIsDeveloper(user) && //the developer does not need log
         !Aibe.DH.NonRecordedActions.Any(x => x.EqualsIgnoreCase(actionName)) && //the action must not be excluded for record
         method != null &&
         method.EqualsIgnoreCase(Aiwe.DH.PostRequest) && //only post is recorded
@@ -78,14 +79,14 @@ namespace Aiwe.ActionFilters {
         return;
       }
 
-      MetaInfo meta = TableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
 
       if (meta == null) {
         filterContext.Result = redirectTo("TableDescriptionNotFound", -3);
         return;
       }
 
-      if (UserHelper.UserHasMainAdminRight(user)) //main admins are immune to exclusion
+      if (AiweUserHelper.UserHasMainAdminRight(user)) //main admins are immune to exclusion
         return;
 
       //Access checking (checked)

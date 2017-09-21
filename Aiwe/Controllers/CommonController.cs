@@ -26,7 +26,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     //Get does not have filter
     public ActionResult Index(string tableName, int? page) { //Where all common tables are returned as list
       TempData.Clear();
-      MetaInfo meta = TableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       List<UserRelatedFilterInfo> userRelatedInfo = meta.UserRelatedFilters;
       FilterIndexInfo model;
 
@@ -51,7 +51,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     [CommonActionFilter]
     public ActionResult Index(string tableName, int? commonDataFilterPage, FormCollection collections) {
       TempData.Clear();
-      MetaInfo meta = TableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       List<UserRelatedFilterInfo> userRelatedInfo = meta.UserRelatedFilters;
       FilterIndexInfo model;
       DateTime now = DateTime.Now;
@@ -85,7 +85,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     [CommonActionFilter]
     public ActionResult Create(string tableName) {
       TempData.Clear();
-      MetaInfo meta = TableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.CreateActionName);
       return View(model);
     }
@@ -94,7 +94,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     [CommonActionFilter]
     public ActionResult Create(string tableName, FormCollection collections) {
       TempData.Clear();
-      MetaInfo meta = TableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       DateTime now = DateTime.Now;
 
       foreach (var item in collections)
@@ -153,14 +153,14 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         conn.Close();
       }
 
-      FileHelper.SaveAttachments(Request, Server.MapPath("~/Images/" + tableName + "/" + generatedId?.ToString()));
+      AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/Images/" + tableName + "/" + generatedId?.ToString()));
       return RedirectToAction("Index", new { tableName = tableName });
     }
 
     //Likely used by filter and create edit
     [CommonActionFilter]
     public ActionResult Edit(string tableName, int id) {
-      MetaInfo meta = TableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       fillDetailsFromTableToTempData(tableName, id); //TempData is prepared inside!
       CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.EditActionName);
       return View(model);
@@ -169,7 +169,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     [HttpPost]
     [CommonActionFilter]
     public ActionResult Edit(string tableName, int cid, FormCollection collections) {
-      MetaInfo meta = TableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       ModelState.Remove("cid"); //Again, so that it will replaced with the given collection, using capital "C" -> "Cid"
       DateTime now = DateTime.Now;
 
@@ -223,14 +223,14 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         conn.Close();
       }
 
-      FileHelper.SaveAttachments(Request, Server.MapPath("~/Images/" + tableName + "/" + cid));
+      AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/Images/" + tableName + "/" + cid));
       return RedirectToAction("Index", new { tableName = tableName });
     }
 
     [CommonActionFilter]
     public ActionResult Delete(string tableName, int id) { //Where all common tables details are returned and can be deleted
       TempData.Clear();
-      MetaInfo meta = TableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       DetailsInfo model = new DetailsInfo(meta, id);
       fillDetailsFromTableToTempData(tableName, id);
       return View(model);
@@ -241,7 +241,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     [ActionName("Delete")]
     public ActionResult DeletePost(string tableName, int id) { //Where all common tables deletes are returned and can be deleted
       TempData.Clear();
-      MetaInfo meta = TableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       deleteItem(tableName, id); //Currently do not return any error
       return RedirectToAction("Index", new { tableName = tableName });
     }
@@ -250,7 +250,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     [CommonActionFilter]
     public ActionResult Details(string tableName, int id) { //there must be a number named cid (common Id)
       TempData.Clear();
-      MetaInfo meta = TableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       DetailsInfo model = new DetailsInfo(meta, id);
       fillDetailsFromTableToTempData(tableName, id);
       return View(model);
@@ -290,7 +290,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     public JsonResult GetLiveDropdownItems(string tableName, string changedColumnName, string[] originalColumnValues,
       string[] liveddColumnNames, string[] liveddDataTypes, string[] liveddItems) {
 
-      MetaInfo meta = TableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
 
       Dictionary<string, List<string>> dropdowns = new Dictionary<string, List<string>>();
       int count = 0;
@@ -319,7 +319,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
           continue; //if not affected, then leave it be...
         }
 
-        List<string> dropdown = DropDownHelper.CreateLiveCreateEditDropDownFor(
+        List<string> dropdown = AiweDropDownHelper.CreateLiveCreateEditDropDownFor(
           tableName, col, originalColumnValues[count], liveddDataTypes[count], passedColumnsAndValues);
         dropdowns.Add(col, dropdown);
         count++;
@@ -348,7 +348,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       if (string.IsNullOrWhiteSpace(changedColumnValue))
         return Json(results, JsonRequestBehavior.AllowGet);
 
-      MetaInfo meta = TableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
 
       var affectedColumnNames = meta.DataColumns
         .Where(x => meta.IsListColumn(x.ColumnName) && meta.IsListColumnAffectedBy(x.ColumnName, changedColumnName))
@@ -391,7 +391,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         IsSuccessful = false,
         DataValue = dataValue,
       };
-      MetaInfo meta = TableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       //if (meta == null)
       //  return Json(result, JsonRequestBehavior.AllowGet);
       //CreateEditInfo model = new CreateEditInfo(meta, SQLServerHandler.GetColumns(DataHolder.DataDBConnectionString, tableName), null);
@@ -670,7 +670,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       bool whereExisted = queryScript.ToString().ToLower().Contains(" where ");
       StringBuilder userRelatedQueryScript = new StringBuilder();
 
-      if (!UserHelper.UserHasMainAdminRight(User) && //User is not main admin (main admin is free from user related filters)
+      if (!AiweUserHelper.UserHasMainAdminRight(User) && //User is not main admin (main admin is free from user related filters)
         User.Identity.IsAuthenticated && //User is authenticated
         userRelatedInfos != null && userRelatedInfos.Count > 0) { //there is a user related info
         //Get user info here!
@@ -721,7 +721,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
       //Counting filtered/non-filtered results
       string countScript = string.Concat(selectScript, " count(*) ", queryScript);
-      DataTable countDataTable = SQLServerHandler.GetDataTable(conn, countScript);
+      DataTable countDataTable = SQLServerHandler.GetDataTable(conn, countScript, copiesPars);
       int queryCount = countDataTable == null || countDataTable.Rows == null || countDataTable.Rows.Count <= 0 ? 
         0 : (int)countDataTable.Rows[0].ItemArray.FirstOrDefault();
 
@@ -867,7 +867,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
                 "] for [", camelBrokenPureKeyName, "] ",
                 "does not match with the required pattern"));
 
-              if (UserHelper.UserIsDeveloper(User)) {
+              if (AiweUserHelper.UserIsDeveloper(User)) {
                 regexError.Append(" [");
                 regexError.Append(regex.ToString());
                 regexError.Append("]");
@@ -911,7 +911,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     }
 
     private Type getTableType(string tableName) {
-      return Type.GetType(string.Concat("Aibe.Models.DB.", tableName)); //it is always in the Aibe.Models.DB. TODO not sure if it is the best way
+      return Type.GetType(string.Concat("Aiwe.Models.DB.", tableName)); //it is always in the Aiwe.Models.DB. TODO not sure if it is the best way
     }
 
     private PropertyInfo getColumnPropertyInfo(string tableName, string columnName) {

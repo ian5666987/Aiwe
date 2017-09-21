@@ -4,7 +4,7 @@ using System.Security.Principal;
 using Microsoft.AspNet.Identity;
 
 namespace Aiwe.Extensions {
-  public static partial class IdentityExtension {
+  public static class IdentityExtension {
     public static string GetDisplayName(this IIdentity identity) {
       if (identity == null) {
         throw new ArgumentNullException("identity");

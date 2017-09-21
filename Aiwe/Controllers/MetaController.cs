@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Web.Mvc;
 using System.Data;
-using Aibe.Helpers;
 using Aibe.Models;
-using Aibe.Models.DB;
 using Aibe.Models.Filters;
 using System.Data.Entity.Migrations;
 using Extension.Cryptography;
 using Extension.String;
+using Aiwe.Helpers;
+using Aiwe.Models.DB;
 
 namespace Aiwe.Controllers {
   [Authorize(Roles = Aibe.DH.DevRole)]
@@ -18,7 +18,7 @@ namespace Aiwe.Controllers {
     public ActionResult Index(int? page) {
       var allOrderedMatches = db.MetaItems
         .OrderBy(x => x.TableName.ToLower());
-      List<MetaItem> results = ViewHelper.PrepareFilteredModels<MetaItem>(page, allOrderedMatches, ViewBag);
+      List<MetaItem> results = AiweViewHelper.PrepareFilteredModels<MetaItem>(page, allOrderedMatches, ViewBag);
       return results == null ? View() : View(results);
     }
 
@@ -26,11 +26,11 @@ namespace Aiwe.Controllers {
     public ActionResult Index(MetaFilter filter) {
       var unfiltereds = db.MetaItems
         .OrderBy(x => x.TableName.ToLower());
-      var filtereds = DataFilterHelper.ApplyMetaFilter(unfiltereds, filter);
+      var filtereds = AiweDataFilterHelper.ApplyMetaFilter(unfiltereds, filter);
       var unordereds = filtereds
         .OrderBy(x => x.TableName.ToLower());
       ViewBag.Filter = filter;
-      List<MetaItem> results = ViewHelper.PrepareFilteredModels<MetaItem>(filter.Page, unordereds, ViewBag);
+      List<MetaItem> results = AiweViewHelper.PrepareFilteredModels<MetaItem>(filter.Page, unordereds, ViewBag);
       return results == null ? View() : View(results);
     }
 
@@ -56,7 +56,7 @@ namespace Aiwe.Controllers {
 
       db.MetaItems.Add(model);
       db.SaveChanges();
-      TableHelper.AddMeta(new MetaInfo(model)); //has validity check in the AddMeta method
+      AiweTableHelper.AddMeta(new MetaInfo(model)); //has validity check in the AddMeta method
 
       return RedirectToAction("Index");
     }
@@ -83,7 +83,7 @@ namespace Aiwe.Controllers {
         return redirectToError("Id not found");
       db.MetaItems.Remove(meta);
       db.SaveChanges();
-      TableHelper.DeleteMeta(id);
+      AiweTableHelper.DeleteMeta(id);
       return RedirectToAction("Index");
     }
 
@@ -140,7 +140,7 @@ namespace Aiwe.Controllers {
       db.MetaItems.AddOrUpdate(meta);
       db.SaveChanges();
 
-      TableHelper.UpdateMeta(meta);
+      AiweTableHelper.UpdateMeta(meta);
 
       return RedirectToAction("Index");
     }
@@ -180,8 +180,8 @@ namespace Aiwe.Controllers {
 
     public ActionResult DecryptoSerializeAll() {
       string folderPath = Server.MapPath("~/Settings");
-      int count = TableHelper.DecryptMetaItems(folderPath);
-      TableHelper.PrepareMetas();
+      int count = AiweTableHelper.DecryptMetaItems(folderPath);
+      AiweTableHelper.PrepareMetas();
       return RedirectToAction("Success", new { msg = "You have successfully decrypto-serialize all (" + count + ") meta table ASTRIOCFILE(s)!" });
     }
 

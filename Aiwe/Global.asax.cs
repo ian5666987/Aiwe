@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using Aibe.Helpers;
+using Aiwe.Helpers;
 using System.Web.Http;
 
 namespace Aiwe {
@@ -19,10 +20,10 @@ namespace Aiwe {
       CryptographyHelper.Init();
 
 #if DEBUG
-      TableHelper.PrepareMetas();
+      AiweTableHelper.PrepareMetas();
 #else
       string folderPath = Server.MapPath("~/Settings");
-      TableHelper.DecryptMetaItems(folderPath); //get data from the files when not debugging
+      AiweTableHelper.DecryptMetaItems(folderPath); //get data from the files when not debugging
 #endif
     }
 

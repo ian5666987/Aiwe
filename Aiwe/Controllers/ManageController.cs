@@ -5,11 +5,11 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Aiwe.Models;
-using System.Data.Entity.Migrations;
 using Aiwe.Extensions;
+using Aiwe.Models;
+using Aiwe.Models.DB;
+using System.Data.Entity.Migrations;
 using System.Security.Claims;
-using Aibe.Models.DB;
 using Aibe.Helpers;
 
 namespace Aiwe.Controllers {
@@ -100,7 +100,7 @@ namespace Aiwe.Controllers {
         if (user != null) {
           await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
         }
-        UserHelper.SetUserMapPassword(db, user.UserName, model.NewPassword);
+        UserHelper.SetUserMapPassword(user.UserName, model.NewPassword);
         return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
       }
       AddErrors(result);
@@ -161,7 +161,7 @@ namespace Aiwe.Controllers {
           if (user != null) {
             await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
           }
-          UserHelper.SetUserMapPassword(db, user.UserName, model.NewPassword);
+          UserHelper.SetUserMapPassword(user.UserName, model.NewPassword);
           return RedirectToAction("Index", new { Message = ManageMessageId.SetPasswordSuccess });
         }
         AddErrors(result);

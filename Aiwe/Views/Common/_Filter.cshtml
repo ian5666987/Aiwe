@@ -1,4 +1,4 @@
-﻿@using Aibe.Helpers;
+﻿@using Aiwe.Helpers;
 @using Extension.String;
 @using System.Data;
 
@@ -26,7 +26,7 @@
           @if (!Model.Meta.IsFilterDropDownColumn(column.ColumnName)) {
             <input type="text" name="@column.ColumnName" class="form-control form-control-medium-plus" value="@dataValue" />
           } else {
-            List<string> dropdowns = DropDownHelper.GetStaticFilterDropDownFor(Model.TableName, column.ColumnName, "string");
+            List<string> dropdowns = AiweDropDownHelper.GetStaticFilterDropDownFor(Model.TableName, column.ColumnName, "string");
             if (dropdowns == null || dropdowns.Count <= 0) {
               <input type="text" name="@column.ColumnName" class="form-control form-control-medium-plus" value="@dataValue" />
             } else { //string dropdown case

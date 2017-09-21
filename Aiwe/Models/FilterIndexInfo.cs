@@ -5,7 +5,7 @@ using System.Data;
 using System.Security.Principal;
 using Aibe.Models;
 using Aibe.Models.Core;
-using Aibe.Helpers;
+using Aiwe.Helpers;
 
 namespace Aiwe.Models {
   //To be used to display filter and index
@@ -98,13 +98,13 @@ namespace Aiwe.Models {
     public NavDataModel NavData { get; set; }
 
     public bool IsColumnIncludedInFilter(string columnName, IPrincipal user, bool isWebApi = false) {
-      if (UserHelper.UserHasMainAdminRight(user)) //if user is in main admin rights, it is always true
+      if (AiweUserHelper.UserHasMainAdminRight(user)) //if user is in main admin rights, it is always true
         return true;
       return IsColumnIncluded(Meta.FilterExclusions, columnName, user);
     }
 
     public bool IsActionAllowed(string actionName, IPrincipal user, bool isWebApi = false) {
-      if (UserHelper.UserHasMainAdminRight(user)) //if user is in main admin rights, it is always true
+      if (AiweUserHelper.UserHasMainAdminRight(user)) //if user is in main admin rights, it is always true
         return true;
       ActionInfo acInfo = Meta.Actions.FirstOrDefault(x => x.Name.EqualsIgnoreCaseTrim(actionName));
       if (acInfo == null) //such action is not found, then it is definitely false
@@ -114,7 +114,7 @@ namespace Aiwe.Models {
     }
 
     public bool IsTableActionAllowed(string tableActionName, IPrincipal user, bool isWebApi = false) {
-      if (UserHelper.UserHasMainAdminRight(user)) //if user is in main admin rights, it is always true
+      if (AiweUserHelper.UserHasMainAdminRight(user)) //if user is in main admin rights, it is always true
         return true;
       ActionInfo acInfo = Meta.TableActions.FirstOrDefault(x => x.Name.EqualsIgnoreCaseTrim(tableActionName));
       if (acInfo == null) //such action is not found, then it is definitely false

@@ -7,7 +7,7 @@ using System.Data;
 using Aibe.Models.Core;
 
 namespace Aiwe.Extensions {
-  public static partial class ListColumnInfoExtension {
+  public static class ListColumnInfoExtension {
     //Called to create HTML for the list column
     public static string GetHTML(this ListColumnInfo info, string dataValue) {      
       List<ListColumnItem> listColumnItems = new List<ListColumnItem>();

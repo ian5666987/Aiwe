@@ -3,7 +3,6 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Data;
 using System.Data.Entity.Migrations;
-using Aibe.Helpers;
 using Aiwe.Helpers;
 using Aiwe.Models;
 using Aiwe.Models.Filters;
@@ -17,7 +16,7 @@ namespace Aiwe.Controllers {
     public ActionResult Index(int? page) {
       var allOrderedMatches = context.Teams
         .OrderBy(x => x.Name.ToLower());
-      List<Team> results = ViewHelper.PrepareFilteredModels<Team>(page, allOrderedMatches, ViewBag);
+      List<Team> results = AiweViewHelper.PrepareFilteredModels<Team>(page, allOrderedMatches, ViewBag);
       return results == null ? View() : View(results);
     }
 
@@ -25,11 +24,11 @@ namespace Aiwe.Controllers {
     public ActionResult Index(TeamFilter filter) {
       var unfiltereds = context.Teams
         .OrderBy(x => x.Name.ToLower());
-      var filtereds = DataFilterHelper.ApplyTeamFilter(unfiltereds, filter);
+      var filtereds = AiweDataFilterHelper.ApplyTeamFilter(unfiltereds, filter);
       var unordereds = filtereds
         .OrderBy(x => x.Name.ToLower());
       ViewBag.Filter = filter;
-      List<Team> results = ViewHelper.PrepareFilteredModels<Team>(filter.Page, unordereds, ViewBag);
+      List<Team> results = AiweViewHelper.PrepareFilteredModels<Team>(filter.Page, unordereds, ViewBag);
       return results == null ? View() : View(results);
     }
 

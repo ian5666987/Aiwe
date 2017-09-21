@@ -12,10 +12,10 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
-using Aibe.Models.DB;
 using Extension.Database.SqlServer;
 using Extension.String;
 using Aiwe.Models;
+using Aiwe.Models.DB;
 
 namespace Aiwe.Controllers {
   //[Authorize]
@@ -65,7 +65,7 @@ namespace Aiwe.Controllers {
     public HttpResponseMessage Authenticate(string username, string password) {      
       string userNameNormal = Encoding.UTF8.GetString(Convert.FromBase64String(username));
       string passwordNormal = Encoding.UTF8.GetString(Convert.FromBase64String(password));
-      bool result = UserHelper.AuthenticateUser(db, "Web Api", userNameNormal, passwordNormal);
+      bool result = UserHelper.AuthenticateUser("Web Api", userNameNormal, passwordNormal);
       string message = string.Empty;
       bool companySpecificAuthentication = getFeinmetallMessage(userNameNormal, out message);
       if (!result || !companySpecificAuthentication)

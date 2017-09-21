@@ -1,21 +1,15 @@
-namespace Aibe.Models.DB
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
+namespace Aiwe.Models.DB {
+  using System.ComponentModel.DataAnnotations;
 
-    public partial class CFG_PRD_TYP
-    {
-        [Key]
-        public int Cid { get; set; }
+  public partial class CFG_PRD_TYP {
+    [Key]
+    public int Cid { get; set; }
 
-        [Required]
-        [StringLength(50)]
-        public string ProductTypeId { get; set; }
+    [Required]
+    [StringLength(50)]
+    public string ProductTypeId { get; set; }
 
-        [StringLength(200)]
-        public string TypeDescription { get; set; }
-    }
+    [StringLength(200)]
+    public string TypeDescription { get; set; }
+  }
 }

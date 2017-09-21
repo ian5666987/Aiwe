@@ -1,19 +1,20 @@
 ﻿using Aibe.Helpers;
-using Aibe.Models.DB;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http.Filters;
 using System.Web.Http.Controllers;
-using Aiwe.Models.API;
 using Aiwe.Models;
+using Aiwe.Models.API;
+using Aiwe.Models.DB;
 using Aiwe.Extensions;
 using Extension.Cryptography;
 using Extension.String;
 using Aibe.Models;
 using Aibe.Models.Core;
+using Aiwe.Helpers;
 
 namespace Aiwe.ActionFilters {
-  public partial class ValuesActionFilterAttribute : ActionFilterAttribute {
+  public class ValuesActionFilterAttribute : ActionFilterAttribute {
     ApplicationDbContext context = new ApplicationDbContext();
     CoreDataModel db = new CoreDataModel();
 
@@ -52,7 +53,7 @@ namespace Aiwe.ActionFilters {
         return;
       }
 
-      MetaInfo meta = TableHelper.GetMeta(request.TableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(request.TableName);
 
       if (meta == null) {
         actionContext.Request.Properties.Add(new KeyValuePair<string, object>(errorName, ValuesActionFilterResult.TableDescriptionNotFound));
@@ -69,7 +70,7 @@ namespace Aiwe.ActionFilters {
       ApplicationUser user = string.IsNullOrWhiteSpace(request.UserName) || userMap == null ? null :
         context.Users.FirstOrDefault(x => x.UserName.ToLower().Trim() == request.UserName.ToLower().Trim());
 
-      if (!UserHelper.UserIsDeveloper(user))
+      if (!AiweUserHelper.UserIsDeveloper(user))
         LogHelper.Action(user.UserName, "Web Api", "Values", request.TableName, request.RequestType, request.CreateLogValue(3000)); //TODO as of now 3000 is hardcoded
 
       if (!Aiwe.DH.RequestToActionDict.Any(x => x.Key.EqualsIgnoreCase(request.RequestType))) {
@@ -77,7 +78,7 @@ namespace Aiwe.ActionFilters {
         return;
       }
 
-      if (UserHelper.UserHasMainAdminRight(user)) //handles null too
+      if (AiweUserHelper.UserHasMainAdminRight(user)) //handles null too
         return; //no need to check further for such user
 
       //Unlike action which is supposed to be case-insensitive, role is NOT relaxed in use of capital/small letters (case sensitive)

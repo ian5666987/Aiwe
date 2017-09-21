@@ -1,4 +1,4 @@
-﻿@using Aibe.Helpers
+﻿@using Aiwe.Helpers
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,7 +24,7 @@
            style="background-color:#FFFFFF;border-color:black;">
         @Html.Partial("_LoginPartial")
         <ul class="nav navbar-nav navbar-right">
-          @if (UserHelper.UserHasAdminRight(User)) {
+          @if (AiweUserHelper.UserHasAdminRight(User)) {
             <li>@Html.ActionLink("Admin", "Index", "Admin", routeValues: null, htmlAttributes: new { style = "margin-top:20px;font-size:20px;color:grey" })</li>
           }
           <li>@Html.ActionLink("Home", "Index", "Home", routeValues: null, htmlAttributes: new { style = "margin-top:20px;font-size:20px;color:grey" })</li>                    

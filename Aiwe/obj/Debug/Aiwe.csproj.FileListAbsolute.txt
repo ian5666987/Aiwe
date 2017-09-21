@@ -221,3 +221,6 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\zh-HANS\Microsoft.ReportViewer.WinForms.resou
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\zh-HANT\Microsoft.ReportViewer.WinForms.resources.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Aibe.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Aibe.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Aibe.dll.config

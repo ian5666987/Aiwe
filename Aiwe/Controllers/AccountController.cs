@@ -5,9 +5,10 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Aibe.Models.DB;
 using Aibe.Helpers;
+using Aiwe.Helpers;
 using Aiwe.Models;
+using Aiwe.Models.DB;
 using Extension.String;
 
 namespace Aiwe.Controllers {
@@ -87,7 +88,7 @@ namespace Aiwe.Controllers {
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult LogOff() {
-      if (!UserHelper.UserIsDeveloper(User))
+      if (!AiweUserHelper.UserIsDeveloper(User))
         LogHelper.Access(User.Identity.Name, "Log-Off");
 
       AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
