@@ -1,6 +1,6 @@
 v0.1.2.1 alpha
 updates:
-- quick fix on unassigned DH
+- quick fix on non-fully-qualified-named DH
 
 -----------------------------------------------------------------------------------------------
 v0.1.2.0 alpha
