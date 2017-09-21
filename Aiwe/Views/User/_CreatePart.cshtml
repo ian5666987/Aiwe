@@ -38,7 +38,7 @@
     ApplicationDbContext context = new ApplicationDbContext();
     List<SelectListItem> workingRoles = context.Roles
       .ToList()
-      .Where(x => !DH.AdminRoles.Contains(x.Name))
+      .Where(x => !Aibe.DH.AdminRoles.Contains(x.Name))
       .Select(x => new SelectListItem { Text = x.Name, Value = x.Name })
       .ToList();
     workingRoles.Insert(0, new SelectListItem { Text = null, Value = null });

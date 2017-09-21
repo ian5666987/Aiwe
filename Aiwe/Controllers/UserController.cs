@@ -32,7 +32,7 @@ namespace Aiwe.Controllers {
     public ActionResult Index(int? page) {      
       var users = context.Users.Where(x => x.AdminRole != Aibe.DH.DevRole)
         //.ToList() //this may make EqualsIgnoreCase work, but wasting time in a way
-        //.OrderByDescending(x => x.AdminRole.EqualsIgnoreCase(DH.MainAdminRole))
+        //.OrderByDescending(x => x.AdminRole.EqualsIgnoreCase(Aibe.DH.MainAdminRole))
         .OrderByDescending(x => x.AdminRole.ToLower() == Aibe.DH.MainAdminRole.ToLower())
         .ThenBy(x => x.FullName);
 
@@ -219,7 +219,7 @@ namespace Aiwe.Controllers {
 
         if (oldWorkingRole != model.WorkingRole && //old role is different from the current role
           !string.IsNullOrWhiteSpace(model.WorkingRole) && //new role is not empty
-          DH.WorkingRoles.Any(x => x.EqualsIgnoreCase(model.WorkingRole))) { //just add new role
+          Aiwe.DH.WorkingRoles.Any(x => x.EqualsIgnoreCase(model.WorkingRole))) { //just add new role
           var addRoleResult = UserManager.AddToRole(user.Id, model.WorkingRole);
           if (!addRoleResult.Succeeded)
             return RedirectToAction("ErrorLocal");

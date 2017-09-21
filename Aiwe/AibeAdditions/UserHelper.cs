@@ -19,45 +19,45 @@ namespace Aibe.Helpers {
 
     public static bool UserHasAdminRight(IPrincipal user) {
       return user != null && user.Identity != null && 
-        user.Identity.IsAuthenticated && DH.AdminRoles.Any(x => user.IsInRole(x));
+        user.Identity.IsAuthenticated && Aibe.DH.AdminRoles.Any(x => user.IsInRole(x));
     }
 
     public static bool UserHasAdminRight(ApplicationUser user) {
-      return user != null && user.AdminRole != null && DH.AdminRoles.Contains(user.AdminRole);
+      return user != null && user.AdminRole != null && Aibe.DH.AdminRoles.Contains(user.AdminRole);
     }
 
     public static bool UserHasAdminRight(ApplicationUserViewModel user) {
-      return user != null && user.AdminRole != null && DH.AdminRoles.Contains(user.AdminRole);
+      return user != null && user.AdminRole != null && Aibe.DH.AdminRoles.Contains(user.AdminRole);
     }
 
     public static bool UserHasMainAdminRight(IPrincipal user) {
       return user != null && user.Identity != null &&
-        user.Identity.IsAuthenticated && DH.MainAdminRoles.Any(x => user.IsInRole(x));
+        user.Identity.IsAuthenticated && Aibe.DH.MainAdminRoles.Any(x => user.IsInRole(x));
     }
 
     public static bool UserHasMainAdminRight(ApplicationUser user) {
       return user != null && user.AdminRole != null &&
-        DH.MainAdminRoles.Contains(user.AdminRole);
+        Aibe.DH.MainAdminRoles.Contains(user.AdminRole);
     }
 
     public static bool UserHasMainAdminRight(ApplicationUserViewModel user) {
       return user != null && user.AdminRole != null &&
-        DH.MainAdminRoles.Contains(user.AdminRole);
+        Aibe.DH.MainAdminRoles.Contains(user.AdminRole);
     }
 
     public static bool UserIsDeveloper(IPrincipal user) {
       return user != null && user.Identity != null &&
-        user.Identity.IsAuthenticated && user.IsInRole(DH.DevRole);
+        user.Identity.IsAuthenticated && user.IsInRole(Aibe.DH.DevRole);
     }
 
     public static bool UserIsDeveloper(ApplicationUser user) {
       return user != null && user.AdminRole != null &&
-        user.AdminRole.EqualsIgnoreCase(DH.DevRole);
+        user.AdminRole.EqualsIgnoreCase(Aibe.DH.DevRole);
     }
 
     public static bool UserIsDeveloper(ApplicationUserViewModel user) {
       return user != null && user.AdminRole != null &&
-        user.AdminRole.EqualsIgnoreCase(DH.DevRole);
+        user.AdminRole.EqualsIgnoreCase(Aibe.DH.DevRole);
     }
   }
 }
