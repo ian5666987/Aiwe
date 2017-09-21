@@ -141,9 +141,7 @@ namespace Aiwe.Controllers {
       db.MetaItems.AddOrUpdate(meta);
       db.SaveChanges();
 
-      MetaInfo editedItem = TableHelper.GetMeta(meta.TableName);
-      if (editedItem != null)
-        editedItem = new MetaInfo(meta);
+      TableHelper.UpdateMeta(meta);
 
       return RedirectToAction("Index");
     }
@@ -184,6 +182,7 @@ namespace Aiwe.Controllers {
     public ActionResult DecryptoSerializeAll() {
       string folderPath = Server.MapPath("~/Settings");
       int count = TableHelper.DecryptMetaItems(folderPath);
+      TableHelper.PrepareMetas();
       return RedirectToAction("Success", new { msg = "You have successfully decrypto-serialize all (" + count + ") meta table ASTRIOCFILE(s)!" });
     }
 

@@ -25,12 +25,7 @@ namespace Aibe.Helpers {
     }
 
     public static void PrepareMetas() {
-      //try {
       metaInfoList = getMetaItems().ToList().Select(x => new MetaInfo(x)).Where(x => x.IsValid).ToList();
-        //Console.WriteLine("Successful amount: " + metaInfoList.Count);
-      //} catch (Exception exc) {
-      //  Console.WriteLine(exc.ToString());
-      //}
     }
 
     public static void AddMeta(MetaInfo meta) {
@@ -44,16 +39,15 @@ namespace Aibe.Helpers {
         metaInfoList.Remove(removedItem);
     }
 
-    //public static MetaItem GetMeta(string tableName) {
-    //  MetaItem meta = GetMetas()
-    //    .FirstOrDefault(x => x.TableName.EqualsIgnoreCase(tableName));
-    //  return meta;
-    //}
-
     public static MetaInfo GetMeta(string tableName) {
       MetaInfo meta = GetMetas()
         .FirstOrDefault(x => x.TableName.EqualsIgnoreCase(tableName));
       return meta;
+    }
+
+    public static void UpdateMeta(MetaItem metaItem) {
+      MetaInfo editedItem = GetMeta(metaItem.TableName);
+      editedItem.AssignParameters(metaItem);
     }
 
     public static int DecryptMetaItems(string folderPath) {
@@ -69,7 +63,7 @@ namespace Aibe.Helpers {
         db.SaveChanges();
 #else
         metaList.Clear();
-        metaList.AddRange(metas);
+        metaList.AddRange(metaItems);
 #endif
         PrepareMetas();
 

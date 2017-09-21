@@ -20,12 +20,5 @@ namespace Aiwe.Models {
       this.column = column;
       DataType = column.DataType.ToString().Substring(DH.SharedPrefixDataType.Length);
     }
-
-    //Not need to have this anymore, since in the Colorings, everything needed is there
-    //public List<ColoringItem> CreateColorItems(int id) {
-    //  if (Colorings == null || Colorings.Count <= 0)
-    //    return null;
-    //  return Colorings.Select(x => ColoringHelper.CreateColoringItem(column, x, id)).ToList();
-    //}
   }
 }

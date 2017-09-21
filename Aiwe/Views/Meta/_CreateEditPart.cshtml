@@ -186,10 +186,10 @@
   </div>
 
   <div class="form-group">
-    @Html.LabelFor(model => model.BasicColoringList, htmlAttributes: new { @class = ViewBag.LabelClasses })
+    @Html.LabelFor(model => model.ColoringList, htmlAttributes: new { @class = ViewBag.LabelClasses })
     <div class="@ViewBag.EditorClass">
-      @Html.TextAreaFor(model => model.BasicColoringList, new { @class = "form-control form-control-plus", @rows = 6 })
-      @Html.ValidationMessageFor(model => model.BasicColoringList, "", new { @class = "text-danger" })
+      @Html.TextAreaFor(model => model.ColoringList, new { @class = "form-control form-control-plus", @rows = 6 })
+      @Html.ValidationMessageFor(model => model.ColoringList, "", new { @class = "text-danger" })
     </div>
   </div>
 

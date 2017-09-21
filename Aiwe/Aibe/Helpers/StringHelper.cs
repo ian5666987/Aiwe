@@ -61,17 +61,3 @@ namespace Aibe.Helpers {
     }
   }
 }
-
-//    bool isInsideStringValue = false;
-//  List<string> sqlValueList = new List<string>();
-//  string currentString = string.Empty;
-//  foreach(char ch in input) {
-//    if (ch == '\'') {
-//      isInsideStringValue = !isInsideStringValue;
-//      currentString += ch;
-//      continue;
-//    }
-//    if(isInsideStringValue)
-//  }
-//  return sqlValueList;    
-//}

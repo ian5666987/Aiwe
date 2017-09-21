@@ -14,7 +14,7 @@ using System.Text;
 using System.Web.Http;
 using Aibe;
 using Aibe.Models.DB;
-using Extension.Database;
+using Extension.Database.SqlServer;
 using Extension.String;
 using Aiwe.Models;
 
@@ -259,41 +259,3 @@ namespace Aiwe.Controllers {
 #endregion
   }
 }
-
-//extract JSON items here...
-//strings.Add(value);
-//return "New Value added: " + request.Value;
-
-// GET api/values
-
-//The request should consists of 4 items: Request Identity, Table Name, table column, table filter, these are all which we need
-//Request Identity: must have matching user Id and password
-//Must have the table name wanted to be obtained
-//Must have table columns, if null, means all
-//Must have some sort of filters for the obtained values...
-
-//public IEnumerable<string> GetMany(ClientApiRequest request)
-//public string GetMany(ClientApiRequest request) {      
-//public IEnumerable<string> Get() {
-//  return strings;
-//}
-
-//One thing for sure, this type can be any type, doesn't matter!
-//string str = JsonConvert.SerializeObject(result, result.GetType(), new JsonSerializerSettings());
-//return str;
-
-//// convert string to stream
-//byte[] byteArray = Encoding.UTF8.GetBytes(str);
-//return byteArray;
-//byte[] byteArray = Encoding.ASCII.GetBytes(contents);
-//MemoryStream stream = new MemoryStream(byteArray);
-//return stream;
-////return strings;
-
-//string oldValue = strings[request.Id.Value];
-//strings[request.Id.Value] = request.Value;
-//return "Old value = " + oldValue + " on Id = " + request.Id.Value + " is updated to New Value = " + request.Value;
-
-//string oldValue = strings[request.Id.Value];
-//strings.RemoveAt(request.Id.Value);
-//return "Successfully remove Value = " + oldValue + " at Id = " + request.Id.Value;

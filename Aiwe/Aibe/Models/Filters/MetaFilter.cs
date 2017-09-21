@@ -24,7 +24,7 @@
     public string DetailsExclusionList { get; set; }
     public string CreateEditExclusionList { get; set; }
     public string AccessExclusionList { get; set; }
-    public string BasicColoringList { get; set; }
+    public string ColoringList { get; set; }
     public string FilterDropDownLists { get; set; }
     public string CreateEditDropDownLists { get; set; }
     public string PrefixesOfColumns { get; set; }

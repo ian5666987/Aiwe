@@ -21,7 +21,6 @@ namespace Aiwe.Extensions {
 
       int usedHeaderIndex = 0;
       StringBuilder sb = new StringBuilder();
-      //sb.Append("<hr/>");
       sb.Append("<table style=\"border-collapse:separate;border-spacing:10px 5px;border:1px solid black\">");
       sb.Append("<tr>");
 

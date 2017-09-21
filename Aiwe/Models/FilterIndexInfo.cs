@@ -73,6 +73,7 @@ namespace Aiwe.Models {
         DH.NumberDataTypes.Contains(x.DataType.ToString().Substring(DH.SharedPrefixDataType.Length)))
         .Select(x => x.ColumnName.ToCamelBrokenString()).ToList();
 
+      //TODO, currently all these are hardcoded, not put in DH
       FilterLabelPortion = filterColumnNames.Any(x => x.Length >= 26) ||
         filterNumberColumnNames.Any(x => x.Length >= 16) || filterDateTimeColumnNames.Any(x => x.Length >= 23) ? 5 : 4;
     }
@@ -99,13 +100,7 @@ namespace Aiwe.Models {
     public bool IsColumnIncludedInFilter(string columnName, IPrincipal user, bool isWebApi = false) {
       if (UserHelper.UserHasMainAdminRight(user)) //if user is in main admin rights, it is always true
         return true;
-      if (Meta.FilterExclusions == null || Meta.FilterExclusions.Count <= 0) //if there is no column exclusion, then the column is definitely included
-        return true;
-      ExclusionInfo exInfo = Meta.FilterExclusions.FirstOrDefault(x => x.Name.EqualsIgnoreCaseTrim(columnName));
-      if (exInfo == null) //non specified column exclusion is allowed
-        return true;
-      bool isExplicitlyExcluded = exInfo.Roles.Any(x => user.IsInRole(x));
-      return !isExplicitlyExcluded; //if user is not explicitly excluded, then he is definitely included.
+      return IsColumnIncluded(Meta.FilterExclusions, columnName, user);
     }
 
     public bool IsActionAllowed(string actionName, IPrincipal user, bool isWebApi = false) {
@@ -138,57 +133,3 @@ namespace Aiwe.Models {
 
   }
 }
-
-
-//{
-//get { return _meta; }
-//set {
-//  _meta = value;
-
-//  HasAction = _meta != null && !string.IsNullOrWhiteSpace(_meta.ActionList);
-//  HasCreateAction = HasAction && _meta.ActionList.ToLower().Contains("create");
-//  actionDescriptions = HasAction ? _meta.ActionList.Split(';')?.Select(x => x.Trim()).ToList() : null;
-//  actions = HasAction ? _meta.ActionList.Split(';')?.Select(x => x.Split('=')[0].Trim()).ToList() : null;
-//  NonCreateActions = actions != null && actions.Count > 0 ? actions.Where(x => x.ToLower() != "create").ToList() : null;
-//  HasNonCreateAction = NonCreateActions != null && NonCreateActions.Count > 0;
-
-//  columnsExclusionDescription = _meta != null && !string.IsNullOrWhiteSpace(_meta.ColumnExclusionList) ?
-//    _meta.ColumnExclusionList.Split(';')?.Select(x => x.Trim()).ToList() : null;
-//  columnsExclusion = _meta != null && !string.IsNullOrWhiteSpace(_meta.ColumnExclusionList) ?
-//    _meta.ColumnExclusionList.Split(';')?.Select(x => x.Split('=')[0].ToLower().Trim()).ToList() : null;
-
-//  pictureLinkColumnsDescription = _meta != null && !string.IsNullOrWhiteSpace(_meta.PictureLinkColumns) ?
-//    _meta.PictureLinkColumns.Split(';')?.Select(x => x.Trim()).ToList() : null;
-//  pictureLinkColumns = _meta != null && !string.IsNullOrWhiteSpace(_meta.PictureLinkColumns) ?
-//    _meta.PictureLinkColumns.Split(';')?.Select(x => x.Split('=')[0].ToLower().Trim()).ToList() : null;
-//  pictureShownColumns = _meta != null && !string.IsNullOrWhiteSpace(_meta.IndexShownPictureColumns) ?
-//    _meta.IndexShownPictureColumns.Split(';')?.Select(x => x.Split('=')[0].ToLower().Trim()).ToList() : null;
-
-//  defaultActionLinks = _meta != null && !string.IsNullOrWhiteSpace(_meta.DefaultActionLinkList) ?
-//    _meta.DefaultActionLinkList.Split(';')?.Select(x => x.ToLower().Trim()).ToList() : null;
-
-//  basicColorings = _meta != null && !string.IsNullOrWhiteSpace(_meta.BasicColoringList) ?
-//    _meta.BasicColoringList.Split(';')?.Select(x => x.Trim()).ToList() : null;
-
-//  FilterIsDisabled = _meta.DisableFilter.HasValue && _meta.DisableFilter.Value;
-
-//  tableActionsDescriptionList = _meta != null && !string.IsNullOrWhiteSpace(_meta.TableActionList) ?
-//    _meta.TableActionList.Split(';')?.Select(x => x.Trim()).ToList() : null;
-//  TableActionsList = _meta != null && !string.IsNullOrWhiteSpace(_meta.TableActionList) ?
-//    _meta.TableActionList.Split(';')?.Select(x => x.Split('=')[0].Trim()).ToList() : null;
-//  tableDefaultActionLinksList = _meta != null && !string.IsNullOrWhiteSpace(_meta.TableDefaultActionLinkList) ?
-//    _meta.TableDefaultActionLinkList.Split(';')?.Select(x => x.Trim()).ToList() : null;
-//  HasTableAction = TableActionsList != null && TableActionsList.Count > 0;
-
-//  filtersExclusionDescription = _meta != null && !string.IsNullOrWhiteSpace(_meta.FilterExclusionList) ?
-//    _meta.FilterExclusionList.Split(';')?.Select(x => x.Trim()).ToList() : null;
-//  filtersExclusion = _meta != null && !string.IsNullOrWhiteSpace(_meta.FilterExclusionList) ?
-//    _meta.FilterExclusionList.Split(';')?.Select(x => x.Split('=')[0].ToLower().Trim()).ToList() : null;
-
-//  if (_meta != null)
-//    assignDropdownColumns(_meta.FilterDropDownLists);
-
-//  assignListColumns();
-//}
-//}
-

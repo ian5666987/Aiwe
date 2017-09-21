@@ -2,19 +2,20 @@
 using System.Linq;
 using System.Security.Principal;
 using Extension.String;
+using Aibe.Models;
 
-namespace Aibe.Models {
-  public partial class ActionInfo : CommonBaseInfo {
-    public bool IsAllowed(IPrincipal user) {
-      return Roles == null || Roles.Count <= 0 || Roles.Any(x => user.IsInRole(x)); //if user is found or is not defined
+namespace Aiwe.Extensions {
+  public static partial class ActionInfoExtension {
+    public static bool IsAllowed(this ActionInfo actInfo, IPrincipal user) {
+      return actInfo.Roles == null || actInfo.Roles.Count <= 0 || actInfo.Roles.Any(x => user.IsInRole(x)); //if user is found or is not defined
     }
 
-    public bool IsAllowed(ApplicationUser user, bool isWebApi = false) {
-      if (Roles == null || Roles.Count <= 0)
+    public static bool IsAllowed(this ActionInfo actInfo, ApplicationUser user, bool isWebApi = false) {
+      if (actInfo.Roles == null || actInfo.Roles.Count <= 0)
         return true;
-      bool allowed = Roles.Any(x => x.EqualsIgnoreCase(user.WorkingRole) || x.EqualsIgnoreCase(user.AdminRole));
+      bool allowed = actInfo.Roles.Any(x => x.EqualsIgnoreCase(user.WorkingRole) || x.EqualsIgnoreCase(user.AdminRole));
       if (isWebApi) {
-        bool appliedToMobile = Roles.Any(x => x.EqualsIgnoreCase(DH.MobileAppRole));
+        bool appliedToMobile = actInfo.Roles.Any(x => x.EqualsIgnoreCase(Aibe.DH.MobileAppRole));
         return allowed || appliedToMobile; //the relationship here is singularly OR
       }
       return allowed;

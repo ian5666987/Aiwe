@@ -10,6 +10,7 @@ using Aibe;
 using Aibe.Helpers;
 using Aibe.Models;
 using Aibe.Models.DB;
+using Aiwe.Extensions;
 
 namespace Aiwe.ActionFilters {
   public partial class CommonActionFilterAttribute : ActionFilterAttribute {

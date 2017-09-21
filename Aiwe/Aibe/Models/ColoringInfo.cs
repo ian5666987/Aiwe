@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Extension.String;
 using System.Text;
-using Extension.Database;
+using Extension.Database.SqlServer;
 
 namespace Aibe.Models {
   public partial class ColoringInfo : BaseInfo { //it is not derived from CommonBaseInfo

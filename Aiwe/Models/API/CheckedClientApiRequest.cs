@@ -1,4 +1,4 @@
-﻿using Extension.Database;
+﻿using Extension.Database.SqlServer;
 using Aibe;
 using Aibe.Helpers;
 using Aibe.Models;
@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using Extension.String;
+using Aiwe.Extensions;
 
 namespace Aiwe.Models.API {
   public class CheckedClientApiRequest {
@@ -28,8 +29,6 @@ namespace Aiwe.Models.API {
     public bool IsSuccess { get; private set; }
     public string ErrorMessage { get; private set; }  
     public MetaInfo Meta { get; private set; }
-    //public CreateEditInfo CeInfo { get; private set; }
-    //public List<DetailsInfo> DInfo { get; private set; }
 
     //Additional properties to help
     private List<DataColumn> columns = new List<DataColumn>();
@@ -62,11 +61,6 @@ namespace Aiwe.Models.API {
       Attachments = clientRequest.Attachments;
 
       Meta = TableHelper.GetMeta(TableName);
-      //This is needed for later checking
-      //MetaInfo meta = TableHelper.GetMetaInfo(TableName);
-      //if (RequestType != ApiRequestType.Delete) //as long as it is not delete, prepare this for picture checking/attachment
-      //  CeInfo = new CreateEditInfo(meta, SQLServerHandler.GetColumns(DataHolder.DataDBConnectionString, TableName),
-      //    RequestType == ApiRequestType.Create ? "create" : "edit");      
 
       string errorMsg;
       bool result;
@@ -598,100 +592,3 @@ namespace Aiwe.Models.API {
     //Insert, //Currently unused
   }
 }
-
-//static List<char> allowedMathChars = new List<char> {
-//  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', //numbers
-//  '+', '-', '*', '/', //operational sign
-//  '(', ')', //brackets
-//  '.', //dot for decimal number
-//  ' ', //space is allowed
-//};
-//private bool isRoughlyMathExpression(string exp) {
-//  if (string.IsNullOrWhiteSpace(exp))
-//    return false;
-//  bool isPureMath = exp.Distinct().Except(allowedMathChars).Count() == 0; //if count >= 1 means it cannot be math expression      
-//  if (isPureMath)
-//    return true;
-//  List<string> components = componentSplitter(exp);
-//  foreach (string component in components) {
-//    if (component.StartsWith("(") && component.EndsWith(")") && component.Length > 2) { //bracket case
-//      if (!isRoughlyMathExpression(component)) //if any component is not math expresion it cannot be math expression
-//        return false;
-//    } else {
-
-//    }
-//  }
-//  return false;
-//}
-
-//private bool isStringConcatenation(string exp) {      
-//  return false;
-//}
-
-//private bool evaluateMathExpression(string exp, out decimal result) {
-//  result = 0;
-//  return false;
-//}
-
-////Not working
-////1. 'B' = 'A' + 1
-
-////Tautology
-////1. [TableName] = [tAbleName] (gone by C2)
-////2. 3 = 3.000 + 1 - 1 (gone by C1)
-////3. 'AB' = 'A' + 'B' (gone by C1)
-////4. [TableName] = [tAbleName] + ''
-////5. [ItemsPerPage] = [ItemsPerPage] + 0
-
-////Non-tautology
-////1. 'B' != 'A' (gone by C1)
-
-////Possible case
-////1. [ColumnName1] + [ColumnName2] > 0 (not allowed by C1!)
-////2. [ColumnName1] >= 12.345
-////3. [ColumnName1] != [ColumnName2]
-////4. [CN1]/[CN2] != [CN1]*[CN1]/([CN1]*[CN2])
-
-////Checking method
-////C1. Left part cannot be anything but single item expression
-////C2. Exact same value not allowed
-//private bool checkComparisonContainsTautologyInjection(string prev, string next) { //true means bad
-//  if (string.IsNullOrWhiteSpace(prev) || string.IsNullOrWhiteSpace(next))
-//    return false; //no harm, since there is no definition
-
-//  if (prev.StartsWith("(") && prev.EndsWith(")") && prev.Length > 2) { //no need to check deeper, such is not allowed
-
-//  }
-
-//  //C1. Left part cannot be anything but single item expression
-//  if (!prev.StartsWith("[") || !prev.EndsWith("]") || prev.Length <= 2)
-//    return true;
-
-//  //C2. Exact same value not allowed
-//  if (prev.ToLower().Trim() == next.ToLower().Trim()) 
-//    return true;
-
-//  //2. 3 = 3.000 + 1 - 1 math expression tautology
-//  bool leftIsMath = isRoughlyMathExpression(prev);
-//  bool rightIsMath = isRoughlyMathExpression(next);
-//  decimal leftValue = leftIsMath ? evaluateMathExpression(prev) : 0;
-//  decimal rightValue = rightIsMath ? evaluateMathExpression(next) : 0;
-//  if (leftIsMath && rightIsMath && leftValue == rightValue)
-//    return true;
-
-
-//  return false; //not a tautology means safe
-//}
-
-//  if (component.StartsWith("[") && component.EndsWith("]") && component.Length > 2) { //may only consists of table name, must end with
-//  if (!columnNames.Any(x => x.ToLower() == component.Substring(1, component.Length - 2).ToLower().Trim())) { //does not correspond to any valid column name
-//    errorMsg = string.Concat("Desc: ", desc, "\nAction: Order check\nError: Invalid column name\nItem: ", component);
-//    return false;
-//  }
-//} else {
-//  if (!columnNames.Any(x => x.EqualsIgnoreCase(component))) //cannot find it in the columnNames
-//    if (!allowedOrderByNonColumnNameComponents.Any(x => x.EqualsIgnoreCase(component))) { //cannot find it in the allowed non column name components
-//      errorMsg = string.Concat("Desc: ", desc, "\nAction: Order check\nError: Invalid keyword/component\nItem: ", component);
-//      return false;
-//    }
-//}

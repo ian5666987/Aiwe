@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Data;
 using System.Text.RegularExpressions;
-using Extension.Database;
+using Extension.Database.SqlServer;
 using Extension.String;
 
 namespace Aibe.Helpers {
@@ -141,7 +141,6 @@ namespace Aibe.Helpers {
 
     public static List<string> CreateLiveCreateEditDropDownFor(string tableName, string tableColumn, object originalValue,
       string dataType = "number", Dictionary<string, DropdownPassedArguments> passedColumnsAndValues = null) {
-      //MetaItem meta = TableHelper.GetMeta(tableName);
       MetaInfo meta = TableHelper.GetMeta(tableName);
 
       if (meta == null || meta.CreateEditDropDowns == null || !meta.CreateEditDropDowns.Any())
@@ -203,107 +202,3 @@ namespace Aibe.Helpers {
     }
   }
 }
-
-//public static List<string> CreateLiveCreateEditDropDownFor(string tableName, string tableColumn, object originalValue,
-//  string dataType = "number", Dictionary<string, DropdownPassedArguments> passedColumnsAndValues = null) {
-//  //MetaItem meta = TableHelper.GetMeta(tableName);
-//  MetaInfo meta = TableHelper.GetMeta(tableName);
-
-//  if (meta == null || meta.CreateEditDropDowns == null || !meta.CreateEditDropDowns.Any())
-//    return null; //fails to enumerate, please handle without dropdown
-
-//  ////For different dropdown columns: Info1;Info2;...;InfoN
-//  ////Thus, symbol ";" cannot be in the where clause
-//  //List<string> dropdownLists = meta.CreateEditDropDownLists.Split(';')?.Select(x => x.Trim()).ToList();
-//  //if (dropdownLists == null || dropdownLists.Count <= 0)
-//  //  return null; //fails to enumerate, please handle without dropdown
-
-//  ////Each Info should be like Info1=1,2,3,[RInfo1],[RInfo2],...
-//  ////This is to get "Info1" string
-//  //string dropdownString = dropdownLists //actually checking table column
-//  //  .FirstOrDefault(x => x.Split('=')[0].Trim() == tableColumn);
-//  DropDownInfo dropDownInfo = meta.GetCreateEditDropDownColumnInfo(tableColumn);
-//  if (dropDownInfo == null || dropDownInfo.Items == null || !dropDownInfo.Items.Any())
-//    return null;
-
-//  //if (string.IsNullOrWhiteSpace(dropdownString))
-//  //  return null; //fails to enumerate, please handle without dropdown
-
-//  ////Since it uses index of, does not matter if the item contains "="
-//  ////But the item cannot contains ","
-//  ////This is to process 1,2,3,[RInfo1],[RInfo2],...
-//  //var dropdownParts = dropdownString.Substring(dropdownString.IndexOf('=') + 1)
-//  //  .Split(',').Select(x => x.Trim()).ToList();
-
-//  //if (dropdownParts.Count < 1)
-//  //  return null; //fails to enumerate, please handle without dropdown
-
-//  //List<string> filteredDropdownParts = dropdownParts.Where(x => x.StartsWith("[") && x.EndsWith("]") && x.Contains('=') && x.Split(':').Length >= 3).ToList();
-//  if (dropDownInfo.Items.Any(x => !x.IsItem)) //table-valued
-//    return subcommonGetDropDownFor(dropDownInfo, originalValue?.ToString(), dataType, filterApplied: true, passedColumnsAndValues: passedColumnsAndValues);
-//  return subcommonGetDropDownFor(dropDownInfo, originalValue?.ToString(), dataType);
-//}
-
-//public static List<string> GetStaticCreateEditDropDownFor(string tableName, string tableColumn, string originalValue, string dataType = "number") {
-//  MetaInfo meta = TableHelper.GetMeta(tableName);
-
-//  if (meta == null || meta.CreateEditDropDowns == null || !meta.CreateEditDropDowns.Any())
-//    return null; //fails to enumerate, please handle without dropdown
-
-//  DropDownInfo dropDownInfo = meta.GetCreateEditDropDownColumnInfo(tableColumn);
-//  if (dropDownInfo == null || dropDownInfo.Items == null || !dropDownInfo.Items.Any())
-//    return null;
-
-//  //List<string> dropdownLists = meta.CreateEditDropDownLists.Split(';')?.Select(x => x.Trim()).ToList();
-//  //if (dropdownLists == null || dropdownLists.Count <= 0)
-//  //  return null; //fails to enumerate, please handle without dropdown
-
-//  return subcommonGetDropDownFor(dropDownInfo, originalValue, dataType, filterApplied: false, passedColumnsAndValues: null);
-//  //return commonStaticFilteredGetDropdownFor(meta.CreateEditDropDowns, tableColumn, originalValue, dataType);
-//}
-
-//public static List<string> GetStaticFilterDropDownFor(string tableName, string tableColumn, string dataType = "number") {
-//  MetaInfo meta = TableHelper.GetMeta(tableName);
-
-//  if (meta == null || meta.FilterDropDowns == null || !meta.FilterDropDowns.Any())
-//    return null; //fails to enumerate, please handle without dropdown
-
-//  DropDownInfo dropDownInfo = meta.GetFilterDropDownColumnInfo(tableColumn);
-//  if (dropDownInfo == null || dropDownInfo.Items == null || !dropDownInfo.Items.Any())
-//    return null;
-
-//  //List<string> dropdownLists = meta.FilterDropDownLists.Split(';')?.Select(x => x.Trim()).ToList();
-//  //if (dropdownLists == null || dropdownLists.Count <= 0)
-//  //  return null; //fails to enumerate, please handle without dropdown
-
-//  return subcommonGetDropDownFor(dropDownInfo, null, dataType, filterApplied: false, passedColumnsAndValues: null);
-//  //return commonStaticFilteredGetDropdownFor(meta.FilterDropDowns, tableColumn, null, dataType);
-//}
-
-//List<string> dropdownParts, 
-//List<DropDownInfo> dropdowns,
-//List<DropDownItemInfo> dropdownParts,
-//string refTableOrderStyle = string.Empty;
-
-//private static List<string> commonStaticFilteredGetDropdownFor(
-//  List<DropDownInfo> dropdowns, string tableColumn, string originalValue, string dataType = "number") {
-//  //[0] NullableString=[TestTableCommonA:OfficerName:ThisTableColumn=OtherConn.OtherTable.OtherColumn],{DESC}
-//  //[1] NullableInt=[TestTableCommonB:JobSite],{ASC};
-//  if (dropdowns == null || !dropdowns.Any())
-//    return null; //fails to enumerate, please handle without dropdown
-//  //List<DropDownInfo> filteredDropDowns = dropdowns.Where(x => x.Name.EqualsIgnoreCase(tableColumn)).ToList(); //get only dropdowns which has the column names
-//  //                                                                                                            //.FirstOrDefault(x => x.Split('=')[0].Trim() == tableColumn);
-//  //if (dropdowns == null || !dropdowns.Any())
-//  //  return null; //fails to enumerate, please handle without dropdown
-
-//  ////Only the first equal part, so it is OK
-//  ////NullableString=[TestTableCommonA:OfficerName:OtherColumn=ThisTableColumn],{DESC}
-//  //var dropdownParts = dropdownString.Substring(dropdownString.IndexOf('=') + 1)
-//  //  .Split(',').Select(x => x.Trim()).ToList();
-
-//  ////24,[...],35,{DESC}
-//  //if (dropdownParts.Count < 1)
-//  //  return null; //fails to enumerate, please handle without dropdown
-
-//  return subcommonGetDropdownFor(filteredDropDowns, originalValue, dataType, filterApplied: false, passedColumnsAndValues: null);
-//}

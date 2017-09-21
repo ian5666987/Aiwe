@@ -171,6 +171,11 @@ namespace Aiwe.Controllers {
     [HttpPost]
     public ActionResult Edit(ApplicationUserEditViewModel model) {
       ApplicationUser user = UserManager.Users.FirstOrDefault(x => x.Id == model.Id);
+      if (string.IsNullOrWhiteSpace(model.AdminRole) && string.IsNullOrWhiteSpace(model.WorkingRole)) {
+        ModelState.AddModelError("WorkingRole", "[Working Role] and [Admin Role] cannot be both empty");
+        ModelState.AddModelError("AdminRole", "[Working Role] and [Admin Role] cannot be both empty");
+      }
+
       if (!ModelState.IsValid)
         return View(model);
       if (user == null)

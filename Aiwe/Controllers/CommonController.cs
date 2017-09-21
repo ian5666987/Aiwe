@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Runtime.InteropServices;
-using Extension.Database;
+using Extension.Database.SqlServer;
 using Extension.String;
 using Aibe;
 using Aibe.Helpers;
@@ -777,23 +777,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       bool filterStyle = false) {
       List<string> modelStateKeys = ModelState.Keys.ToList();
 
-      ////Regex columns
-      //Dictionary<string, string> regexes = meta.RegexCheckedColumns?.GetXMLTaggedDictionary("reg");
-      ////Regex examples column
-      //Dictionary<string, string> regexExamples = meta.RegexCheckedColumnExamples?.GetXMLTaggedDictionary("ex");
-
-      //Prepare columnNames for limitation later...
-      //format example: ColumnName1=min:23.555,max:75.112;ColumnName2=max:36.991
-      //Dictionary<string, string> limits = new Dictionary<string, string>();
-      //if (!string.IsNullOrWhiteSpace(meta.NumberLimits)) {
-      //  var numberLimitStrings = meta.NumberLimits.Split(';');
-      //  foreach (var numberLimitString in numberLimitStrings) {
-      //    var parts = numberLimitString?.Split('=')?.Select(x => x.Trim())?.ToList();
-      //    if (parts != null && parts.Count > 1)
-      //      limits.Add(parts[0], parts[1]);
-      //  }
-      //}
-
       foreach (var key in modelStateKeys) {
         if (checkExclusions.Contains(key))
           continue; //no need to check if explicitly excluded
@@ -923,29 +906,12 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
               ));
             }
           }
-          //var limitValueStrings = limits[keyInfo.PureKeyName].Split('|').Select(x => x.Trim()).ToList();
-          //foreach (var limitValueString in limitValueStrings) { //each limit value is like min:23.555 or max:75.112
-          //  var limitValues = limitValueString.Split(':').Select(x => x.Trim()).ToList();
-          //  if (limitValues == null || limitValues.Count < 2)
-          //    continue;
-          //  decimal limitValue, columnValue;
-          //  bool result = decimal.TryParse(limitValues[1], out limitValue);
-          //  bool result2 = decimal.TryParse(value.ToString(), out columnValue);
-          //  if (!result || !result2) //if any result cannot be parsed by decimal, forget it
-          //    continue;
-
-          //  if (limitValues[0] == "max" && columnValue > limitValue) //maximum limitation violated
-          //}
         }
       }
     }
 
     private Type getTableType(string tableName) {
-      //  Assembly executingAssembly = Assembly.GetExecutingAssembly();
-      //  string type = string.Concat(executingAssembly.GetName().ToString().Split(',')[0], //to get only the assembly name
-      //    ".Models.DB.", tableName);
-      //return Type.GetType(type);
-      return Type.GetType(string.Concat("Aibe.Models.DB.", tableName)); //it is always in the Aibe.Models
+      return Type.GetType(string.Concat("Aibe.Models.DB.", tableName)); //it is always in the Aibe.Models.DB. TODO not sure if it is the best way
     }
 
     private PropertyInfo getColumnPropertyInfo(string tableName, string columnName) {

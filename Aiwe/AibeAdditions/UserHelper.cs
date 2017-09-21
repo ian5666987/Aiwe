@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Principal;
 using Aiwe.Models;
 using Aiwe.Models.ViewModels;
+using Extension.String;
 using Aiwe;
 
 namespace Aibe.Helpers {
@@ -51,12 +52,12 @@ namespace Aibe.Helpers {
 
     public static bool UserIsDeveloper(ApplicationUser user) {
       return user != null && user.AdminRole != null &&
-        user.AdminRole == DH.DevRole;
+        user.AdminRole.EqualsIgnoreCase(DH.DevRole);
     }
 
     public static bool UserIsDeveloper(ApplicationUserViewModel user) {
       return user != null && user.AdminRole != null &&
-        user.AdminRole == DH.DevRole;
+        user.AdminRole.EqualsIgnoreCase(DH.DevRole);
     }
   }
 }

@@ -22,26 +22,6 @@ namespace Aibe.Helpers {
       result.Results = matchResults;
       return result;
     }
-
-    public static List<T> PrepareFilteredModels<T>(int? page, IOrderedQueryable<T> filtereds, dynamic viewBag) {
-      List<T> filteredModels = null;
-      int itemsPerPage;
-      bool resultParse = int.TryParse(ConfigurationManager.AppSettings["itemsPerPage"], out itemsPerPage);
-      if (!resultParse)
-        itemsPerPage = 20; //default
-      int queryCount = 0;
-      if (filtereds.Any()) {
-        ViewPerPageQueryResult<T> result = ProcessView(page, filtereds, itemsPerPage);
-        filteredModels = result.Results.ToList();
-        queryCount = result.QueryCount;
-        itemsPerPage = result.ItemsPerPage;
-      }
-      int pageValue = page.HasValue ? page.Value : 1;
-      int maxPage = ((int)queryCount + itemsPerPage - 1) / itemsPerPage;
-      int currentPage = Math.Max(Math.Min(pageValue, maxPage), 1);
-      viewBag.NavData = new NavDataModel(currentPage, itemsPerPage, queryCount);
-      return filteredModels;
-    }
   }
 
   public class ViewPerPageQueryResult<TEntity> {

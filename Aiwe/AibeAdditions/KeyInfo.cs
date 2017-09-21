@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using Extension.Database;
+using Extension.Database.SqlServer;
+using Aibe;
+using Extension.String;
 
 namespace Aibe.Models {
   public partial class KeyInfo {
@@ -144,7 +146,7 @@ namespace Aibe.Models {
       string value = collections[Key];
 
       if (filterStyle) {
-        if (DataType == "String" || DataType == "Char")
+        if (DataType.EqualsIgnoreCase(DH.StringDataType) || DataType.EqualsIgnoreCase(DH.CharDataType))
           return value;
         else if (DH.NumberDataTypes.Contains(DataType)) {
           decimal valDecimalFilter;
@@ -152,7 +154,7 @@ namespace Aibe.Models {
           if (parseResult)
             return valDecimalFilter;
           else return null;
-        } else if (DataType == "DateTime") {
+        } else if (DataType.EqualsIgnoreCase(DH.DateTimeDataType)) {
           DateTime valDt; //this is going to be quite tricky
           string dtStr = value;
           string timeStr = AddKeyName.EndsWith(DH.FromName) ? //get the time string
@@ -164,7 +166,7 @@ namespace Aibe.Models {
           if (parseResult)
             return valDt;
           else return null;
-        } else if (DataType == DH.BooleanDataType) {
+        } else if (DataType.EqualsIgnoreCase(DH.BooleanDataType)) {
           //string parseVal = value?.ToString() == "on" ? "true" : "false";
           bool valBool;
           parseResult = bool.TryParse(value, out valBool);

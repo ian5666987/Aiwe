@@ -4,7 +4,7 @@ using Extension.String;
 using System.Data;
 using Aibe.Models.DB;
 using Aibe.Helpers;
-using Extension.Database;
+using Extension.Database.SqlServer;
 using System;
 
 namespace Aibe.Models {
@@ -54,11 +54,16 @@ namespace Aibe.Models {
     public List<ActionInfo> NonCreateActions { get { return Actions == null ? null : Actions.Where(x => !x.Name.EqualsIgnoreCaseTrim(DH.CreateActionName)).ToList(); } }
     public bool HasNonCreateAction { get { return Actions != null && Actions.Any(x => !x.Name.EqualsIgnoreCaseTrim(DH.CreateActionName)); } }
 
-    public MetaInfo (MetaItem meta) {
-      if (meta == null || string.IsNullOrWhiteSpace(meta.TableName)) //null meta makes an invalid item
+    public MetaInfo (MetaItem metaItem) {
+      AssignParameters(metaItem);
+    }
+
+    //Assign parameters
+    public void AssignParameters(MetaItem metaItem) {
+      if (metaItem == null || string.IsNullOrWhiteSpace(metaItem.TableName)) //null meta makes an invalid item
         return;
 
-      TableName = meta.TableName; 
+      TableName = metaItem.TableName;
 
       try { //do this as early as not to waste time... if we cannot proceed further
         DataColumns = SQLServerHandler.GetColumns(DH.DataDBConnectionString, TableName);
@@ -67,92 +72,92 @@ namespace Aibe.Models {
         return;
       }
 
-      TableDisplayName = string.IsNullOrWhiteSpace(meta.DisplayName) ? meta.TableName.ToCamelBrokenString() :
-          meta.DisplayName;
-      ItemsPerPage = meta.ItemsPerPage == null ? (short)15 : meta.ItemsPerPage.Value;
-      if (!string.IsNullOrWhiteSpace(meta.OrderBy))
-        OrderBys = meta.OrderBy.GetTrimmedNonEmptyParts(';')
+      TableDisplayName = string.IsNullOrWhiteSpace(metaItem.DisplayName) ? metaItem.TableName.ToCamelBrokenString() :
+          metaItem.DisplayName;
+      ItemsPerPage = metaItem.ItemsPerPage == null ? (short)15 : metaItem.ItemsPerPage.Value;
+      if (!string.IsNullOrWhiteSpace(metaItem.OrderBy))
+        OrderBys = metaItem.OrderBy.GetTrimmedNonEmptyParts(';')
           .Select(x => new OrderByInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.ActionList))
-        Actions = meta.ActionList.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.ActionList))
+        Actions = metaItem.ActionList.GetTrimmedNonEmptyParts(';')
           .Select(x => new ActionInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.DefaultActionList))
-        DefaultActions = meta.DefaultActionList.GetTrimmedNonEmptyParts(';');
-      if (!string.IsNullOrWhiteSpace(meta.TableActionList))
-        TableActions = meta.TableActionList.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.DefaultActionList))
+        DefaultActions = metaItem.DefaultActionList.GetTrimmedNonEmptyParts(';');
+      if (!string.IsNullOrWhiteSpace(metaItem.TableActionList))
+        TableActions = metaItem.TableActionList.GetTrimmedNonEmptyParts(';')
           .Select(x => new ActionInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.DefaultTableActionList))
-        DefaultTableActions = meta.DefaultTableActionList.GetTrimmedNonEmptyParts(';');
-      if (!string.IsNullOrWhiteSpace(meta.TextFieldColumns))
-        TextFieldColumns = meta.TextFieldColumns.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.DefaultTableActionList))
+        DefaultTableActions = metaItem.DefaultTableActionList.GetTrimmedNonEmptyParts(';');
+      if (!string.IsNullOrWhiteSpace(metaItem.TextFieldColumns))
+        TextFieldColumns = metaItem.TextFieldColumns.GetTrimmedNonEmptyParts(';')
           .Select(x => new TextFieldColumnInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.PictureColumns))
-        PictureColumns = meta.PictureColumns.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.PictureColumns))
+        PictureColumns = metaItem.PictureColumns.GetTrimmedNonEmptyParts(';')
           .Select(x => new PictureColumnInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.IndexShownPictureColumns))
-        IndexShownPictureColumns = meta.IndexShownPictureColumns.GetTrimmedNonEmptyParts(';');
-      if (!string.IsNullOrWhiteSpace(meta.RequiredColumns))
-        RequiredColumns = meta.RequiredColumns.GetTrimmedNonEmptyParts(';');
-      if (!string.IsNullOrWhiteSpace(meta.NumberLimitColumns))
-        NumberLimitColumns = meta.NumberLimitColumns.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.IndexShownPictureColumns))
+        IndexShownPictureColumns = metaItem.IndexShownPictureColumns.GetTrimmedNonEmptyParts(';');
+      if (!string.IsNullOrWhiteSpace(metaItem.RequiredColumns))
+        RequiredColumns = metaItem.RequiredColumns.GetTrimmedNonEmptyParts(';');
+      if (!string.IsNullOrWhiteSpace(metaItem.NumberLimitColumns))
+        NumberLimitColumns = metaItem.NumberLimitColumns.GetTrimmedNonEmptyParts(';')
           .Select(x => new NumberLimitColumnInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.RegexCheckedColumns))
-        RegexCheckedColumns = meta.RegexCheckedColumns.GetXMLTaggedInnerStrings("reg")
+      if (!string.IsNullOrWhiteSpace(metaItem.RegexCheckedColumns))
+        RegexCheckedColumns = metaItem.RegexCheckedColumns.GetXMLTaggedInnerStrings("reg")
           .Select(x => new RegexCheckedColumnInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.RegexCheckedColumnExamples))
-        RegexCheckedColumnExamples = meta.RegexCheckedColumnExamples.GetXMLTaggedInnerStrings("ex")
+      if (!string.IsNullOrWhiteSpace(metaItem.RegexCheckedColumnExamples))
+        RegexCheckedColumnExamples = metaItem.RegexCheckedColumnExamples.GetXMLTaggedInnerStrings("ex")
           .Select(x => new RegexCheckedColumnExampleInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.UserRelatedFilters))
-        UserRelatedFilters = meta.UserRelatedFilters.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.UserRelatedFilters))
+        UserRelatedFilters = metaItem.UserRelatedFilters.GetTrimmedNonEmptyParts(';')
           .Select(x => new UserRelatedFilterInfo(x)).Where(x => x.IsValid).ToList(); //exclude non successful parsing result
-      FilterIsDisabled = meta.DisableFilter != null && meta.DisableFilter.Value;
-      if (!string.IsNullOrWhiteSpace(meta.ColumnExclusionList))
-        ColumnExclusions = meta.ColumnExclusionList.GetTrimmedNonEmptyParts(';')
+      FilterIsDisabled = metaItem.DisableFilter != null && metaItem.DisableFilter.Value;
+      if (!string.IsNullOrWhiteSpace(metaItem.ColumnExclusionList))
+        ColumnExclusions = metaItem.ColumnExclusionList.GetTrimmedNonEmptyParts(';')
           .Select(x => new ExclusionInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.FilterExclusionList))
-        FilterExclusions = meta.FilterExclusionList.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.FilterExclusionList))
+        FilterExclusions = metaItem.FilterExclusionList.GetTrimmedNonEmptyParts(';')
           .Select(x => new ExclusionInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.DetailsExclusionList))
-        DetailsExclusions = meta.DetailsExclusionList.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.DetailsExclusionList))
+        DetailsExclusions = metaItem.DetailsExclusionList.GetTrimmedNonEmptyParts(';')
           .Select(x => new ExclusionInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.CreateEditExclusionList))
-        CreateEditExclusions = meta.CreateEditExclusionList.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.CreateEditExclusionList))
+        CreateEditExclusions = metaItem.CreateEditExclusionList.GetTrimmedNonEmptyParts(';')
           .Select(x => new ExclusionInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.AccessExclusionList))
-        AccessExclusions = meta.AccessExclusionList.GetTrimmedNonEmptyParts(';');
-      if (!string.IsNullOrWhiteSpace(meta.ColoringList))
-        Colorings = meta.ColoringList.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.AccessExclusionList))
+        AccessExclusions = metaItem.AccessExclusionList.GetTrimmedNonEmptyParts(';');
+      if (!string.IsNullOrWhiteSpace(metaItem.ColoringList))
+        Colorings = metaItem.ColoringList.GetTrimmedNonEmptyParts(';')
           .Select(x => new ColoringInfo(x)).Where(x => x.IsValid).ToList();
 
       //For different dropdown columns: Info1;Info2;...;InfoN
       //Thus, symbol ";" cannot be in the where clause
-      if (!string.IsNullOrWhiteSpace(meta.CreateEditDropDownLists))
-        CreateEditDropDowns = meta.CreateEditDropDownLists.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.CreateEditDropDownLists))
+        CreateEditDropDowns = metaItem.CreateEditDropDownLists.GetTrimmedNonEmptyParts(';')
           .Select(x => new DropDownInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.FilterDropDownLists))
-        FilterDropDowns = meta.FilterDropDownLists.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.FilterDropDownLists))
+        FilterDropDowns = metaItem.FilterDropDownLists.GetTrimmedNonEmptyParts(';')
           .Select(x => new DropDownInfo(x)).Where(x => x.IsValid).ToList();
 
-      if (!string.IsNullOrWhiteSpace(meta.PrefixesOfColumns))
-        PrefixesOfColumns = meta.PrefixesOfColumns.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.PrefixesOfColumns))
+        PrefixesOfColumns = metaItem.PrefixesOfColumns.GetTrimmedNonEmptyParts(';')
           .Select(x => new AffixColumnInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.PostfixesOfColumns))
-        PostfixesOfColumns = meta.PostfixesOfColumns.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.PostfixesOfColumns))
+        PostfixesOfColumns = metaItem.PostfixesOfColumns.GetTrimmedNonEmptyParts(';')
           .Select(x => new AffixColumnInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.ListColumns))
-        ListColumns = meta.ListColumns.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.ListColumns))
+        ListColumns = metaItem.ListColumns.GetTrimmedNonEmptyParts(';')
           .Select(x => new ListColumnInfo(x)).Where(x => x.IsValid).ToList();
-      if (!string.IsNullOrWhiteSpace(meta.TimeStampColumns))
-        TimeStampColumns = meta.TimeStampColumns.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.TimeStampColumns))
+        TimeStampColumns = metaItem.TimeStampColumns.GetTrimmedNonEmptyParts(';')
           .Select(x => new TimeStampColumnInfo(x)).Where(x => x.IsValid).ToList();
-      HistoryTable = meta.HistoryTable;
-      if (!string.IsNullOrWhiteSpace(meta.HistoryTrigger)) {
-        HistoryTriggerInfo testHistoryTrigger = new HistoryTriggerInfo(meta.HistoryTrigger);
+      HistoryTable = metaItem.HistoryTable;
+      if (!string.IsNullOrWhiteSpace(metaItem.HistoryTrigger)) {
+        HistoryTriggerInfo testHistoryTrigger = new HistoryTriggerInfo(metaItem.HistoryTrigger);
         if (testHistoryTrigger.IsValid)
           HistoryTrigger = testHistoryTrigger;
       }
-      if (!string.IsNullOrWhiteSpace(meta.AutoGeneratedColumns))
-        AutoGeneratedColumns = meta.AutoGeneratedColumns.GetTrimmedNonEmptyParts(';')
+      if (!string.IsNullOrWhiteSpace(metaItem.AutoGeneratedColumns))
+        AutoGeneratedColumns = metaItem.AutoGeneratedColumns.GetTrimmedNonEmptyParts(';')
           .Select(x => new AutoGeneratedColumnInfo(x)).Where(x => x.IsValid).ToList();
 
       IsValid = true; //Somehow, if failed before everything is finished, we cannot consider it as valid

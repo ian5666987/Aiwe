@@ -4,7 +4,7 @@ using Extension.String;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
-using Extension.Database;
+using Extension.Database.SqlServer;
 
 namespace Aibe.Models {
   //ColumnName1|HeaderName11,HeaderName12,…,HeaderName1N=ListType|RefTableName:RefColumnName:RefAnotherColumnName=ThisOtherColumnName:AddWhereAndClause;

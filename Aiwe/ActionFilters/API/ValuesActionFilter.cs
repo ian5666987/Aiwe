@@ -6,6 +6,7 @@ using System.Web.Http.Filters;
 using System.Web.Http.Controllers;
 using Aiwe.Models.API;
 using Aiwe.Models;
+using Aiwe.Extensions;
 using Extension.Cryptography;
 using Extension.String;
 using Aibe;
@@ -61,12 +62,12 @@ namespace Aiwe.ActionFilters {
       string encryptedPassword = Cryptography.Encrypt(request.Password);
 
       CoreUserMap userMap = string.IsNullOrWhiteSpace(request.UserName) ? null :
-        db.CoreUserMaps.FirstOrDefault(x => x.UserName.EqualsIgnoreCaseTrim(request.UserName) &&
+        db.CoreUserMaps.FirstOrDefault(x => x.UserName.ToLower().Trim() == request.UserName.ToLower().Trim() &&
           x.EncryptedPassword == encryptedPassword); //password must be case insensitive and not trimmed, certainly
 
       //only if userMap is available the user is considered available
       ApplicationUser user = string.IsNullOrWhiteSpace(request.UserName) || userMap == null ? null :
-        context.Users.FirstOrDefault(x => x.UserName.EqualsIgnoreCaseTrim(request.UserName));
+        context.Users.FirstOrDefault(x => x.UserName.ToLower().Trim() == request.UserName.ToLower().Trim());
 
       if (!UserHelper.UserIsDeveloper(user))
         LogHelper.Action(user.UserName, "Web Api", "Values", request.TableName, request.RequestType, request.CreateLogValue(3000)); //TODO as of now 3000 is hardcoded

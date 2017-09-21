@@ -109,10 +109,10 @@ namespace Aibe.Helpers {
           .Where(x => x.AccessExclusionList != null &&
             x.TableName.ToLower().Contains(filter.AccessExclusionList.ToLower()));
 
-      if (!string.IsNullOrWhiteSpace(filter.BasicColoringList))
+      if (!string.IsNullOrWhiteSpace(filter.ColoringList))
         filtered = filtered
           .Where(x => x.ColoringList != null &&
-            x.TableName.ToLower().Contains(filter.BasicColoringList.ToLower()));
+            x.TableName.ToLower().Contains(filter.ColoringList.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.FilterDropDownLists))
         filtered = filtered
