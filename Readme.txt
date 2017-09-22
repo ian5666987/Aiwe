@@ -1,3 +1,8 @@
+v0.2.1.0 alpha
+updates:
+- Aibe ViewHelper improved, AiweViewHelper reduced.
+
+-----------------------------------------------------------------------------------------------
 v0.2.0.0 alpha
 updates:
 - all Aibe files are removed and replaced with Aibe.dll!
