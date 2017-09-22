@@ -248,6 +248,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\AiweCheckerHelper.cs" />
+    <Compile Include="Helpers\AiweQueryHelper.cs" />
+    <Compile Include="Helpers\AiweTranslationHelper.cs" />
     <Compile Include="Helpers\AiweTableHelper.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
@@ -262,7 +265,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\AiweKeyInfoHelper.cs" />
     <Compile Include="Helpers\AiweDropDownHelper.cs" />
     <Compile Include="Migrations\201703200751588_InitialCreate.cs" />
     <Compile Include="Migrations\201703200751588_InitialCreate.Designer.cs">
@@ -296,7 +298,6 @@
     <Compile Include="Models\DetailsInfo.cs" />
     <Compile Include="Models\LiveDropDownResult.cs" />
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Extensions\KeyInfoExtension.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ViewModels\ApplicationUserCreateViewModel.cs" />
     <Compile Include="Models\ViewModels\ApplicationUserEditViewModel.cs" />

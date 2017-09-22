@@ -1,3 +1,13 @@
+v0.3.0.0 alpha
+updates:
+- More items put in the Aibe.dll.
+- KeyInfo helper and extension no longer exists in Aiwe.
+- Logic helper created to handle the logic and query script making parts in the Common Controller, allowing further separation.
+- AiweQueryHelper is added to Aiwe to handle user-related query in the web-specific environment.
+- AiweTranslationHelper added in the Aiwe.
+- AiweCheckerHelper added in Aiwe. Checking using reflection cannot be put in the non-running assembly.
+
+-----------------------------------------------------------------------------------------------
 v0.2.1.0 alpha
 updates:
 - Aibe ViewHelper improved, AiweViewHelper reduced.

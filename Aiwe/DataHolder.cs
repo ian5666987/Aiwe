@@ -19,6 +19,9 @@ namespace Aiwe {
     public const string PutRequest = "PUT";
     public const string DeleteRequest = "DELETE";
 
+    //Table
+    public const string TableModelClassPrefix = "Aiwe.Models.DB.";
+
     //Translations
     public readonly static Dictionary<string, string> RequestToActionDict = new Dictionary<string, string> {
       { GetManyRequest, Aibe.DH.IndexActionName },

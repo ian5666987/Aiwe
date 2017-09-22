@@ -6,6 +6,8 @@ using System.Data.Entity.Migrations;
 using Aiwe.Helpers;
 using Aiwe.Models;
 using Aiwe.Models.Filters;
+using Aibe.Helpers;
+using Aibe.Models.Core;
 
 namespace Aiwe.Controllers {
   [Authorize(Roles = Aiwe.DH.AdminAuthorizedRoles)]
@@ -16,7 +18,9 @@ namespace Aiwe.Controllers {
     public ActionResult Index(int? page) {
       var allOrderedMatches = context.Teams
         .OrderBy(x => x.Name.ToLower());
-      List<Team> results = AiweViewHelper.PrepareFilteredModels<Team>(page, allOrderedMatches, ViewBag);
+      NavDataModel navDataModel;
+      List<Team> results = ViewHelper.PrepareFilteredModels(page, allOrderedMatches, out navDataModel);
+      ViewBag.NavData = navDataModel;
       return results == null ? View() : View(results);
     }
 
@@ -28,7 +32,9 @@ namespace Aiwe.Controllers {
       var unordereds = filtereds
         .OrderBy(x => x.Name.ToLower());
       ViewBag.Filter = filter;
-      List<Team> results = AiweViewHelper.PrepareFilteredModels<Team>(filter.Page, unordereds, ViewBag);
+      NavDataModel navDataModel;
+      List<Team> results = ViewHelper.PrepareFilteredModels<Team>(filter.Page, unordereds, out navDataModel);
+      ViewBag.NavData = navDataModel;
       return results == null ? View() : View(results);
     }
 

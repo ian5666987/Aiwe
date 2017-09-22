@@ -10,6 +10,7 @@ using Extension.Cryptography;
 using Extension.String;
 using Aiwe.Helpers;
 using Aiwe.Models.DB;
+using Aibe.Models.Core;
 
 namespace Aiwe.Controllers {
   [Authorize(Roles = Aibe.DH.DevRole)]
@@ -19,7 +20,9 @@ namespace Aiwe.Controllers {
     public ActionResult Index(int? page) {
       var allOrderedMatches = db.MetaItems
         .OrderBy(x => x.TableName.ToLower());
-      List<MetaItem> results = ViewHelper.PrepareFilteredModels<MetaItem>(page, allOrderedMatches, ViewBag);
+      NavDataModel navDataModel;
+      List<MetaItem> results = ViewHelper.PrepareFilteredModels(page, allOrderedMatches, out navDataModel);
+      ViewBag.NavData = navDataModel;
       return results == null ? View() : View(results);
     }
 
@@ -31,7 +34,9 @@ namespace Aiwe.Controllers {
       var unordereds = filtereds
         .OrderBy(x => x.TableName.ToLower());
       ViewBag.Filter = filter;
-      List<MetaItem> results = ViewHelper.PrepareFilteredModels<MetaItem>(filter.Page, unordereds, ViewBag);
+      NavDataModel navDataModel;
+      List<MetaItem> results = ViewHelper.PrepareFilteredModels(filter.Page, unordereds, out navDataModel);
+      ViewBag.NavData = navDataModel;
       return results == null ? View() : View(results);
     }
 
