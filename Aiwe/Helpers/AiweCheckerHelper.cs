@@ -123,6 +123,8 @@ namespace Aiwe.Helpers {
 
           RegexCheckedColumnInfo regexInfo = meta.GetRegexCheckedColumn(keyInfo.PureKeyName);
           if (regexInfo != null) { //regex checked items
+            //ListColumnInfo listColumn = meta.GetListColumnInfo(keyInfo.PureKeyName); //to determine if items are in listColumn or not
+
             Regex regex = new Regex(regexInfo.Content);
             Match match = regex.Match(value.ToString());
             if (!match.Success) {

@@ -1,0 +1,14 @@
+1. Table column name -> TextfieldColumns to TextFieldColumns
+2. Table column name -> TableDefaultActionLinkList to DefaultTableActionList
+3. Table column name -> TimestampColumns to TimeStampColumns
+4. Table column name -> NumberLimits to NumberLimitColumns
+5. Table column name -> BasicColoringList to ColoringList
+6. Table column name -> DefaultActionLinkList to DefaultActionList
+7. Table column name -> PictureLinkColumns to PictureColumns
+8. Table column name -> ActionLinkList to ActionList
+9. TestCommonAccessLog table name -> CoreAccessLog
+10. TestCommonActionLog table name -> CoreActionLog
+11. TestCommonErrorLog table name -> CoreErrorLog
+12. TestCommonUserMap table name -> CoreUserMap
+13. TestMetaCommonTable table name -> MetaItem
+14. MMSRedesignDatModel class name -> CoreDataModel
