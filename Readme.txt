@@ -1,3 +1,9 @@
+v0.3.0.1 alpha
+bugs fixed:
+- EqualsIgnoreCase is used on MetaController LINQ. Fixed.
+- team, instead of teamModel is used on TeamController. Fixed.
+
+-----------------------------------------------------------------------------------------------
 v0.3.0.0 alpha
 updates:
 - More items put in the Aibe.dll.

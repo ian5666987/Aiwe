@@ -103,7 +103,7 @@ namespace Aiwe.Controllers {
     [HttpPost]
     [ValidateInput(false)]
     public ActionResult Edit(MetaItem model) {
-      MetaItem meta = db.MetaItems.FirstOrDefault(x => x.TableName.EqualsIgnoreCase(model.TableName));
+      MetaItem meta = db.MetaItems.FirstOrDefault(x => x.TableName == model.TableName);
       if (!ModelState.IsValid)
         return View(model);
 

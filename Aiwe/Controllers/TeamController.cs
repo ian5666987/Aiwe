@@ -109,7 +109,7 @@ namespace Aiwe.Controllers {
         return redirectToError("Id not found");
       if (team.Name == "Home")
         return redirectToError(team.Name + " Team cannot be edited or deleted");
-      context.Teams.AddOrUpdate(team);
+      context.Teams.AddOrUpdate(teamModel);
       context.SaveChanges();
       return RedirectToAction("Index");
     }
