@@ -1,3 +1,8 @@
+v0.4.1.1 alpha
+bugs fixed:
+- First time dropdown is static instead of dynamic. Fixed.
+
+-----------------------------------------------------------------------------------------------
 v0.4.1.0 alpha
 updates:
 - Limits ColumnSequence is now applied to all actions and filter.

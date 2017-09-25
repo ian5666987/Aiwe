@@ -6,6 +6,61 @@ function isInArray(value, array) {
   return array.indexOf(value) > -1;
 }
 
+function processLiveDd(element, ldColNames, dataTypes) {
+  var id = element.id;
+  var arr = [];
+  var arrOriginals = [];
+  var colName = id.substr('live-dd-'.length);
+  var selects = document.getElementsByClassName('common-column-dropdown');
+  var originals = document.getElementsByClassName('common-column-dropdown-original');
+  for (i = 0; i < selects.length; ++i) {
+    arr.push(selects[i].value);
+  }
+  for (k = 0; k < originals.length; ++k) {
+    arrOriginals.push(originals[k].value);
+  }
+  var tName = $('#common-table-name').text();
+
+  $.ajax({
+    url: '../../../Common/GetLiveDropdownItems/' + tName,
+    async: true,
+    data: {
+      tableName: tName, changedColumnName: colName, originalColumnValues: arrOriginals,
+      liveddColumnNames: ldColNames, liveddDataTypes: dataTypes, liveddItems: arr
+    },
+    traditional: true,
+    success: function (data) {
+      $.each(data, function (v, obj) {
+        $('#live-dd-' + obj.ColumnName).html(obj.HTMLString);
+      });
+    }
+  });
+
+  var inputValue = $('#common-column-dropdown-' + colName).val(); //straightforwards        
+
+  //now, the listColumn parts all the list columns affected by this must be found
+  $.ajax({
+    url: '../../../Common/GetLiveSubcolumns/' + tName,
+    async: true,
+    data: {
+      tableName: tName, changedColumnName: colName,
+      changedColumnValue: inputValue
+    },
+    traditional: true,
+    success: function (data) {
+      $.each(data, function (v, obj) {
+        if (obj.IsSuccessful) {
+          var divId = 'common-subcolumn-div-' + obj.Name;
+          var datValId = 'common-subcolumn-datavalue-' + obj.Name;
+          $('#' + datValId).html('<input type="hidden" name="' + obj.Name + '" id="common-subcolumn-content-' + obj.Name + '" value="' + obj.DataValue + '"/>');
+          $('#' + divId).html(obj.HTMLString);
+        }
+      });
+    }
+  });
+
+}
+
 function submitFilterModalForm(submitter, ev, filteredType) {
   inputs = document.getElementsByTagName('input');
   var count = 0;
@@ -138,57 +193,7 @@ $(document).ready(function () {
       ldColNames.push(elements[i].id.substr('live-dd-'.length));
       dataTypes.push(elements[i].attributes.getNamedItem('commondatatype').value);
     }
-    var arr = [];
-    var arrOriginals = [];
-    var colName = id.substr('live-dd-'.length);
-    var selects = document.getElementsByClassName('common-column-dropdown');
-    var originals = document.getElementsByClassName('common-column-dropdown-original');
-    for (i = 0; i < selects.length; ++i) {
-      arr.push(selects[i].value);
-      //arr.push(selects[i].options[selects[i].selectedIndex].value);
-    }
-    for (i = 0; i < originals.length; ++i) {
-      arrOriginals.push(originals[i].value);
-    }
-    var tName = $('#common-table-name').text();
-
-    $.ajax({
-      url: '../../../Common/GetLiveDropdownItems/' + tName,
-      async: true,
-      data: {
-        tableName: tName, changedColumnName: colName, originalColumnValues: arrOriginals,
-        liveddColumnNames: ldColNames, liveddDataTypes: dataTypes, liveddItems: arr
-      },
-      traditional: true,
-      success: function (data) {
-        $.each(data, function (i, obj) {
-          $('#live-dd-' + obj.ColumnName).html(obj.HTMLString);
-        });
-      }
-    });
-
-    var inputValue = $('#common-column-dropdown-' + colName).val(); //straightforwards        
-
-    //now, the listColumn parts all the list columns affected by this must be found
-    $.ajax({
-      url: '../../../Common/GetLiveSubcolumns/' + tName,
-      async: true,
-      data: {
-        tableName: tName, changedColumnName: colName,
-        changedColumnValue: inputValue
-      },
-      traditional: true,
-      success: function (data) {
-        $.each(data, function (i, obj) {
-          if (obj.IsSuccessful) {
-            var divId = 'common-subcolumn-div-' + obj.Name;
-            var datValId = 'common-subcolumn-datavalue-' + obj.Name;
-            $('#' + datValId).html('<input type="hidden" name="' + obj.Name + '" id="common-subcolumn-content-' + obj.Name + '" value="' + obj.DataValue + '"/>');
-            $('#' + divId).html(obj.HTMLString);
-          }
-        });
-      }
-    });
+    processLiveDd(this, ldColNames, dataTypes);
   });
 
   $('body').on('click', '.common-subcolumn-button', function (ev) {
@@ -261,5 +266,19 @@ $(document).ready(function () {
         }
       }
     });
+  });
+
+  $(window).load(function () {
+    // run code
+    var elements = document.getElementsByClassName('live-dd');
+    var ldColNames = [];
+    var dataTypes = [];
+    for (i = 0; i < elements.length; ++i) {
+      ldColNames.push(elements[i].id.substr('live-dd-'.length));
+      dataTypes.push(elements[i].attributes.getNamedItem('commondatatype').value);
+    }
+    for (j = 0; j < elements.length; ++j) {
+      processLiveDd(elements[j], ldColNames, dataTypes);
+    }
   });
 });
