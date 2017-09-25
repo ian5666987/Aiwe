@@ -25,16 +25,10 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       TempData.Clear();
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       FilterIndexModel model = new FilterIndexModel(meta, page, null);
-      //int usedPage = page.HasValue && page.Value > 0 ? page.Value : 1;
-
-      ////Script initialization
-      //StringBuilder selectScript = new StringBuilder("SELECT");
-      //StringBuilder queryScript = new StringBuilder(string.Concat("FROM [", meta.TableName, "]"));
 
       //Get index info
       AiweQueryHelper.HandleUserRelatedScripting(model.QueryScript, User, meta.UserRelatedFilters);
       model.CompleteModelAndData();
-      //FilterIndexModel model = LogicHelper.GetFilterIndexModel(selectScript, queryScript, null, null, meta, usedPage);
       FilterIndexInfo info = new FilterIndexInfo(meta, User, model);
       return View(info);
     }
@@ -47,39 +41,18 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
       FilterIndexModel model = new FilterIndexModel(meta, commonDataFilterPage, dictCollections);
 
-      //int usedPage = commonDataFilterPage.HasValue && commonDataFilterPage.Value > 0 ? commonDataFilterPage.Value : 1;
-
-      ////Script initialization
-      //StringBuilder selectScript = new StringBuilder("SELECT");
-      //StringBuilder queryScript = new StringBuilder(string.Concat("FROM [", meta.TableName, "]"));
-
-      ////Filtering parts started
-      //DateTime now = DateTime.Now;
-      //List<SqlParameter> pars = new List<SqlParameter>();
-      //List<SqlParameter> copiesPars = new List<SqlParameter>(); //WARNING! if not copied, the complete script cannot be run as the Sql Pars have been used by this countScript
-      //Dictionary<string, string> tempDataDict = new Dictionary<string, string>();
-
-      ////Apply filter on query script here...
-      //int filterNo = LogicHelper.AddFiltersOnScript(queryScript, meta, tempDataDict, dictCollections, pars, copiesPars, now);
+      //Filter related stuffs
       if (model.TempDataDict != null && model.TempDataDict.Count > 0)
         AiweTranslationHelper.FillTempDataFromDictionary(TempData, model.TempDataDict);
-
-      //Fill filter message and filter no
       ViewBag.FilterNo = model.FilterNo;
       ViewBag.FilterMsg = getFilterMessage(model.TempDataDict, model.FilterNo > 0);
 
       //Get index info
       AiweQueryHelper.HandleUserRelatedScripting(model.QueryScript, User, meta.UserRelatedFilters);
       model.CompleteModelAndData();
-
-      //Translate model into info
       FilterIndexInfo info = new FilterIndexInfo(meta, User, model);
       return View(info);
     }
-
-    //public ActionResult Error() {
-    //  return View();
-    //}
 
     [CommonActionFilter]
     public ActionResult Create(string tableName) {
@@ -98,7 +71,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
 
       foreach (var item in dictCollections)
-        //ModelState.Add(item.ToString(), new ModelState());
         ModelState.Add(item.Key, new ModelState());
 
       List<string> checkExclusions = new List<string> { Aibe.DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
@@ -110,7 +82,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       if (!ModelState.IsValid) {
         CreateEditInfo ceInfo = new CreateEditInfo(meta, Aibe.DH.CreateActionName);
         AiweTranslationHelper.FillTempDataFromCollections(TempData, dictCollections, checkExclusions);
-        //fillDetailsFromCollectionsToTempData(collections, checkExclusions);        
         return View(ceInfo);
       }
 
@@ -131,38 +102,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       object generatedId = SQLServerHandler.ExecuteScalar(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
       AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/Images/" + tableName + "/" + generatedId?.ToString()));
       return RedirectToAction("Index", new { tableName = tableName });
-
-      //object generatedId = (int)0;
-      //StringBuilder openingScript = new StringBuilder(string.Concat("INSERT INTO [", tableName, "] ("));
-      //StringBuilder insertParNamesScript = new StringBuilder();
-
-      //int count = 0;
-      //List<SqlParameter> pars = new List<SqlParameter>();
-      //foreach (var validKeyInfo in completeKeyInfo.ValidKeys)
-      //  LogicHelper.AddInsertParameter(openingScript, insertParNamesScript, validKeyInfo, pars, dictCollections, now, ref count, meta);
-
-      //foreach (var nullifiedKeyInfo in completeKeyInfo.NullifiedKeys) { //This is needed in case any of the nullified key info is actually among the timestamp columns
-      //  if (nullifiedKeyInfo.IsTimeStamp) //for create, if it is timestamp, then creates it no matter what
-      //    LogicHelper.AddInsertParameter(openingScript, insertParNamesScript, nullifiedKeyInfo, pars, dictCollections, now, ref count, meta); //inside, the time stamp is taken cared of
-      //  if (nullifiedKeyInfo.IsAutoGenerated) //for create, if it is timestamp, then creates it no matter what
-      //    LogicHelper.AddInsertParameter(openingScript, insertParNamesScript, nullifiedKeyInfo, pars, dictCollections, now, ref count, meta);
-      //  //TODO not needed for now, but just in case
-      //}
-
-      //using (SqlConnection conn = new SqlConnection(Aibe.DH.DataDBConnectionString)) {
-      //  conn.Open();
-
-      //  using (SqlCommand command = new SqlCommand(string.Concat(
-      //    openingScript, ") VALUES(", insertParNamesScript.ToString(), "); SELECT SCOPE_IDENTITY()"), conn)) {
-      //    command.Parameters.AddRange(pars.ToArray());
-      //    generatedId = command.ExecuteScalar(); //need to ExecuteScalar instead of ExecuteNonQuery to generate the Id
-      //  }
-
-      //  conn.Close();
-      //}
-
-      //AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/Images/" + tableName + "/" + generatedId?.ToString()));
-      //return RedirectToAction("Index", new { tableName = tableName });
     }
 
     //Likely used by filter and create edit
@@ -184,7 +123,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
 
       foreach (var item in dictCollections)
-        //ModelState.Add(item.ToString(), new ModelState());
         ModelState.Add(item.Key, new ModelState());
 
       List<string> checkExclusions = new List<string> { Aibe.DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
@@ -209,40 +147,8 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
       BaseScriptModel scriptModel = LogicHelper.CreateUpdateScriptModel(tableName, cid, completeKeyInfo, dictCollections, now);
       SQLServerHandler.ExecuteScript(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
-
       AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/Images/" + tableName + "/" + cid));
       return RedirectToAction("Index", new { tableName = tableName });
-
-      //StringBuilder updateScript = new StringBuilder(string.Concat("UPDATE [", tableName, "] SET "));
-      //string whereScript = string.Concat(" WHERE [Cid] = ", cid);
-
-      //int count = 0;
-      //List<SqlParameter> pars = new List<SqlParameter>();
-      //foreach (var validKeyInfo in completeKeyInfo.ValidKeys)
-      //  if (!validKeyInfo.IsAutoGenerated)
-      //    LogicHelper.AddUpdateParameter(updateScript, validKeyInfo, pars, dictCollections, now, ref count);
-
-      //foreach (var nullifiedKeyInfo in completeKeyInfo.NullifiedKeys.Where(x => !x.PureKeyName.EqualsIgnoreCase("Cid")))
-      //  if (nullifiedKeyInfo.IsTimeStamp) //If it is a TimeStamp, update it
-      //    LogicHelper.AddUpdateParameter(updateScript, nullifiedKeyInfo, pars, dictCollections, now, ref count);
-      //  else if (nullifiedKeyInfo.IsAutoGenerated) {
-      //    //do nothing! cannot be changed with edit
-      //  } else
-      //    LogicHelper.AddNullUpdateParameter(updateScript, nullifiedKeyInfo, ref count);
-
-      //using (SqlConnection conn = new SqlConnection(Aibe.DH.DataDBConnectionString)) {
-      //  conn.Open();
-      //  using (SqlCommand command = new SqlCommand(string.Concat(
-      //    updateScript, whereScript), conn)) {
-      //    command.Parameters.AddRange(pars.ToArray());
-      //    command.ExecuteNonQuery();
-      //  }
-
-      //  conn.Close();
-      //}
-
-      //AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/Images/" + tableName + "/" + cid));
-      //return RedirectToAction("Index", new { tableName = tableName });
     }
 
     [CommonActionFilter]
@@ -279,7 +185,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     //Base code by: ZYS
     //Edited by: Ian
     public ActionResult ExportToExcel(string tableName) {
-      //return View("ActionNotReady");
       try {
         DataTable tbl = (DataTable)TempData["DataTableForExcel"];
         string tempFolderPath = Server.MapPath("~/temp");
@@ -411,13 +316,8 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         DataValue = dataValue,
       };
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
-      //if (meta == null)
-      //  return Json(result, JsonRequestBehavior.AllowGet);
-      //CreateEditInfo model = new CreateEditInfo(meta, SQLServerHandler.GetColumns(DataHolder.DataDBConnectionString, tableName), null);
-      //if (model == null)
-      //  return Json(result, JsonRequestBehavior.AllowGet);
-
       string newDataValue = dataValue;
+
       if (deleteNo == 0) { //add        
         //do something for checking add
         //if this column is supposed to be checkList, then one check type, else, another check type
