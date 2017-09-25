@@ -9,8 +9,6 @@ using System.Security.Principal;
 namespace Aiwe.Models {
   public class CreateEditInfo : BaseTableInfo {
     public string ActionType { get; set; } = "create"; //create OR edit, default is create
-
-    //public List<TimeStampColumnInfo> TimestampColumnInfos { get; private set; } //not needed, provided by meta
     public int CreateEditLabelPortion { get; private set; }
 
     public CreateEditInfo(MetaInfo metaInput, string actionType) : base(metaInput) {

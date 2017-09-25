@@ -1,3 +1,12 @@
+v0.4.0.1 alpha
+bugs fixed:
+- ColumnAliases do not work. Fixed.
+- ColumnSequence does not work. Fixed.
+
+updates:
+- Limits ColumnSequence only on Create-Edit actions
+
+-----------------------------------------------------------------------------------------------
 v0.4.0.0 alpha
 bugs fixed:
 - Meta filter only searches for table name. Fixed.
