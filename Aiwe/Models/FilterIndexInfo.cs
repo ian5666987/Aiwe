@@ -13,6 +13,10 @@ namespace Aiwe.Models {
     private IPrincipal user { get; set; }
     public DataTable Table { get; private set; }
     public bool HasTable { get { return Table != null; } }
+
+    public FilterIndexInfo (MetaInfo meta, IPrincipal userInput, FilterIndexModel model) : 
+      this (meta, userInput, model.Data, model.NavData) { }
+
     public FilterIndexInfo (MetaInfo meta, IPrincipal userInput, DataTable tableInput, NavDataModel navData) : base(meta) {
       user = userInput;
       Table = tableInput;

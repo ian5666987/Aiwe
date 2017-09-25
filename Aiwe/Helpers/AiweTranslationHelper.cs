@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
-using System.Linq;
 
 namespace Aiwe.Helpers {
   public class AiweTranslationHelper {
@@ -37,6 +36,5 @@ namespace Aiwe.Helpers {
       foreach (var key in tempDataDict.Keys)
         tempData.Add(key, tempDataDict[key]);
     }
-
   }
 }

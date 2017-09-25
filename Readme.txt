@@ -1,3 +1,10 @@
+v0.3.1.0 alpha
+bugs fixed:
+- (Aibe) collections is more fragile towards non-existing key because it is now a dictionary. Fixed.
+updates:
+- FilterIndexModel is created in Aibe, CommonController in Aiwe is simplified further.
+
+-----------------------------------------------------------------------------------------------
 v0.3.0.2 alpha
 updates:
 - RegexCheckedColumn for ListColumn is now applied per item line, not to the entire string.

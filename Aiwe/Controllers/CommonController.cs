@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using System.Data;
-using System.Data.SqlClient;
 using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -25,73 +24,57 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     public ActionResult Index(string tableName, int? page) { //Where all common tables are returned as list
       TempData.Clear();
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
-      List<UserRelatedFilterInfo> userRelatedInfo = meta.UserRelatedFilters;
-      FilterIndexInfo model;
-      int usedPage = page.HasValue && page.Value > 0 ? page.Value : 1;
+      FilterIndexModel model = new FilterIndexModel(meta, page, null);
+      //int usedPage = page.HasValue && page.Value > 0 ? page.Value : 1;
 
-      //Script initialization
-      StringBuilder selectScript = new StringBuilder("SELECT");
-      StringBuilder queryScript = new StringBuilder(string.Concat("FROM [", meta.TableName, "]"));
+      ////Script initialization
+      //StringBuilder selectScript = new StringBuilder("SELECT");
+      //StringBuilder queryScript = new StringBuilder(string.Concat("FROM [", meta.TableName, "]"));
 
-      using (SqlConnection conn = new SqlConnection(Aibe.DH.DataDBConnectionString)) {
-        conn.Open();
-
-        //Finalize
-        AiweQueryHelper.HandleUserRelatedScripting(queryScript, User, meta.UserRelatedFilters);
-        FilterIndexScriptModel scriptModel = LogicHelper.CreateSelectManyScriptModel(conn, selectScript, queryScript, meta.OrderBys,
-          null, usedPage, meta.ItemsPerPage);
-        IEnumerable<SqlParameter> pars = null;
-        DataTable dataTable = SQLServerHandler.GetDataTable(conn, scriptModel.Script, pars); //new DataTable();
-        model = new FilterIndexInfo(meta, User, dataTable, scriptModel.NavData);
-
-        conn.Close();
-      }
-      
-      return View(model);
+      //Get index info
+      AiweQueryHelper.HandleUserRelatedScripting(model.QueryScript, User, meta.UserRelatedFilters);
+      model.CompleteModelAndData();
+      //FilterIndexModel model = LogicHelper.GetFilterIndexModel(selectScript, queryScript, null, null, meta, usedPage);
+      FilterIndexInfo info = new FilterIndexInfo(meta, User, model);
+      return View(info);
     }
 
     [HttpPost]
     [CommonActionFilter]
-    public ActionResult Index(string tableName, int? commonDataFilterPage, FormCollection collections) {
+    public ActionResult Index(string tableName, int? commonDataFilterPage, FormCollection collections) { //do not change the name commonDataFilterPage to page
       TempData.Clear();
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
-      List<UserRelatedFilterInfo> userRelatedInfo = meta.UserRelatedFilters;
-      FilterIndexInfo model;
-      DateTime now = DateTime.Now;
-      int usedPage = commonDataFilterPage.HasValue && commonDataFilterPage.Value > 0 ? commonDataFilterPage.Value : 1;
       Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
+      FilterIndexModel model = new FilterIndexModel(meta, commonDataFilterPage, dictCollections);
 
-      //Script initialization
-      StringBuilder selectScript = new StringBuilder("SELECT");
-      StringBuilder queryScript = new StringBuilder(string.Concat("FROM [", meta.TableName, "]"));
+      //int usedPage = commonDataFilterPage.HasValue && commonDataFilterPage.Value > 0 ? commonDataFilterPage.Value : 1;
 
-      //Filters
-      List<SqlParameter> pars = new List<SqlParameter>();
-      List<SqlParameter> copiesPars = new List<SqlParameter>(); //WARNING! if not copied, the complete script cannot be run as the Sql Pars have been used by this countScript
-      Dictionary<string, string> tempDataDict = new Dictionary<string, string>();
+      ////Script initialization
+      //StringBuilder selectScript = new StringBuilder("SELECT");
+      //StringBuilder queryScript = new StringBuilder(string.Concat("FROM [", meta.TableName, "]"));
 
-      using (SqlConnection conn = new SqlConnection(Aibe.DH.DataDBConnectionString)) {
-        conn.Open();
+      ////Filtering parts started
+      //DateTime now = DateTime.Now;
+      //List<SqlParameter> pars = new List<SqlParameter>();
+      //List<SqlParameter> copiesPars = new List<SqlParameter>(); //WARNING! if not copied, the complete script cannot be run as the Sql Pars have been used by this countScript
+      //Dictionary<string, string> tempDataDict = new Dictionary<string, string>();
 
-        int filterNo = LogicHelper.AddFiltersOnScript(queryScript, meta, tempDataDict, conn, dictCollections, pars, copiesPars, now);
+      ////Apply filter on query script here...
+      //int filterNo = LogicHelper.AddFiltersOnScript(queryScript, meta, tempDataDict, dictCollections, pars, copiesPars, now);
+      if (model.TempDataDict != null && model.TempDataDict.Count > 0)
+        AiweTranslationHelper.FillTempDataFromDictionary(TempData, model.TempDataDict);
 
-        //Fill filter message and filter no
-        ViewBag.FilterNo = filterNo;
-        ViewBag.FilterMsg = getFilterMessage(tempDataDict, filterNo > 0);
+      //Fill filter message and filter no
+      ViewBag.FilterNo = model.FilterNo;
+      ViewBag.FilterMsg = getFilterMessage(model.TempDataDict, model.FilterNo > 0);
 
-        AiweTranslationHelper.FillTempDataFromDictionary(TempData, tempDataDict);
+      //Get index info
+      AiweQueryHelper.HandleUserRelatedScripting(model.QueryScript, User, meta.UserRelatedFilters);
+      model.CompleteModelAndData();
 
-        //Finalize
-        AiweQueryHelper.HandleUserRelatedScripting(queryScript, User, meta.UserRelatedFilters);
-        FilterIndexScriptModel scriptModel = LogicHelper.CreateSelectManyScriptModel(conn, selectScript, queryScript, meta.OrderBys,
-          copiesPars, usedPage, meta.ItemsPerPage);
-        DataTable dataTable = SQLServerHandler.GetDataTable(conn, scriptModel.Script, pars); //new DataTable();
-        model = new FilterIndexInfo(meta, User, dataTable, scriptModel.NavData);
-
-        conn.Close();
-      }
-
-      return View(model);
+      //Translate model into info
+      FilterIndexInfo info = new FilterIndexInfo(meta, User, model);
+      return View(info);
     }
 
     //public ActionResult Error() {
