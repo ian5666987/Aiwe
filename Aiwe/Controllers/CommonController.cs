@@ -76,7 +76,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       List<string> checkExclusions = new List<string> { Aibe.DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
 
       //Check model state's validity
-      Dictionary<string, string> errorDict = AiweCheckerHelper.CheckModelValidity(Aiwe.DH.TableModelClassPrefix, tableName, meta.DataColumns, 
+      Dictionary<string, string> errorDict = AiweCheckerHelper.CheckModelValidity(Aiwe.DH.TableModelClassPrefix, tableName, meta.ArrangedDataColumns, 
         dictCollections, ModelState.Keys.ToList(), meta, checkExclusions, AiweUserHelper.UserIsDeveloper(User), now, Aibe.DH.CreateActionName);
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid) {
@@ -86,7 +86,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       }
 
       //Only if model state is correct that we could get valid key infos safely
-      var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(tableName, dictCollections, dictCollections.Keys, meta.DataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.CreateActionName);
+      var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(tableName, dictCollections, dictCollections.Keys, meta.ArrangedDataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.CreateActionName);
 
       if (completeKeyInfo == null || completeKeyInfo.ValidKeys == null || !completeKeyInfo.ValidKeys.Any()) {
         ViewBag.ErrorMessage = string.Concat("Invalid/Empty parameters for [", tableName, "]");
@@ -128,7 +128,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       List<string> checkExclusions = new List<string> { Aibe.DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
 
       //Check model state's validity
-      Dictionary<string, string> errorDict = AiweCheckerHelper.CheckModelValidity(Aiwe.DH.TableModelClassPrefix, tableName, meta.DataColumns, 
+      Dictionary<string, string> errorDict = AiweCheckerHelper.CheckModelValidity(Aiwe.DH.TableModelClassPrefix, tableName, meta.ArrangedDataColumns, 
         dictCollections, ModelState.Keys.ToList(), meta, checkExclusions, AiweUserHelper.UserIsDeveloper(User), now, Aibe.DH.EditActionName);
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid) {
@@ -138,7 +138,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       }
 
       var filteredKeys = dictCollections.Keys.Where(x => !x.EqualsIgnoreCase("Cid")); //everything filled but the Cid
-      var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(tableName, dictCollections, filteredKeys, meta.DataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.EditActionName);
+      var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(tableName, dictCollections, filteredKeys, meta.ArrangedDataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.EditActionName);
 
       if (completeKeyInfo == null || completeKeyInfo.ValidKeys == null || !completeKeyInfo.ValidKeys.Any()) {
         ViewBag.ErrorMessage = string.Concat("Invalid/Empty parameters for [", tableName, "]");
@@ -274,7 +274,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
 
-      var affectedColumnNames = meta.DataColumns
+      var affectedColumnNames = meta.ArrangedDataColumns
         .Where(x => meta.IsListColumn(x.ColumnName) && meta.IsListColumnAffectedBy(x.ColumnName, changedColumnName))
         .Select(x => x.ColumnName)
         .ToList();

@@ -23,7 +23,6 @@ namespace Aiwe.Helpers {
       DateTime refDtNow,
       string actionType,
       bool filterStyle = false) {
-      //List<string> modelStateKeys = ModelState.Keys.ToList();
       Dictionary<string, string> errorDict = new Dictionary<string, string>();
 
       foreach (var key in modelKeys) {
@@ -31,11 +30,9 @@ namespace Aiwe.Helpers {
           continue; //no need to check if explicitly excluded
 
         bool isExplicitlyRequired = false;
-        if (!filterStyle) { //Only on creation and edit
-          //List<string> required = meta.RequiredColumns?.Split(';')?.ToList();
+        if (!filterStyle) //Only on creation and edit
           isExplicitlyRequired = meta.RequiredColumns != null &&
             meta.RequiredColumns.Any(x => !string.IsNullOrWhiteSpace(x) && x.EqualsIgnoreCase(key));
-        }
 
         //Now, get the value
         string val = collections[key];
@@ -48,12 +45,12 @@ namespace Aiwe.Helpers {
           keyInfo.DataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
 
         //If column names is not found, assumes it is an unknown injection
+        string displayName = meta.GetColumnDisplayName(keyInfo.PureKeyName);
+        string columnName = keyInfo.PureKeyName.ToCamelBrokenString();
+        string usedColumnName = displayName == columnName ? columnName : displayName + "/" + columnName;
         if (column == null) {
           errorDict.Add("UnknownColumn", string.Concat(
-            "The column name [", keyInfo.PureKeyName.ToCamelBrokenString(), "] is unknown"));
-          //ModelState.Add("UnknownColumn", new ModelState());
-          //ModelState.AddModelError("UnknownColumn", string.Concat(
-          //  "The column name [", keyInfo.PureKeyName.ToCamelBrokenString(), "] is unknown"));
+            "The column name [", usedColumnName, "] is unknown"));
           continue;
         }
 
@@ -65,9 +62,7 @@ namespace Aiwe.Helpers {
             bool isImplicitlyRequired = columnIsRequiredByAttribute(tableModelClassPrefix, meta.TableName, column.ColumnName);
             if (isExplicitlyRequired || isImplicitlyRequired || !isNullable) //if things are required but null, there must be something wrong, required cannot be null
               errorDict.Add(key, string.Concat(
-                "field [", keyInfo.PureKeyName.ToCamelBrokenString(), "] is required"));
-            //ModelState.AddModelError(key, string.Concat(
-            //  "field [", keyInfo.PureKeyName.ToCamelBrokenString(), "] is required"));
+                "field [", usedColumnName, "] is required"));
           }
           continue; //if things are not required or is filterStyle, immediately continue
         }
@@ -90,35 +85,23 @@ namespace Aiwe.Helpers {
         object value = keyInfo.ExtractValueAsObject(collections, refDtNow, filterStyle);
         if (value == null) //there must be something wrong with the format, otherwise the extracting cannot be null
           errorDict.Add(keyInfo.Key, string.Concat(
-            "The input for field [", keyInfo.PureKeyName.ToCamelBrokenString(),
+            "The input for field [", usedColumnName,
             "] is in a non-acceptable data format. The data type is [",
             keyInfo.DataType, "] but the value given is [", collections[keyInfo.Key],
             "]. Please correct your input data format"));
-        //ModelState.AddModelError(keyInfo.Key, string.Concat(
-        //    "The input for field [", keyInfo.PureKeyName.ToCamelBrokenString(),
-        //    "] is in a non-acceptable data format. The data type is [",
-        //    keyInfo.DataType, "] but the value given is [", collections[keyInfo.Key],
-        //    "]. Please correct your input data format"));
 
         //Now, check if string length is violated against the length specified
         if (keyInfo.DataType.EqualsIgnoreCase(Aibe.DH.StringDataType) || keyInfo.DataType.EqualsIgnoreCase(Aibe.DH.CharDataType)) {
           //Painfully gets length by reflection, column.MaxLength does NOT show desired string length's limit!!
           int length = getStringLengthFor(tableModelClassPrefix, meta.TableName, keyInfo.PureKeyName);
           string strVal = value.ToString();
-          string camelBrokenPureKeyName = keyInfo.PureKeyName.ToCamelBrokenString();
           if (strVal.Length > length) {
             errorDict.Add(keyInfo.Key, string.Concat(
               "The input string [", value,
-              "] for [", camelBrokenPureKeyName,
-              "] is too long. The maximum length for [", camelBrokenPureKeyName,
+              "] for [", usedColumnName,
+              "] is too long. The maximum length for [", usedColumnName,
               "] is ", length, " character(s)"
               ));
-            //ModelState.AddModelError(keyInfo.Key, string.Concat(
-            //  "The input string [", value,
-            //  "] for [", camelBrokenPureKeyName,
-            //  "] is too long. The maximum length for [", camelBrokenPureKeyName,
-            //  "] is ", length, " character(s)"
-            //  ));
           }
 
           RegexCheckedColumnInfo regexInfo = meta.GetRegexCheckedColumn(keyInfo.PureKeyName);
@@ -133,10 +116,9 @@ namespace Aiwe.Helpers {
                 if (!match.Success) {
                   StringBuilder regexError = new StringBuilder(string.Concat(
                     "The input string [", valueParts[i],
-                    "] for [", camelBrokenPureKeyName, "] ",
+                    "] for [", usedColumnName, "] ",
                     "does not match with the required pattern"));
 
-                  //AiweUserHelper.UserIsDeveloper(User)
                   if (userIsDeveloper) {
                     regexError.Append(" [");
                     regexError.Append(regex.ToString());
@@ -150,7 +132,6 @@ namespace Aiwe.Helpers {
                   }
 
                   errorDict.Add(keyInfo.Key, regexError.ToString());
-                  //ModelState.AddModelError(keyInfo.Key, regexError.ToString());
                 }
               }
           }
@@ -167,25 +148,15 @@ namespace Aiwe.Helpers {
             if (numberLimitInfo.Min > columnValue) //min is violated
               errorDict.Add(keyInfo.Key, string.Concat(
                 "The input value [", columnValue, "] for field [",
-                keyInfo.PureKeyName.ToCamelBrokenString(),
+                usedColumnName,
                 "] is smaller than the minimum limit [", numberLimitInfo.Min, "]"
               ));
-            //ModelState.AddModelError(keyInfo.Key, string.Concat(
-            //    "The input value [", columnValue, "] for field [",
-            //    keyInfo.PureKeyName.ToCamelBrokenString(),
-            //    "] is smaller than the minimum limit [", numberLimitInfo.Min, "]"
-            //  ));
             if (numberLimitInfo.Max < columnValue) { //max is violated
               errorDict.Add(keyInfo.Key, string.Concat(
                 "The input value [", columnValue, "] for field [",
-                keyInfo.PureKeyName.ToCamelBrokenString(),
+                usedColumnName,
                 "] is greater than the maximum limit [", numberLimitInfo.Max, "]"
               ));
-              //ModelState.AddModelError(keyInfo.Key, string.Concat(
-              //  "The input value [", columnValue, "] for field [",
-              //  keyInfo.PureKeyName.ToCamelBrokenString(),
-              //  "] is greater than the maximum limit [", numberLimitInfo.Max, "]"
-              //));
             }
           }
         }
@@ -205,8 +176,6 @@ namespace Aiwe.Helpers {
 
     private static bool columnIsRequiredByAttribute(string prefix, string tableName, string columnName) {
       PropertyInfo propertyInfo = getColumnPropertyInfo(prefix, tableName, columnName);
-      //CustomAttributeData cad = propertyInfo.GetCustomAttributesData()
-      //  .FirstOrDefault(x => x.ToString().EndsWith("RequiredAttribute"));
       CustomAttributeData cad = propertyInfo.CustomAttributes
         .FirstOrDefault(x => x.AttributeType.ToString().EndsWith("RequiredAttribute"));
       return cad != null;
@@ -220,8 +189,6 @@ namespace Aiwe.Helpers {
 
     private static int getStringLengthFor(string prefix, string tableName, string columnName) {
       PropertyInfo propertyInfo = getColumnPropertyInfo(prefix, tableName, columnName);
-      //CustomAttributeData cad = propertyInfo.GetCustomAttributesData()
-      //  .FirstOrDefault(x => x.ToString().EndsWith("StringLengthAttribute"));
       CustomAttributeData cad = propertyInfo.CustomAttributes
         .FirstOrDefault(x => x.AttributeType.ToString().EndsWith("StringLengthAttribute"));
       return (int)cad.ConstructorArguments[0].Value; //this should be Int32 type actually

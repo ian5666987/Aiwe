@@ -33,12 +33,17 @@ namespace Aiwe.Models {
       int count = 0;
 
       FilterColumns.Clear(); //filter
+      List<DataColumn> columns = new List<DataColumn>();
+      foreach (DataColumn column in Table.Columns)
+        columns.Add(column);
 
-      foreach (DataColumn column in Table.Columns) {
+      var arrangedDataColumns = meta.GetColumnSequenceFor(columns);
+
+      foreach (DataColumn column in arrangedDataColumns) {
         //Index
         bool isColumnIncluded = IsColumnIncludedInIndex(column.ColumnName, user);
         bool isPictureColumn = meta.IsPictureColumn(column.ColumnName);
-        ColumnInfo columnInfo = new ColumnInfo(column) { Name = column.ColumnName, DisplayName = column.ColumnName.ToCamelBrokenString() };
+        ColumnInfo columnInfo = new ColumnInfo(column) { Name = column.ColumnName, DisplayName = meta.GetColumnDisplayName(column.ColumnName) };
         columnInfo.IsIndexIncluded = isColumnIncluded;
         columnInfo.IsIndexShowImage = isPictureColumn && meta.IsIndexShownPictureColumn(column.ColumnName);
         if (columnInfo.IsIndexShowImage)
@@ -69,13 +74,13 @@ namespace Aiwe.Models {
         IndexRows.Add(row);
 
       //Specific filter usage
-      List<string> filterColumnNames = FilterColumns.Select(x => x.ColumnName.ToCamelBrokenString()).ToList();
+      List<string> filterColumnNames = FilterColumns.Select(x => Meta.GetColumnDisplayName(x.ColumnName)).ToList();
       List<string> filterDateTimeColumnNames = FilterColumns.Where(x =>
         x.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length).EqualsIgnoreCase(Aibe.DH.DateTimeDataType))
-        .Select(x => x.ColumnName.ToCamelBrokenString()).ToList();
+        .Select(x => Meta.GetColumnDisplayName(x.ColumnName)).ToList();
       List<string> filterNumberColumnNames = FilterColumns.Where(x =>
         Aibe.DH.NumberDataTypes.Contains(x.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length)))
-        .Select(x => x.ColumnName.ToCamelBrokenString()).ToList();
+        .Select(x => Meta.GetColumnDisplayName(x.ColumnName)).ToList();
 
       //TODO, currently all these are hardcoded, not put in DH
       FilterLabelPortion = filterColumnNames.Any(x => x.Length >= 26) ||

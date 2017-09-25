@@ -19,147 +19,147 @@ namespace Aiwe.Helpers {
       if (!string.IsNullOrWhiteSpace(filter.DisplayName))
         filtered = filtered
           .Where(x => x.DisplayName != null &&
-            x.TableName.ToLower().Contains(filter.DisplayName.ToLower()));
+            x.DisplayName.ToLower().Contains(filter.DisplayName.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.OrderBy))
         filtered = filtered
           .Where(x => x.OrderBy != null &&
-            x.TableName.ToLower().Contains(filter.OrderBy.ToLower()));
+            x.OrderBy.ToLower().Contains(filter.OrderBy.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.ActionList))
         filtered = filtered
           .Where(x => x.ActionList != null &&
-            x.TableName.ToLower().Contains(filter.ActionList.ToLower()));
+            x.ActionList.ToLower().Contains(filter.ActionList.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.DefaultActionList))
         filtered = filtered
           .Where(x => x.DefaultActionList != null &&
-            x.TableName.ToLower().Contains(filter.DefaultActionList.ToLower()));
+            x.DefaultActionList.ToLower().Contains(filter.DefaultActionList.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.TableActionList))
         filtered = filtered
           .Where(x => x.TableActionList != null &&
-            x.TableName.ToLower().Contains(filter.TableActionList.ToLower()));
+            x.TableActionList.ToLower().Contains(filter.TableActionList.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.DefaultTableActionList))
         filtered = filtered
           .Where(x => x.DefaultTableActionList != null &&
-            x.TableName.ToLower().Contains(filter.DefaultTableActionList.ToLower()));
+            x.DefaultTableActionList.ToLower().Contains(filter.DefaultTableActionList.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.TextFieldColumns))
         filtered = filtered
           .Where(x => x.TextFieldColumns != null &&
-            x.TableName.ToLower().Contains(filter.TextFieldColumns.ToLower()));
+            x.TextFieldColumns.ToLower().Contains(filter.TextFieldColumns.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.PictureColumns))
         filtered = filtered
           .Where(x => x.PictureColumns != null &&
-            x.TableName.ToLower().Contains(filter.PictureColumns.ToLower()));
+            x.PictureColumns.ToLower().Contains(filter.PictureColumns.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.IndexShownPictureColumns))
         filtered = filtered
           .Where(x => x.IndexShownPictureColumns != null &&
-            x.TableName.ToLower().Contains(filter.IndexShownPictureColumns.ToLower()));
+            x.IndexShownPictureColumns.ToLower().Contains(filter.IndexShownPictureColumns.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.RequiredColumns))
         filtered = filtered
           .Where(x => x.RequiredColumns != null &&
-            x.TableName.ToLower().Contains(filter.RequiredColumns.ToLower()));
+            x.RequiredColumns.ToLower().Contains(filter.RequiredColumns.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.NumberLimitColumns))
         filtered = filtered
           .Where(x => x.NumberLimitColumns != null &&
-            x.TableName.ToLower().Contains(filter.NumberLimitColumns.ToLower()));
+            x.NumberLimitColumns.ToLower().Contains(filter.NumberLimitColumns.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.RegexCheckedColumns))
         filtered = filtered
           .Where(x => x.RegexCheckedColumns != null &&
-            x.TableName.ToLower().Contains(filter.RegexCheckedColumns.ToLower()));
+            x.RegexCheckedColumns.ToLower().Contains(filter.RegexCheckedColumns.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.RegexCheckedColumnExamples))
         filtered = filtered
           .Where(x => x.RegexCheckedColumnExamples != null &&
-            x.TableName.ToLower().Contains(filter.RegexCheckedColumnExamples.ToLower()));
+            x.RegexCheckedColumnExamples.ToLower().Contains(filter.RegexCheckedColumnExamples.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.UserRelatedFilters))
         filtered = filtered
           .Where(x => x.UserRelatedFilters != null &&
-            x.TableName.ToLower().Contains(filter.UserRelatedFilters.ToLower()));
+            x.UserRelatedFilters.ToLower().Contains(filter.UserRelatedFilters.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.ColumnExclusionList))
         filtered = filtered
           .Where(x => x.ColumnExclusionList != null &&
-            x.TableName.ToLower().Contains(filter.ColumnExclusionList.ToLower()));
+            x.ColumnExclusionList.ToLower().Contains(filter.ColumnExclusionList.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.FilterExclusionList))
         filtered = filtered
           .Where(x => x.FilterExclusionList != null &&
-            x.TableName.ToLower().Contains(filter.FilterExclusionList.ToLower()));
+            x.FilterExclusionList.ToLower().Contains(filter.FilterExclusionList.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.DetailsExclusionList))
         filtered = filtered
           .Where(x => x.DetailsExclusionList != null &&
-            x.TableName.ToLower().Contains(filter.DetailsExclusionList.ToLower()));
+            x.DetailsExclusionList.ToLower().Contains(filter.DetailsExclusionList.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.CreateEditExclusionList))
         filtered = filtered
           .Where(x => x.CreateEditExclusionList != null &&
-            x.TableName.ToLower().Contains(filter.CreateEditExclusionList.ToLower()));
+            x.CreateEditExclusionList.ToLower().Contains(filter.CreateEditExclusionList.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.AccessExclusionList))
         filtered = filtered
           .Where(x => x.AccessExclusionList != null &&
-            x.TableName.ToLower().Contains(filter.AccessExclusionList.ToLower()));
+            x.AccessExclusionList.ToLower().Contains(filter.AccessExclusionList.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.ColoringList))
         filtered = filtered
           .Where(x => x.ColoringList != null &&
-            x.TableName.ToLower().Contains(filter.ColoringList.ToLower()));
+            x.ColoringList.ToLower().Contains(filter.ColoringList.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.FilterDropDownLists))
         filtered = filtered
           .Where(x => x.FilterDropDownLists != null &&
-            x.TableName.ToLower().Contains(filter.FilterDropDownLists.ToLower()));
+            x.FilterDropDownLists.ToLower().Contains(filter.FilterDropDownLists.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.CreateEditDropDownLists))
         filtered = filtered
           .Where(x => x.CreateEditDropDownLists != null &&
-            x.TableName.ToLower().Contains(filter.CreateEditDropDownLists.ToLower()));
+            x.CreateEditDropDownLists.ToLower().Contains(filter.CreateEditDropDownLists.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.PrefixesOfColumns))
         filtered = filtered
           .Where(x => x.PrefixesOfColumns != null &&
-            x.TableName.ToLower().Contains(filter.PrefixesOfColumns.ToLower()));
+            x.PrefixesOfColumns.ToLower().Contains(filter.PrefixesOfColumns.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.PostfixesOfColumns))
         filtered = filtered
           .Where(x => x.PostfixesOfColumns != null &&
-            x.TableName.ToLower().Contains(filter.PostfixesOfColumns.ToLower()));
+            x.PostfixesOfColumns.ToLower().Contains(filter.PostfixesOfColumns.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.ListColumns))
         filtered = filtered
           .Where(x => x.ListColumns != null &&
-            x.TableName.ToLower().Contains(filter.ListColumns.ToLower()));
+            x.ListColumns.ToLower().Contains(filter.ListColumns.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.TimeStampColumns))
         filtered = filtered
           .Where(x => x.TimeStampColumns != null &&
-            x.TableName.ToLower().Contains(filter.TimeStampColumns.ToLower()));
+            x.TimeStampColumns.ToLower().Contains(filter.TimeStampColumns.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.HistoryTable))
         filtered = filtered
           .Where(x => x.HistoryTable != null &&
-            x.TableName.ToLower().Contains(filter.HistoryTable.ToLower()));
+            x.HistoryTable.ToLower().Contains(filter.HistoryTable.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.HistoryTrigger))
         filtered = filtered
           .Where(x => x.HistoryTrigger != null &&
-            x.TableName.ToLower().Contains(filter.HistoryTrigger.ToLower()));
+            x.HistoryTrigger.ToLower().Contains(filter.HistoryTrigger.ToLower()));
 
       if (!string.IsNullOrWhiteSpace(filter.AutoGeneratedColumns))
         filtered = filtered
           .Where(x => x.AutoGeneratedColumns != null &&
-            x.TableName.ToLower().Contains(filter.AutoGeneratedColumns.ToLower()));
+            x.AutoGeneratedColumns.ToLower().Contains(filter.AutoGeneratedColumns.ToLower()));
 
       if (filter.ItemsPerPageFrom.HasValue || filter.ItemsPerPageTo.HasValue) {
         int from = filter.ItemsPerPageFrom.HasValue ? filter.ItemsPerPageFrom.Value : 0;
@@ -175,6 +175,16 @@ namespace Aiwe.Helpers {
           filtered = filtered.Where(x => !x.DisableFilter.Value);
         }
       }
+
+      if (!string.IsNullOrWhiteSpace(filter.ColumnSequence))
+        filtered = filtered
+          .Where(x => x.ColumnSequence != null &&
+            x.ColumnSequence.ToLower().Contains(filter.ColumnSequence.ToLower()));
+
+      if (!string.IsNullOrWhiteSpace(filter.ColumnAliases))
+        filtered = filtered
+          .Where(x => x.ColumnAliases != null &&
+            x.ColumnAliases.ToLower().Contains(filter.ColumnAliases.ToLower()));
 
       return filtered;
     }

@@ -1,6 +1,15 @@
+v0.4.0.0 alpha
+bugs fixed:
+- Meta filter only searches for table name. Fixed.
+
+updates:
+- Aibe and Aiwe now support ColumnSequence and ColumnAliases!
+
+-----------------------------------------------------------------------------------------------
 v0.3.1.0 alpha
 bugs fixed:
 - (Aibe) collections is more fragile towards non-existing key because it is now a dictionary. Fixed.
+
 updates:
 - FilterIndexModel is created in Aibe, CommonController in Aiwe is simplified further.
 
@@ -53,16 +62,16 @@ updates:
 
 -----------------------------------------------------------------------------------------------
 v0.1.1.0 alpha
-updates:
-- cleaning up codes.
-- minor code reorganization.
-- more SQL executions are encapsulated in the Extension.Database.SqlServer
-
 bugs fixed:
 - MetaItem contains BasicColoringList in the views. Changed to ColoringList. Fixed.
 - User Edit allows null Working and Admin roles. Fixed.
 - ExclusionLists do not work for Index, Details/Delete, and Filter. Fixed.
 - API ValueActionFilter has invalid LINQ to Entity methods. Fixed, but requires further test.
+
+updates:
+- cleaning up codes.
+- minor code reorganization.
+- more SQL executions are encapsulated in the Extension.Database.SqlServer
 
 -----------------------------------------------------------------------------------------------
 v0.1.0.0 alpha first release

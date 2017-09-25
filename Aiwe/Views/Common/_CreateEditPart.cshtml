@@ -9,7 +9,7 @@
 @model CreateEditInfo
 
 <div class="form-horizontal">
-  @foreach (DataColumn column in Model.DataColumns) {
+  @foreach (DataColumn column in Model.Meta.ArrangedDataColumns) {
     string controlClasses = "form-control form-control-common-plus";
     string dataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
     if (!Model.IsColumnIncludedInCreateEdit(column, User)) { //skipped columns
@@ -41,7 +41,7 @@
         dataValue = prefix + dataValue + postfix;
       }
       <div class="form-group">
-        <label class="control-label @ViewBag.LabelClasses">@column.ColumnName.ToCamelBrokenString()</label>
+        <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(column.ColumnName)</label>
         <div class="@ViewBag.EditorClass">
           @if (!Model.Meta.IsCreateEditDropDownColumn(column.ColumnName)) {
             if (!Model.Meta.IsTextField(column.ColumnName)) { //string, not column and not TextField
@@ -134,7 +134,7 @@
 
       } else {
         <div class="form-group">
-          <label class="control-label @ViewBag.LabelClasses">@column.ColumnName.ToCamelBrokenString()</label>
+          <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(column.ColumnName)</label>
           <div class="@ViewBag.EditorClass">
             @if (!Model.Meta.IsCreateEditDropDownColumn(column.ColumnName)) {
               <input type="number" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
@@ -179,7 +179,7 @@
       } else {
 
         <div class="form-group">
-          <label class="control-label @ViewBag.LabelClasses">@column.ColumnName.ToCamelBrokenString()</label>
+          <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(column.ColumnName)</label>
           <div class="@ViewBag.EditorClass">
             <div class="row form-inline" style="margin-left:0px;">
               <input type="date" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
@@ -205,7 +205,7 @@
       }
 
       <div class="form-group">
-        <label class="control-label @ViewBag.LabelClasses">@column.ColumnName.ToCamelBrokenString()</label>
+        <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(column.ColumnName)</label>
         <div class="@ViewBag.EditorClass">          
           @Html.DropDownList(column.ColumnName, dropdownItems, new { @class = controlClasses })
           @Html.ValidationMessage(column.ColumnName, new { @class = "text-danger" })

@@ -19,7 +19,7 @@
         continue;
       }
       <div class="row">
-        <div class="@ViewBag.LabelClasses"><b>@data.Key.ToCamelBrokenString()</b></div>
+        <div class="@ViewBag.LabelClasses"><b>@Model.Meta.GetColumnDisplayName(data.Key)</b></div>
           
         @if (Model.Meta.IsPictureColumn(data.Key)) {
           int imgWidth = Model.Meta.GetImageWidth(data.Key);
