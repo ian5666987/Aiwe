@@ -5,7 +5,7 @@ bugs fixed:
 -----------------------------------------------------------------------------------------------
 v0.4.1.0 alpha
 updates:
-- Limits ColumnSequence is now applied to all actions and filter.
+- ColumnSequence is now applied to all actions and filter.
 
 -----------------------------------------------------------------------------------------------
 v0.4.0.1 alpha
