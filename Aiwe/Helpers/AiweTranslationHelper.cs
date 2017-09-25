@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Extension.String;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace Aiwe.Helpers {
@@ -25,10 +27,17 @@ namespace Aiwe.Helpers {
           tempData.Add(key, collections[key]);
     }
 
-    public static void FillTempDataFromObjectDictionary(TempDataDictionary tempData, Dictionary<string, object> objectDict) {
+    public static void FillTempDataFromObjectDictionary(List<string> columnSequence, TempDataDictionary tempData, Dictionary<string, object> objectDict) {
       tempData.Clear();
-      foreach (var key in objectDict.Keys)
-        tempData.Add(key, objectDict[key]);
+      if (columnSequence != null && columnSequence.Any()) {
+        var arrangedColumns = columnSequence.Where(x => objectDict.ContainsKey(x));
+        foreach (var item in arrangedColumns)
+          tempData.Add(item, objectDict[item]);
+        foreach (var key in objectDict.Keys.Except(arrangedColumns))
+          tempData.Add(key, objectDict[key]);
+      } else
+        foreach (var key in objectDict.Keys)
+          tempData.Add(key, objectDict[key]);
     }
 
     public static void FillTempDataFromDictionary(TempDataDictionary tempData, Dictionary<string, string> tempDataDict) {

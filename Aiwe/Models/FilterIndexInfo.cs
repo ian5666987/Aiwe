@@ -33,13 +33,14 @@ namespace Aiwe.Models {
       int count = 0;
 
       FilterColumns.Clear(); //filter
-      //List<DataColumn> columns = new List<DataColumn>();
-      //foreach (DataColumn column in Table.Columns)
-      //  columns.Add(column);
+      List<DataColumn> columns = new List<DataColumn>();
+      foreach (DataColumn column in Table.Columns)
+        columns.Add(column);
 
-      //var arrangedDataColumns = meta.GetColumnSequenceFor(columns);
+      var arrangedDataColumns = meta.GetColumnSequenceFor(columns);
 
-      foreach (DataColumn column in Table.Columns) {
+      foreach (DataColumn column in arrangedDataColumns) {
+      //foreach (DataColumn column in Table.Columns) {
         //Index
         bool isColumnIncluded = IsColumnIncludedInIndex(column.ColumnName, user);
         bool isPictureColumn = meta.IsPictureColumn(column.ColumnName);

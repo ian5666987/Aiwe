@@ -95,9 +95,11 @@
     <!--The table-->
 
       int count = 0;
+      List<ColumnInfo> includedColumns = Model.ColumnInfos.Where(x => x.IsIndexIncluded).ToList();
+
       <table class="table table-bordered table-striped">
         <tr>
-          @foreach (ColumnInfo column in Model.ColumnInfos.Where(x => x.IsIndexIncluded)) {
+          @foreach (ColumnInfo column in includedColumns) {
             <th>@column.DisplayName</th>
           }
           @if (Model.Meta.HasNonCreateAction) {
@@ -111,45 +113,52 @@
               int id = 0; //record Id
               count = 0;
             }
-            
-            @foreach (object val in row.ItemArray) {
-              if (count == 0) {
+
+            @foreach (ColumnInfo columnInfo in includedColumns) {
+              object val = row[columnInfo.Name];
+              if (columnInfo.Name.EqualsIgnoreCase("Cid")) {
                 id = (int)val;
               }
-              if (!Model.IndexExcludedColumnNos.Contains(count)) {
-                ColumnInfo columnInfo = Model.ColumnInfos[count];
-                if (columnInfo.IsIndexShowImage) {                  
+              if (!Model.IsColumnIncludedInIndex(columnInfo.Name, User)) {
+                continue;
+              }
+              if (columnInfo.IsIndexShowImage) {
+                <td>
+                  @if (val is DBNull || val == null || string.IsNullOrWhiteSpace(val.ToString())) {
+                    <i>[no picture]</i>
+                  } else if (val.ToString().Contains("/") || val.ToString().Contains("\\")) { //longer relative path
+                    <img src="~/Images/@val" width="@columnInfo.ImageWidth" />
+                  } else {
+                    <img src="~/Images/@Model.TableName/@id/@val" width="@columnInfo.ImageWidth" />
+                  }
+                </td>
+              } else {
+                if (columnInfo.IsListColumn) {
+                  string dataValue = val == null ? string.Empty : val.ToString();
                   <td>
-                    @if (val is DBNull || val == null || string.IsNullOrWhiteSpace(val.ToString())) {
-                      <i>[no picture]</i>
-                    } else if (val.ToString().Contains("/") || val.ToString().Contains("\\")) { //longer relative path
-                      <img src="~/Images/@val" width="@columnInfo.ImageWidth" />
-                    } else {
-                      <img src="~/Images/@Model.TableName/@id/@val" width="@columnInfo.ImageWidth" />
-                    }
+                    @Html.Raw(Model.GetListColumnDetailsHTML(columnInfo.Name, dataValue))
                   </td>
                 } else {
-                  if (columnInfo.IsListColumn) {
-                    string dataValue = val == null ? string.Empty : val.ToString();
-                    <td>
-                      @Html.Raw(Model.GetListColumnDetailsHTML(columnInfo.Name, dataValue))
-                    </td>
+                  //List<ColoringItem> colorItems = columnInfo.CreateColorItems(id);
+                  if (columnInfo.Colorings == null) {
+                    <td>@val</td>
+                  } else if (columnInfo.Colorings.Any(x => x.CheckConditionMet(columnInfo.DataType, val, id))) {
+                    ColoringInfo colorItem = columnInfo.Colorings.FirstOrDefault(x => x.CheckConditionMet(columnInfo.DataType, val, id));
+                    <td style="background-color:@colorItem.Color">@val</td>
                   } else {
-                    //List<ColoringItem> colorItems = columnInfo.CreateColorItems(id);
-                    if (columnInfo.Colorings == null) {
-                      <td>@val</td>
-                    } else if (columnInfo.Colorings.Any(x => x.CheckConditionMet(columnInfo.DataType, val, id))) {
-                      ColoringInfo colorItem = columnInfo.Colorings.FirstOrDefault(x => x.CheckConditionMet(columnInfo.DataType, val, id));
-                      <td style="background-color:@colorItem.Color">@val</td>
-                    } else {
-                      <td>@val</td>
-                    }
-
+                    <td>@val</td>
                   }
+
                 }
               }
-              count++;
             }
+
+            @*@foreach (object val in row.ItemArray) {
+              if (!Model.IndexExcludedColumnNos.Contains(count)) {
+                ColumnInfo columnInfo = Model.ColumnInfos[count];
+              }
+              count++;
+            }*@
             @if (Model.Meta.HasNonCreateAction) {
               int actCount = 0;
               <td>

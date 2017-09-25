@@ -109,7 +109,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     public ActionResult Edit(string tableName, int id) {
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(tableName, id);
-      AiweTranslationHelper.FillTempDataFromObjectDictionary(TempData, objectDictionary);
+      AiweTranslationHelper.FillTempDataFromObjectDictionary(meta.ColumnSequence, TempData, objectDictionary);
       CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.EditActionName);
       return View(model);
     }
@@ -157,7 +157,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       DetailsInfo model = new DetailsInfo(meta, id);
       Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(tableName, id);
-      AiweTranslationHelper.FillTempDataFromObjectDictionary(TempData, objectDictionary); //TempData is prepared inside!
+      AiweTranslationHelper.FillTempDataFromObjectDictionary(meta.ColumnSequence, TempData, objectDictionary); //TempData is prepared inside!
       return View(model);
     }
 
@@ -177,7 +177,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       DetailsInfo model = new DetailsInfo(meta, id);
       Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(tableName, id);
-      AiweTranslationHelper.FillTempDataFromObjectDictionary(TempData, objectDictionary); //TempData is prepared inside!
+      AiweTranslationHelper.FillTempDataFromObjectDictionary(meta.ColumnSequence, TempData, objectDictionary); //TempData is prepared inside!
       return View(model);
     }
 
