@@ -1,3 +1,8 @@
+v0.3.0.2 alpha
+updates:
+- RegexCheckedColumn for ListColumn is now applied per item line, not to the entire string.
+
+-----------------------------------------------------------------------------------------------
 v0.3.0.1 alpha
 bugs fixed:
 - EqualsIgnoreCase is used on MetaController LINQ. Fixed.

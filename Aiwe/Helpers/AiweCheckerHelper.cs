@@ -123,32 +123,36 @@ namespace Aiwe.Helpers {
 
           RegexCheckedColumnInfo regexInfo = meta.GetRegexCheckedColumn(keyInfo.PureKeyName);
           if (regexInfo != null) { //regex checked items
-            //ListColumnInfo listColumn = meta.GetListColumnInfo(keyInfo.PureKeyName); //to determine if items are in listColumn or not
+            ListColumnInfo listColumn = meta.GetListColumnInfo(keyInfo.PureKeyName); //to determine if items are in listColumn or not
+            string valueString = value.ToString();
+            string[] valueParts = listColumn == null ? new string[] { valueString } : valueString.Split(';');
+            if (valueParts != null)
+              for (int i = 0; i < valueParts.Length; ++i) {
+                Regex regex = new Regex(regexInfo.Content);
+                Match match = regex.Match(valueParts[i].ToString());
+                if (!match.Success) {
+                  StringBuilder regexError = new StringBuilder(string.Concat(
+                    "The input string [", valueParts[i],
+                    "] for [", camelBrokenPureKeyName, "] ",
+                    "does not match with the required pattern"));
 
-            Regex regex = new Regex(regexInfo.Content);
-            Match match = regex.Match(value.ToString());
-            if (!match.Success) {
-              StringBuilder regexError = new StringBuilder(string.Concat(
-                "The input string [", value,
-                "] for [", camelBrokenPureKeyName, "] ",
-                "does not match with the required pattern"));
+                  //AiweUserHelper.UserIsDeveloper(User)
+                  if (userIsDeveloper) {
+                    regexError.Append(" [");
+                    regexError.Append(regex.ToString());
+                    regexError.Append("]");
+                  }
 
-              //AiweUserHelper.UserIsDeveloper(User)
-              if (userIsDeveloper) {
-                regexError.Append(" [");
-                regexError.Append(regex.ToString());
-                regexError.Append("]");
+                  RegexCheckedColumnExampleInfo exampleInfo = meta.GetRegexCheckedColumnExample(keyInfo.PureKeyName);
+                  if (exampleInfo != null) {
+                    regexError.Append(". Example(s) of correct pattern: ");
+                    regexError.Append(exampleInfo.Content);
+                  }
+
+                  errorDict.Add(keyInfo.Key, regexError.ToString());
+                  //ModelState.AddModelError(keyInfo.Key, regexError.ToString());
+                }
               }
-
-              RegexCheckedColumnExampleInfo exampleInfo = meta.GetRegexCheckedColumnExample(keyInfo.PureKeyName);
-              if (exampleInfo != null) {
-                regexError.Append(". Example(s) of correct pattern: ");
-                regexError.Append(exampleInfo.Content);
-              }
-
-              errorDict.Add(keyInfo.Key, regexError.ToString());
-              //ModelState.AddModelError(keyInfo.Key, regexError.ToString());
-            }
           }
         }
 
