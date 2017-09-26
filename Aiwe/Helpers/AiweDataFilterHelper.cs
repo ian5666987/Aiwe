@@ -186,6 +186,11 @@ namespace Aiwe.Helpers {
           .Where(x => x.ColumnAliases != null &&
             x.ColumnAliases.ToLower().Contains(filter.ColumnAliases.ToLower()));
 
+      if (!string.IsNullOrWhiteSpace(filter.EditShowOnlyColumns))
+        filtered = filtered
+          .Where(x => x.EditShowOnlyColumns != null &&
+            x.EditShowOnlyColumns.ToLower().Contains(filter.EditShowOnlyColumns.ToLower()));
+
       return filtered;
     }
 

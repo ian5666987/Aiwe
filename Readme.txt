@@ -1,3 +1,8 @@
+v0.4.2.0 alpha
+updates:
+- EditShowOnlyColumns is now available!
+
+-----------------------------------------------------------------------------------------------
 v0.4.1.1 alpha
 bugs fixed:
 - First time dropdown is static instead of dynamic. Fixed.

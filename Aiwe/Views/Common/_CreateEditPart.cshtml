@@ -8,12 +8,19 @@
 
 @model CreateEditInfo
 
+@{ 
+  bool isCreate = Model.ActionType.EqualsIgnoreCase(Aibe.DH.CreateActionName);
+}
+
 <div class="form-horizontal">
   @foreach (DataColumn column in Model.Meta.ArrangedDataColumns) {
+    bool isReadOnly = !isCreate && Model.Meta.IsEditShowOnly(column.ColumnName);
+    string hiddenAttrIfReadOnly = isReadOnly ? "hidden=\"hidden\"" : string.Empty;
+    string readOnlyAttrIfReadOnly = isReadOnly ? "readonly=\"readonly\"" : string.Empty;
     string controlClasses = "form-control form-control-common-plus";
     string dataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
     if (!Model.IsColumnIncludedInCreateEdit(column, User)) { //skipped columns
-      if (column.ColumnName != "Cid") { //all non-edited items must exist but is hidden
+      if (column.ColumnName != "Cid") { //all non-edited items must exist but is hidden       
         if (dataType.EqualsIgnoreCase(Aibe.DH.DateTimeDataType)) { //The only data type that is quite problematic to deal with
           string dataValueRaw = TempData[column.ColumnName]?.ToString();
           DateTime? dataValueDt = string.IsNullOrWhiteSpace(dataValueRaw) ? null : new DateTime?(DateTime.Parse(dataValueRaw));
@@ -33,7 +40,7 @@
 
     if (dataType.EqualsIgnoreCase(Aibe.DH.StringDataType)) { //String type
       string dataValue = TempData[column.ColumnName]?.ToString();
-      if (Model.ActionType == "create" && string.IsNullOrWhiteSpace(dataValue)) { //only for create. The edit does not have, only if the previous dataValue is empty
+      if (isCreate && string.IsNullOrWhiteSpace(dataValue)) { //only for create. The edit does not have, only if the previous dataValue is empty
         string prefix = Model.Meta.GetPrefix(column.ColumnName);
         string postfix = Model.Meta.GetPostfix(column.ColumnName);
         //according to http://stackoverflow.com/questions/637308/why-is-adding-null-to-a-string-legal
@@ -57,20 +64,22 @@
                     } else {
                       <img src="../../../Images/@Model.TableName/@cid/@columnValue" style="width:100px" id="picturedisplay-@column.ColumnName" />
                     }
-                    <button class="common-remove-picture" type="button" id="pictureremove-@column.ColumnName">remove</button>
+                    <button class="common-remove-picture" type="button" id="pictureremove-@column.ColumnName" @hiddenAttrIfReadOnly>remove</button>
                   } else {
                     <img src="" style="width:100px" id="picturedisplay-@column.ColumnName" hidden="hidden"/>
                     <button class="common-remove-picture" type="button" id="pictureremove-@column.ColumnName" hidden="hidden">remove</button>
                   }
-                  <input type="file" name="@picColumnName" accept="image/*" class="common-input-picture" id="picture-@column.ColumnName"/>
-                  @if (!string.IsNullOrWhiteSpace(columnValue) && Model.ActionType.ToLower() == "edit") {
+                  @if (!isReadOnly) {
+                    <input type="file" name="@picColumnName" accept="image/*" class="common-input-picture" id="picture-@column.ColumnName" />
+                    if (!string.IsNullOrWhiteSpace(columnValue) && !isCreate) {
                     <span class="text-danger" id="pictureinfotext-@column.ColumnName"> 
                       DO NOT BOTHER the 'No file chosen' phrase. If you see a picture, it means THERE IS a picture linked to the data.
                     </span>
-                  } else {
+                    } else {
                     <span class="text-danger" id="pictureinfotext-@column.ColumnName" hidden="hidden">
                       DO NOT BOTHER the 'No file chosen' phrase. If you see a picture, it means THERE IS a picture linked to the data.
                     </span>
+                    }
                   }
                   <input class="@controlClasses"
                          type="hidden" name="@column.ColumnName" value="@columnValue"
@@ -81,30 +90,43 @@
                   string lcType = Model.Meta.GetListColumnType(column.ColumnName);
                   bool hasStaticTemplate = string.IsNullOrWhiteSpace(dataValue) &&
                     Model.Meta.ListColumnHasStaticTemplate(column.ColumnName);
-                  string usedDataValue = hasStaticTemplate ? 
+                  string usedDataValue = hasStaticTemplate ?
                     Model.Meta.GetColumnStaticTemplate(column.ColumnName) : dataValue;
                   ListColumnInfo info = Model.Meta.GetListColumnInfo(column.ColumnName);
-                  <div id="common-subcolumn-datavalue-@column.ColumnName">
-                    <input type="hidden" name="@column.ColumnName" id="common-subcolumn-content-@column.ColumnName" value="@usedDataValue" />
-                  </div>                  
-                  <span hidden id="common-subcolumn-span-@column.ColumnName">@lcType</span>
-                  <span hidden id="common-subcolumn-portion-@column.ColumnName">@Model.CreateEditLabelPortion</span>
-                  <div id="common-subcolumn-div-@column.ColumnName">
-                    @Html.Raw(info.GetHTML(usedDataValue))
-                  </div>
+                  if (isReadOnly) {
+                    <div id="ro-datavalue-@column.ColumnName">
+                      <input type="hidden" name="@column.ColumnName" id="ro-content-@column.ColumnName" value="@usedDataValue" />
+                    </div>
+                    <span hidden id="ro-span-@column.ColumnName">@lcType</span>
+                    <span hidden id="ro-portion-@column.ColumnName">@Model.CreateEditLabelPortion</span>
+                    <div id="ro-div-@column.ColumnName">
+                      @Html.Raw(info.GetHTML(usedDataValue, true))
+                    </div>
+                  } else {
+                    <div id="common-subcolumn-datavalue-@column.ColumnName">
+                      <input type="hidden" name="@column.ColumnName" id="common-subcolumn-content-@column.ColumnName" value="@usedDataValue" />
+                    </div>                  
+                    <span hidden id="common-subcolumn-span-@column.ColumnName">@lcType</span>
+                    <span hidden id="common-subcolumn-portion-@column.ColumnName">@Model.CreateEditLabelPortion</span>
+                    <div id="common-subcolumn-div-@column.ColumnName">
+                      @Html.Raw(info.GetHTML(usedDataValue))
+                    </div>
+                  }
                 } else { //normal string
-                  <input type="text" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
+                  <input type="text" name="@column.ColumnName" class="@controlClasses" value="@dataValue" @readOnlyAttrIfReadOnly/>
                 }
               }
             } else { //TextField              
               <textarea class="@controlClasses"
                         rows="@Model.Meta.GetTextFieldRowSize(column.ColumnName)"                                                
-                        name="@column.ColumnName">@dataValue</textarea> //must be written this way and cannot be auto adjusted. Otherwise the dataValue will be put in the centre of the area (not in the beginning)
+                        name="@column.ColumnName" @readOnlyAttrIfReadOnly>@dataValue</textarea> //must be written this way and cannot be auto adjusted. Otherwise the dataValue will be put in the centre of the area (not in the beginning)
             }
           } else { //dropdown
             List<string> dropdowns = AiweDropDownHelper.GetStaticCreateEditDropDownFor(Model.TableName, column.ColumnName, dataValue, "string");
             if (dropdowns == null || dropdowns.Count <= 0) {
-              <input type="text" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
+              <input type="text" name="@column.ColumnName" class="@controlClasses" value="@dataValue" @readOnlyAttrIfReadOnly/>
+            } else if (isReadOnly) {
+              <input type="text" name="@column.ColumnName" class="@controlClasses" value="@dataValue" readonly="readonly" />
             } else { //string dropdown case
               <div id="live-dd-@column.ColumnName" class="live-dd" commondatatype="string">
                 @{ 
@@ -121,9 +143,9 @@
                   id = "common-column-dropdown-" + column.ColumnName })
                </div>
               <input type="text" class="common-column-dropdown-original" id="common-column-dropdown-original-@column.ColumnName" value="@dataValue" hidden="hidden" />
-                    }
-                  }
-          @Html.ValidationMessage(column.ColumnName, new { @class = "text-danger" })
+          }
+        }
+        @Html.ValidationMessage(column.ColumnName, new { @class = "text-danger" })
         </div>
       </div>
     } else if (Aibe.DH.NumberDataTypes.Contains(dataType)) { //Integer/UInt/Other numbers type
@@ -137,11 +159,13 @@
           <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(column.ColumnName)</label>
           <div class="@ViewBag.EditorClass">
             @if (!Model.Meta.IsCreateEditDropDownColumn(column.ColumnName)) {
-              <input type="number" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
+              <input type="number" name="@column.ColumnName" class="@controlClasses" value="@dataValue" @readOnlyAttrIfReadOnly/>
+            } else if (isReadOnly) {
+              <input type="text" name="@column.ColumnName" class="@controlClasses" value="@dataValue" readonly="readonly" />
             } else {
               List<string> dropdowns = AiweDropDownHelper.GetStaticCreateEditDropDownFor(Model.TableName, column.ColumnName, dataValue);
               if (dropdowns == null || dropdowns.Count <= 0) {
-                <input type="number" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
+                <input type="number" name="@column.ColumnName" class="@controlClasses" value="@dataValue" @readOnlyAttrIfReadOnly/>
               } else { //number dropdown case
                 <div id="live-dd-@column.ColumnName" class="live-dd" commondatatype="number">
                   @{
@@ -158,9 +182,9 @@
                     id = "common-column-dropdown-" + column.ColumnName })
                 </div>
                 <input type="text" class="common-column-dropdown-original" id="common-column-dropdown-original-@column.ColumnName" value="@dataValue" hidden="hidden" />
-                      }
-                    }
-            @Html.ValidationMessage(column.ColumnName, new { @class = "text-danger" })
+              }
+            }
+          @Html.ValidationMessage(column.ColumnName, new { @class = "text-danger" })
           </div>
         </div>
       }
@@ -182,8 +206,8 @@
           <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(column.ColumnName)</label>
           <div class="@ViewBag.EditorClass">
             <div class="row form-inline" style="margin-left:0px;">
-              <input type="date" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
-              <input type="time" step="1" name="@dataTimeName" class="@controlClasses" value="@dataTimeValue" />
+              <input type="date" name="@column.ColumnName" class="@controlClasses" value="@dataValue" @readOnlyAttrIfReadOnly/>
+              <input type="time" step="1" name="@dataTimeName" class="@controlClasses" value="@dataTimeValue" @readOnlyAttrIfReadOnly/>
             </div>
             @Html.ValidationMessage(column.ColumnName, new { @class = "text-danger" })
             @Html.ValidationMessage(dataTimeName, new { @class = "text-danger" })
@@ -191,28 +215,37 @@
         </div>
 
       }
-    } else if (dataType == "Boolean") {
+    } else if (dataType.EqualsIgnoreCase(Aibe.DH.BooleanDataType)) {
       string dataValue = TempData[column.ColumnName]?.ToString();
-      List<SelectListItem> dropdownItems = new List<SelectListItem> {
-        new SelectListItem { Text = null, Value = null },
-        new SelectListItem { Text = "True", Value = "true" },
-        new SelectListItem { Text = "False", Value = "false" },
-      };
-
-      SelectListItem item = dropdownItems.FirstOrDefault(x => x.Text == dataValue);
-      if (item != null) {
-        item.Selected = true;
-      }
-
-      <div class="form-group">
-        <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(column.ColumnName)</label>
-        <div class="@ViewBag.EditorClass">          
-          @Html.DropDownList(column.ColumnName, dropdownItems, new { @class = controlClasses })
-          @Html.ValidationMessage(column.ColumnName, new { @class = "text-danger" })
+      if (isReadOnly) {
+        <div class="form-group">
+          <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(column.ColumnName)</label>
+          <div class="@ViewBag.EditorClass">          
+            <input type="text" name="@column.ColumnName" class="@controlClasses" value="@dataValue" readonly="readonly" />
+          </div>
         </div>
-      </div>
+      } else {
+        List<SelectListItem> dropdownItems = new List<SelectListItem> {
+          new SelectListItem { Text = null, Value = null },
+          new SelectListItem { Text = "True", Value = "true" },
+          new SelectListItem { Text = "False", Value = "false" },
+        };
+
+        SelectListItem item = dropdownItems.FirstOrDefault(x => x.Text == dataValue);
+        if (item != null) {
+          item.Selected = true;
+        }
+
+        <div class="form-group">
+          <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(column.ColumnName)</label>
+          <div class="@ViewBag.EditorClass">          
+            @Html.DropDownList(column.ColumnName, dropdownItems, new { @class = controlClasses })
+            @Html.ValidationMessage(column.ColumnName, new { @class = "text-danger" })
+          </div>
+        </div>
+      }
     } else {
-      <p> Name: @column.ColumnName, Type: @dataType</p>
+      <p>Name: @Model.Meta.GetColumnDisplayName(column.ColumnName), Type: @dataType</p>
     }
   }
   <div id="common-table-name" hidden>@Model.TableName</div>

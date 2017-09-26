@@ -280,4 +280,12 @@
       @Html.ValidationMessageFor(model => model.ColumnAliases, "", new { @class = "text-danger" })
     </div>
   </div>
+
+  <div class="form-group">
+    @Html.LabelFor(model => model.EditShowOnlyColumns, htmlAttributes: new { @class = ViewBag.LabelClasses })
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.EditShowOnlyColumns, new { @class = "form-control form-control-plus", @rows = 4 })
+      @Html.ValidationMessageFor(model => model.EditShowOnlyColumns, "", new { @class = "text-danger" })
+    </div>
+  </div>
 </div>

@@ -104,5 +104,8 @@ namespace Aiwe.Models.DB {
 
     [StringLength(1000)]
     public string ColumnAliases { get; set; }
+
+    [StringLength(1000)]
+    public string EditShowOnlyColumns { get; set; }
   }
 }
