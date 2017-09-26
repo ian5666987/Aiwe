@@ -1,3 +1,8 @@
+v0.4.2.1 alpha
+bugs fixed:
+- Cid is missing in Index view when column is excluded. Fixed.
+
+-----------------------------------------------------------------------------------------------
 v0.4.2.0 alpha
 updates:
 - EditShowOnlyColumns is now available!

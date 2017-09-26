@@ -385,15 +385,9 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       switch (inputPart) {
         case "text":
         case "check":
-        case "dropdown":
-          changedItem.Value = inputValue;
-          break;
-        case "remarks":
-          changedItem.Remarks = inputValue;
-          break;
-        case "unit":
-          changedItem.Ending = inputValue;
-          break;          
+        case "dropdown": changedItem.Value = inputValue; break;
+        case "remarks": changedItem.Remarks = inputValue; break;
+        case "unit": changedItem.Ending = inputValue; break;          
       }
 
       newDataValue = string.Join(";", dataValueParts.Select(x => x.CurrentDesc));        

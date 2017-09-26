@@ -7,7 +7,6 @@ using Aibe.Models;
 using Aibe.Models.Filters;
 using System.Data.Entity.Migrations;
 using Extension.Cryptography;
-using Extension.String;
 using Aiwe.Helpers;
 using Aiwe.Models.DB;
 using Aibe.Models.Core;

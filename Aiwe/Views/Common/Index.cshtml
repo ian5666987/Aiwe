@@ -1,5 +1,5 @@
-﻿@using Aiwe.Models;
-@using Aibe.Models.Core;
+﻿@using Aibe.Models.Core;
+@using Aiwe.Models;
 @using Extension.String;
 @using System.Data;
 
@@ -94,8 +94,9 @@
 
     <!--The table-->
 
-      int count = 0;
-      List<ColumnInfo> includedColumns = Model.ColumnInfos.Where(x => x.IsIndexIncluded).ToList();
+    int count = 0;
+    List<ColumnInfo> includedColumns = Model.ColumnInfos.Where(x => x.IsIndexIncluded).ToList();
+    bool isCidForced = !includedColumns.Any(x => x.Name.EqualsIgnoreCase("Cid"));
 
       <table class="table table-bordered table-striped">
         <tr>
@@ -106,19 +107,19 @@
             <th>Action</th>
           }
         </tr>
-        @foreach (DataRow row in Model.IndexRows) {          
-          
+        @foreach (DataRow row in Model.IndexRows) {                    
           <tr>
             @{
               int id = 0; //record Id
               count = 0;
+              object cid = row["Cid"]; //included or not, Cid must be taken to get the data id
+              if (cid != null) {
+                id = (int)cid;
+              }
             }
 
             @foreach (ColumnInfo columnInfo in includedColumns) {
               object val = row[columnInfo.Name];
-              if (columnInfo.Name.EqualsIgnoreCase("Cid")) {
-                id = (int)val;
-              }
               if (!Model.IsColumnIncludedInIndex(columnInfo.Name, User)) {
                 continue;
               }
