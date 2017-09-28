@@ -11,7 +11,9 @@ namespace Aiwe.Models {
     public bool IsFilterIncluded { get; set; }
     public bool IsIndexShowImage { get; set; }
     public bool IsListColumn { get; set; }
+    public bool IsSciptColumn { get; set; }
     public int ImageWidth { get; set; } = 100; //default value
+    public ScTableInfo ScTable { get; set; }
     public List<ColoringInfo> Colorings { get; set; } = new List<ColoringInfo>();
 
     private DataColumn column;

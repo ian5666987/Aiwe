@@ -17,9 +17,9 @@
   <input type="hidden" name="@(Aibe.DH.BaseFilterAppendixName + "Type")" id="@ViewBag.SenderName-type" class="uncounted-filter-item" />
 
   @foreach (var column in Model.FilterColumns) {
-    string dataType = column.DataType.ToString().Substring("System.".Length);
-    if (dataType == "String") { //If the data type is string
-      string dataValue = TempData[column.ColumnName]?.ToString();
+    string dataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
+    if (dataType.EqualsIgnoreCase(Aibe.DH.StringDataType)) { //If the data type is string
+      string dataValue = Model.GetData(column.ColumnName);
       <div class="form-group">
         <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(column.ColumnName)</label>
         <div class="@ViewBag.EditorClass">
@@ -46,9 +46,9 @@
       </div>
     } else if (Aibe.DH.NumberDataTypes.Contains(dataType)) {
       string dataNameFrom = string.Concat(column.ColumnName, Aibe.DH.BaseFilterAppendixName, dataType, Aibe.DH.FromName);
-      string dataValueFrom = TempData[dataNameFrom]?.ToString();
+      string dataValueFrom = Model.GetData(dataNameFrom);
       string dataNameTo = string.Concat(column.ColumnName, Aibe.DH.BaseFilterAppendixName, dataType, Aibe.DH.ToName);
-      string dataValueTo = TempData[dataNameTo]?.ToString();
+      string dataValueTo = Model.GetData(dataNameTo);
       <div class="form-group">
         <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(column.ColumnName) (from-to)</label>
         <div class="@ViewBag.EditorClass">
@@ -60,9 +60,9 @@
           @Html.ValidationMessage(dataNameTo, new { @class = "text-danger" })
         </div>
       </div>
-    } else if (dataType == "DateTime") {
+    } else if (dataType.EqualsIgnoreCase(Aibe.DH.DateTimeDataType)) {
       string dataNameFrom = column.ColumnName + Aibe.DH.FilterDateAppendixFrontName + Aibe.DH.FromName;
-      string dataValueRawFrom = TempData[dataNameFrom]?.ToString();
+      string dataValueRawFrom = Model.GetData(dataNameFrom);
       DateTime? dataValueDtFrom = string.IsNullOrWhiteSpace(dataValueRawFrom) ? null : new DateTime?(DateTime.Parse(dataValueRawFrom));
       string dataValueFrom = dataValueDtFrom.HasValue ? dataValueDtFrom.Value.ToString("yyyy-MM-dd") : string.Empty;
       string dataTimeNameFrom = column.ColumnName + Aibe.DH.FilterTimeAppendixFrontName + Aibe.DH.FromName;
@@ -70,7 +70,7 @@
       dataValueDtFrom.Value.ToString("HH:mm") : null;
 
       string dataNameTo = column.ColumnName + Aibe.DH.FilterDateAppendixFrontName + Aibe.DH.ToName;
-      string dataValueRawTo = TempData[dataNameTo]?.ToString();
+      string dataValueRawTo = Model.GetData(dataNameTo);
       DateTime? dataValueDtTo = string.IsNullOrWhiteSpace(dataValueRawTo) ? null : new DateTime?(DateTime.Parse(dataValueRawTo));
       string dataValueTo = dataValueDtTo.HasValue ? dataValueDtTo.Value.ToString("yyyy-MM-dd") : string.Empty;
       string dataTimeNameTo = column.ColumnName + Aibe.DH.FilterTimeAppendixFrontName + Aibe.DH.ToName;
@@ -98,9 +98,9 @@
           @Html.ValidationMessage(dataTimeNameTo, new { @class = "text-danger" })
         </div>
       </div>
-    } else if (dataType == "Boolean") {
+    } else if (dataType.EqualsIgnoreCase(Aibe.DH.BooleanDataType)) {
       string dataName = string.Concat(column.ColumnName, Aibe.DH.BaseFilterAppendixName, dataType);
-      string dataValue = TempData[dataName]?.ToString();
+      string dataValue = Model.GetData(dataName);
       List<SelectListItem> dropdownItems = new List<SelectListItem> {
         new SelectListItem { Text = null, Value = null },
         new SelectListItem { Text = "True", Value = "true" },

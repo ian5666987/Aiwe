@@ -5,6 +5,7 @@
 @using Aiwe.Extensions;
 @using System.Data;
 @using Extension.String;
+@using Extension.Database.SqlServer;
 
 @model CreateEditInfo
 
@@ -14,32 +15,79 @@
 
 <div class="form-horizontal">
   @foreach (DataColumn column in Model.Meta.ArrangedDataColumns) {
-    bool isReadOnly = !isCreate && Model.Meta.IsEditShowOnly(column.ColumnName);
+    bool isScriptColumn = Model.Meta.IsScriptColumn(column.ColumnName);
+    bool isReadOnly = (!isCreate && Model.Meta.IsEditShowOnly(column.ColumnName)) || isScriptColumn; //TODO fornow, script column is always read only
     string hiddenAttrIfReadOnly = isReadOnly ? "hidden=\"hidden\"" : string.Empty;
     string readOnlyAttrIfReadOnly = isReadOnly ? "readonly=\"readonly\"" : string.Empty;
     string controlClasses = "form-control form-control-common-plus";
     string dataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
     if (!Model.IsColumnIncludedInCreateEdit(column, User)) { //skipped columns
-      if (column.ColumnName != "Cid") { //all non-edited items must exist but is hidden       
-        if (dataType.EqualsIgnoreCase(Aibe.DH.DateTimeDataType)) { //The only data type that is quite problematic to deal with
-          string dataValueRaw = TempData[column.ColumnName]?.ToString();
+      if (column.ColumnName != "Cid") {//all non-edited items must exist but is hidden       
+        if (dataType.EqualsIgnoreCase(Aibe.DH.DateTimeDataType)) { //The only data type that is quite problematic to deal with        
+          string dataValueRaw = Model.GetData(column.ColumnName);
           DateTime? dataValueDt = string.IsNullOrWhiteSpace(dataValueRaw) ? null : new DateTime?(DateTime.Parse(dataValueRaw));
           string dataValue = dataValueDt.HasValue ? dataValueDt.Value.ToString("yyyy-MM-dd") : string.Empty;
           string dataTimeName = column.ColumnName + Aibe.DH.CreateEditTimeAppendixName;
-          string dataTimeValue = (string)TempData[dataTimeName] ?? (dataValueDt.HasValue ?
-            dataValueDt.Value.ToString("HH:mm:ss") : null); //TempData[dataTimeName]?.ToString();
+          string dataTimeValue = Model.GetDateTime(dataTimeName, dataValueDt);
           <input type="hidden" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
           <input type="hidden" name="@dataTimeName" class="@controlClasses" value="@dataTimeValue" />
         } else { //straight forward to deal with
-          string dataValue = TempData[column.ColumnName]?.ToString();
+          string dataValue = Model.GetData(column.ColumnName);
           <input type="hidden" name="@column.ColumnName" value="@dataValue" />
         }
       }
       continue;
     }
 
+    if (isScriptColumn) { //very special column, treated differently
+      ScTableInfo scTable = Model.GetScTable(column.ColumnName);
+      <div class="form-group">
+        <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(column.ColumnName)</label>
+        <div class="@ViewBag.EditorClass" style="margin-top:7px">
+          @if (scTable == null || !scTable.IsValid) {
+            <i>[Table-referenced column is not available]</i>
+          } else {
+            List<DataColumn> scColumns = scTable.GetAvailableDataColumns();
+            <table border=1>
+              @foreach (var scColumn in scColumns) {
+                <th style="padding:2px 8px 2px 8px">
+                  @scColumn.ColumnName.ToCamelBrokenString()
+                </th>
+              }
+              @if (scTable.HasRow) { //only edit requires to show the rows
+                foreach (var scRow in scTable.Rows) {
+                  int scCid = scTable.HasCidColumn ? (int)scRow["Cid"] : -1;
+                  <tr>
+                    @foreach (var scColumn in scTable.Columns) {
+                      string scColumnName = scColumn.ColumnName;
+                      object scData = scRow[scColumnName];
+                      <td style="padding:2px 8px 2px 8px">
+                        @if (scData != null && !string.IsNullOrWhiteSpace(scData.ToString()) && scTable.ScInfo.IsPictureLinkColumn(scColumnName)) {
+                          string scLink = scData.ToString();
+                          if (scLink.Contains("/") || scLink.Contains("\\") || !scTable.HasCidColumn ||
+                            string.IsNullOrWhiteSpace(scTable.ScInfo.RefTableName)) { //longer relative path
+                            <img src="~/Images/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
+                          } else { //the RefTableName must exists if it is to be used
+                            <img src="~/Images/@scTable.ScInfo.RefTableName/@scCid/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
+                          }
+                        } else { //if not a picture link column, just print as it is but if it is picture link column... then it is going to be different
+                          @scData
+                        }
+                      </td>
+                    }
+                  </tr>
+                }
+              }
+            </table>
+          }
+          @*<i>[Table-referenced column is not available in Create action]</i>*@ @*only provide this if it has display message attached*@
+        </div>
+      </div>      
+      continue;
+    }
+
     if (dataType.EqualsIgnoreCase(Aibe.DH.StringDataType)) { //String type
-      string dataValue = TempData[column.ColumnName]?.ToString();
+      string dataValue = Model.GetData(column.ColumnName);
       if (isCreate && string.IsNullOrWhiteSpace(dataValue)) { //only for create. The edit does not have, only if the previous dataValue is empty
         string prefix = Model.Meta.GetPrefix(column.ColumnName);
         string postfix = Model.Meta.GetPostfix(column.ColumnName);
@@ -54,11 +102,11 @@
             if (!Model.Meta.IsTextField(column.ColumnName)) { //string, not column and not TextField
               if (Model.Meta.IsPictureColumn(column.ColumnName)) { //picture
                 string picColumnName = column.ColumnName + Aibe.DH.CreateEditPictureLinkAppendixName;
-                string picColumnValue = (string)TempData[picColumnName];
-                string columnValue = TempData[column.ColumnName] is DBNull || TempData[column.ColumnName] == null ? string.Empty : (string)TempData[column.ColumnName];
+                string picColumnValue = Model.GetData(picColumnName);
+                string columnValue = Model.GetData(column.ColumnName,false);
                 <div style="margin-top:7px">
                   @if (!string.IsNullOrWhiteSpace(columnValue)) { //try to load the image
-                    string cid = TempData["Cid"] is DBNull || TempData["Cid"] == null ? "0" : ((int)TempData["Cid"]).ToString();
+                    string cid = Model.GetData("Cid");
                     if (columnValue.Contains("/") || columnValue.Contains("\\")) { //longer relative (folder-contain) path
                       <img src="../../../Images/@columnValue" style="width:100px" id="picturedisplay-@column.ColumnName" />
                     } else {
@@ -149,7 +197,7 @@
         </div>
       </div>
     } else if (Aibe.DH.NumberDataTypes.Contains(dataType)) { //Integer/UInt/Other numbers type
-      string dataValue = TempData[column.ColumnName]?.ToString();
+      string dataValue = Model.GetData(column.ColumnName);
 
       if (Model.Meta.IsAutoGeneratedAppliedFor(column.ColumnName, Model.ActionType)){
         <input type="hidden" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
@@ -189,12 +237,11 @@
         </div>
       }
     } else if (dataType.EqualsIgnoreCase(Aibe.DH.DateTimeDataType)) { //DateTime type
-      string dataValueRaw = TempData[column.ColumnName]?.ToString();
+      string dataValueRaw = Model.GetData(column.ColumnName);
       DateTime? dataValueDt = string.IsNullOrWhiteSpace(dataValueRaw) ? null : new DateTime?(DateTime.Parse(dataValueRaw));
       string dataValue = dataValueDt.HasValue ? dataValueDt.Value.ToString("yyyy-MM-dd") : string.Empty;
       string dataTimeName = column.ColumnName + Aibe.DH.CreateEditTimeAppendixName;
-      string dataTimeValue = (string)TempData[dataTimeName] ?? (dataValueDt.HasValue ?
-        dataValueDt.Value.ToString("HH:mm:ss") : null); //TempData[dataTimeName]?.ToString();
+      string dataTimeValue = Model.GetDateTime(dataTimeName, dataValueDt);
 
       if (Model.Meta.IsTimeStampAppliedFor(column.ColumnName, Model.ActionType)) { //if it is timestamp column for the particular column and action, don't use it
         <input type="hidden" name="@column.ColumnName" class="@controlClasses" value="@dataValue" />
@@ -216,7 +263,7 @@
 
       }
     } else if (dataType.EqualsIgnoreCase(Aibe.DH.BooleanDataType)) {
-      string dataValue = TempData[column.ColumnName]?.ToString();
+      string dataValue = Model.GetData(column.ColumnName);
       if (isReadOnly) {
         <div class="form-group">
           <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(column.ColumnName)</label>

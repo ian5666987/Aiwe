@@ -12,7 +12,7 @@
 <br />
 
 @using (Html.BeginForm("Edit", "Common", FormMethod.Post, new { id = "commonForm", enctype = "multipart/form-data" })) {
-  <input type="hidden" name="Cid" value="@TempData["Cid"]"/>
+  <input type="hidden" name="Cid" value="@Model.GetData("Cid")"/>
   @Html.Partial("_CreateEditPart")
   <div class="row">
     <div class="form-group">

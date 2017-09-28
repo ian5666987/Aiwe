@@ -1,3 +1,9 @@
+v0.5.0.0 alpha (28-Sep-2017 15:26 PM)
+updates:
+- ScriptConstructorColumns and ScriptColumns are now available!
+- The two columns are major updates! Make sure you read the "AIWE Table Making guideline v20170928.xlsx" or later version to understand them!
+
+-----------------------------------------------------------------------------------------------
 v0.4.2.1 alpha
 bugs fixed:
 - Cid is missing in Index view when column is excluded. Fixed.

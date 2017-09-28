@@ -1,4 +1,5 @@
 ﻿@using Aiwe.Models;
+@using System.Data;
 @using Extension.String;
 
 @model DetailsInfo
@@ -8,35 +9,67 @@
   ViewBag.EditorClass = "col-md-10";
 }
 
-@if (TempData == null) {
+@if (Model.SequencedItems == null) {
   <h4 style="color:red">No record found</h4>
 } else {
-  if (TempData.Count <= 0) {
+  if (Model.SequencedItems.Count <= 0) {
     <h4 style="color:red">No record found on Table @Model.TableDisplayName with Cid = @Model.Cid</h4>
   } else {
-    foreach (var data in TempData) {
+    foreach (var data in Model.SequencedItems) {
       if(!Model.IsColumnIncludedInDetails(data.Key, User)) {
         continue;
       }
       <div class="row">
         <div class="@ViewBag.LabelClasses"><b>@Model.Meta.GetColumnDisplayName(data.Key)</b></div>
           
-        @if (Model.Meta.IsPictureColumn(data.Key)) {
+        @if (Model.Meta.IsScriptColumn(data.Key)) {
+          ScTableInfo scTable = Model.GetScTable(data.Key);
+          List<DataColumn> scColumns = scTable.GetAvailableDataColumns();
+          <table border=1>
+            @foreach (var scColumn in scColumns) {
+              <th style="padding:2px 8px 2px 8px">
+                @scColumn.ColumnName.ToCamelBrokenString()
+              </th>
+            }
+            @if (scTable.HasRow) { //only edit requires to show the rows
+              foreach (var scRow in scTable.Rows) {
+                int scCid = scTable.HasCidColumn ? (int)scRow["Cid"] : -1;
+                <tr>
+                  @foreach (var scColumn in scTable.Columns) {
+                    string scColumnName = scColumn.ColumnName;
+                    object scData = scRow[scColumnName];
+                    <td style="padding:2px 8px 2px 8px">
+                      @if (scData != null && !string.IsNullOrWhiteSpace(scData.ToString()) && scTable.ScInfo.IsPictureLinkColumn(scColumnName)) {
+                        string scLink = scData.ToString();
+                        if (scLink.Contains("/") || scLink.Contains("\\") || !scTable.HasCidColumn || 
+                          string.IsNullOrWhiteSpace(scTable.ScInfo.RefTableName)) { //longer relative path
+                          <img src="~/Images/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
+                        } else { //the RefTableName must exists if it is to be used
+                          <img src="~/Images/@scTable.ScInfo.RefTableName/@scCid/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
+                        }                         
+                      } else { //if not a picture link column, just print as it is but if it is picture link column... then it is going to be different
+                        @scData
+                      }
+                    </td>
+                  }
+                </tr>
+              }
+            }
+          </table>
+        } else if (Model.Meta.IsPictureColumn(data.Key)) {
           int imgWidth = Model.Meta.GetImageWidth(data.Key);
-          if (data.Value is DBNull || data.Value == null || string.IsNullOrWhiteSpace(data.Value.ToString())) {            
+          if (string.IsNullOrWhiteSpace(data.Value)) {
             <i>[no picture]</i>
-          } else if (data.Value.ToString().Contains("/") || data.Value.ToString().Contains("\\")) { //longer relative path
+          } else if (data.Value.Contains("/") || data.Value.Contains("\\")) { //longer relative path
             <img src="~/Images/@data.Value" width="@imgWidth" title="@data.Value" />
           } else {
             <img src="~/Images/@Model.TableName/@Model.Cid/@data.Value" width="@imgWidth" title="@data.Value" />
           }
+        } else if (Model.Meta.IsListColumn(data.Key)) {
+          string dataValue = data.Value ?? string.Empty;
+          @Html.Raw(Model.GetListColumnDetailsHTML(data.Key, dataValue));
         } else {
-          if (Model.Meta.IsListColumn(data.Key)) {
-            string dataValue = data.Value == null ? string.Empty : data.Value.ToString();
-            @Html.Raw(Model.GetListColumnDetailsHTML(data.Key, dataValue));
-          } else {
-            <div class="@ViewBag.EditorClass">@data.Value</div>
-          }
+          <div class="@ViewBag.EditorClass">@data.Value</div>
         }
 
       </div>

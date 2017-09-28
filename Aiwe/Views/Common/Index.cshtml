@@ -2,6 +2,7 @@
 @using Aiwe.Models;
 @using Extension.String;
 @using System.Data;
+@using System.Collections.Generic;
 
 @model FilterIndexInfo
 
@@ -123,7 +124,13 @@
               if (!Model.IsColumnIncludedInIndex(columnInfo.Name, User)) {
                 continue;
               }
-              if (columnInfo.IsIndexShowImage) {
+              if (columnInfo.IsSciptColumn) { //takes too long if all data is loaded here
+                <td>
+                  <i>[Table Not Shown]</i><br/>
+                  <i>[Use Details To See]</i>
+                </td>
+              }
+              else if (columnInfo.IsIndexShowImage) {
                 <td>
                   @if (val is DBNull || val == null || string.IsNullOrWhiteSpace(val.ToString())) {
                     <i>[no picture]</i>

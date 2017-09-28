@@ -42,10 +42,10 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       FilterIndexModel model = new FilterIndexModel(meta, commonDataFilterPage, dictCollections);
 
       //Filter related stuffs
-      if (model.TempDataDict != null && model.TempDataDict.Count > 0)
-        AiweTranslationHelper.FillTempDataFromDictionary(TempData, model.TempDataDict);
+      //if (model.StringDictionary != null && model.StringDictionary.Count > 0)
+      //  AiweTranslationHelper.FillTempDataFromDictionary(TempData, model.StringDictionary);
       ViewBag.FilterNo = model.FilterNo;
-      ViewBag.FilterMsg = getFilterMessage(model.TempDataDict, model.FilterNo > 0);
+      ViewBag.FilterMsg = getFilterMessage(model.StringDictionary, model.FilterNo > 0);
 
       //Get index info
       AiweQueryHelper.HandleUserRelatedScripting(model.QueryScript, User, meta.UserRelatedFilters);
@@ -58,7 +58,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     public ActionResult Create(string tableName) {
       TempData.Clear();
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
-      CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.CreateActionName);
+      CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.CreateActionName, null);
       return View(model);
     }
 
@@ -80,8 +80,8 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         dictCollections, ModelState.Keys.ToList(), meta, checkExclusions, AiweUserHelper.UserIsDeveloper(User), now, Aibe.DH.CreateActionName);
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid) {
-        CreateEditInfo ceInfo = new CreateEditInfo(meta, Aibe.DH.CreateActionName);
-        AiweTranslationHelper.FillTempDataFromCollections(TempData, dictCollections, checkExclusions);
+        CreateEditInfo ceInfo = new CreateEditInfo(meta, Aibe.DH.CreateActionName, null);
+        //AiweTranslationHelper.FillTempDataFromCollections(TempData, dictCollections, checkExclusions);
         return View(ceInfo);
       }
 
@@ -109,8 +109,8 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     public ActionResult Edit(string tableName, int id) {
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(tableName, id);
-      AiweTranslationHelper.FillTempDataFromObjectDictionary(meta.ColumnSequence, TempData, objectDictionary);
-      CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.EditActionName);
+      //AiweTranslationHelper.FillTempDataFromObjectDictionary(meta.ColumnSequence, TempData, objectDictionary);
+      CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.EditActionName, AiweTranslationHelper.ObjectDictionaryToStringDictionary(objectDictionary));
       return View(model);
     }
 
@@ -132,8 +132,8 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         dictCollections, ModelState.Keys.ToList(), meta, checkExclusions, AiweUserHelper.UserIsDeveloper(User), now, Aibe.DH.EditActionName);
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid) {
-        CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.EditActionName);
-        AiweTranslationHelper.FillTempDataFromCollections(TempData, dictCollections, checkExclusions);
+        CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.EditActionName, dictCollections);
+        //AiweTranslationHelper.FillTempDataFromCollections(TempData, dictCollections, checkExclusions);
         return View(model);
       }
 
@@ -155,9 +155,10 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     public ActionResult Delete(string tableName, int id) { //Where all common tables details are returned and can be deleted
       TempData.Clear();
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
-      DetailsInfo model = new DetailsInfo(meta, id);
       Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(tableName, id);
-      AiweTranslationHelper.FillTempDataFromObjectDictionary(meta.ColumnSequence, TempData, objectDictionary); //TempData is prepared inside!
+      //List<KeyValuePair<string, string>> sequencedItems = AiweTranslationHelper.SequenceDataFromObjectDictionary(meta.ColumnSequence, objectDictionary);
+      DetailsInfo model = new DetailsInfo(meta, id, AiweTranslationHelper.ObjectDictionaryToStringDictionary(objectDictionary));
+      //AiweTranslationHelper.FillTempDataFromObjectDictionary(meta.ColumnSequence, TempData, objectDictionary); //TempData is prepared inside!
       return View(model);
     }
 
@@ -175,9 +176,10 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     public ActionResult Details(string tableName, int id) { //there must be a number named cid (common Id)
       TempData.Clear();
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
-      DetailsInfo model = new DetailsInfo(meta, id);
       Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(tableName, id);
-      AiweTranslationHelper.FillTempDataFromObjectDictionary(meta.ColumnSequence, TempData, objectDictionary); //TempData is prepared inside!
+      //List<KeyValuePair<string, string>> sequencedItems = AiweTranslationHelper.SequenceDataFromObjectDictionary(meta.ColumnSequence, objectDictionary);
+      DetailsInfo model = new DetailsInfo(meta, id, AiweTranslationHelper.ObjectDictionaryToStringDictionary(objectDictionary));
+      //AiweTranslationHelper.FillTempDataFromObjectDictionary(meta.ColumnSequence, TempData, objectDictionary); //TempData is prepared inside!
       return View(model);
     }
 
@@ -479,12 +481,12 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     }
 
 
-    private string getFilterMessage(Dictionary<string, string> tempDataDict, bool hasFilter) {
+    private string getFilterMessage(Dictionary<string, string> filterDict, bool hasFilter) {
       //KeyValuePair<int, string> kvp = new KeyValuePair<int, string>();
       string msg = string.Empty;
       if (hasFilter) {
         int count = 0;
-        foreach (var filterMsg in tempDataDict) {
+        foreach (var filterMsg in filterDict) {
           if (count > 0)
             msg += Environment.NewLine;
           msg += filterMsg.Key + ": " + filterMsg.Value;

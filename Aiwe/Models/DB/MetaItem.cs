@@ -107,5 +107,11 @@ namespace Aiwe.Models.DB {
 
     [StringLength(1000)]
     public string EditShowOnlyColumns { get; set; }
+
+    [StringLength(4000)]
+    public string ScriptConstructorColumns { get; set; }
+
+    [StringLength(4000)]
+    public string ScriptColumns { get; set; }
   }
 }

@@ -8,10 +8,10 @@ using System.Security.Principal;
 
 namespace Aiwe.Models {
   public class CreateEditInfo : BaseTableInfo {
-    public string ActionType { get; set; } = "create"; //create OR edit, default is create
+    public string ActionType { get; set; } = Aibe.DH.CreateActionName; //create OR edit, default is create
     public int CreateEditLabelPortion { get; private set; }
 
-    public CreateEditInfo(MetaInfo metaInput, string actionType) : base(metaInput) {
+    public CreateEditInfo(MetaInfo metaInput, string actionType, Dictionary<string, string> stringDictionary) : base(metaInput, stringDictionary) {
       ActionType = actionType;
       //TODO, currently all these are hardcoded, not put in DH
       List<string> columnNames = Meta.ArrangedDataColumns.Select(x => Meta.GetColumnDisplayName(x.ColumnName)).ToList();

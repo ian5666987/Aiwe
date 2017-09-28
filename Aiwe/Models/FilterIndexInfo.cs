@@ -17,7 +17,8 @@ namespace Aiwe.Models {
     public FilterIndexInfo (MetaInfo meta, IPrincipal userInput, FilterIndexModel model) : 
       this (meta, userInput, model.Data, model.NavData) { }
 
-    public FilterIndexInfo (MetaInfo meta, IPrincipal userInput, DataTable tableInput, NavDataModel navData) : base(meta) {
+    //FilterIndexInfo does not have dictionaryString since eachColumn will have its own "dictionaryString"
+    public FilterIndexInfo (MetaInfo meta, IPrincipal userInput, DataTable tableInput, NavDataModel navData) : base(meta, null) {
       user = userInput;
       Table = tableInput;
       NavData = navData;
@@ -47,6 +48,8 @@ namespace Aiwe.Models {
         ColumnInfo columnInfo = new ColumnInfo(column) { Name = column.ColumnName, DisplayName = meta.GetColumnDisplayName(column.ColumnName) };
         columnInfo.IsIndexIncluded = isColumnIncluded;
         columnInfo.IsIndexShowImage = isPictureColumn && meta.IsIndexShownPictureColumn(column.ColumnName);
+        columnInfo.IsSciptColumn = meta.IsScriptColumn(column.ColumnName);
+        //ScriptColumn cannot be shown in the index
         if (columnInfo.IsIndexShowImage)
           columnInfo.ImageWidth = meta.GetImageWidth(column.ColumnName);
         columnInfo.IsListColumn = meta.IsListColumn(column.ColumnName);
@@ -108,6 +111,8 @@ namespace Aiwe.Models {
     public NavDataModel NavData { get; set; }
 
     public bool IsColumnIncludedInFilter(string columnName, IPrincipal user, bool isWebApi = false) {
+      if (Meta.IsScriptColumn(columnName)) //script column always excluded from the filter
+        return false;
       if (AiweUserHelper.UserHasMainAdminRight(user)) //if user is in main admin rights, it is always true
         return true;
       return IsColumnIncluded(Meta.FilterExclusions, columnName, user);

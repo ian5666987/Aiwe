@@ -285,6 +285,7 @@
     <Compile Include="Helpers\AiweDataFilterHelper.cs" />
     <Compile Include="Helpers\AiweFileHelper.cs" />
     <Compile Include="Helpers\AiweViewHelper.cs" />
+    <Compile Include="Models\ScTableInfo.cs" />
     <Compile Include="Models\CreateEditInfo.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseTableInfo.cs" />

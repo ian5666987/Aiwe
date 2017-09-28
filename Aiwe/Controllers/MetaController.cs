@@ -144,6 +144,8 @@ namespace Aiwe.Controllers {
       meta.ColumnSequence = model.ColumnSequence;
       meta.ColumnAliases = model.ColumnAliases;
       meta.EditShowOnlyColumns = model.EditShowOnlyColumns;
+      meta.ScriptConstructorColumns = model.ScriptConstructorColumns;
+      meta.ScriptColumns = model.ScriptColumns;
 
       db.MetaItems.AddOrUpdate(meta);
       db.SaveChanges();

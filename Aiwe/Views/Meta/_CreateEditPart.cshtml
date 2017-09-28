@@ -288,4 +288,20 @@
       @Html.ValidationMessageFor(model => model.EditShowOnlyColumns, "", new { @class = "text-danger" })
     </div>
   </div>
+
+  <div class="form-group">
+    @Html.LabelFor(model => model.ScriptConstructorColumns, htmlAttributes: new { @class = ViewBag.LabelClasses })
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.ScriptConstructorColumns, new { @class = "form-control form-control-plus", @rows = 10 })
+      @Html.ValidationMessageFor(model => model.ScriptConstructorColumns, "", new { @class = "text-danger" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    @Html.LabelFor(model => model.ScriptColumns, htmlAttributes: new { @class = ViewBag.LabelClasses })
+    <div class="@ViewBag.EditorClass">
+      @Html.TextAreaFor(model => model.ScriptColumns, new { @class = "form-control form-control-plus", @rows = 8 })
+      @Html.ValidationMessageFor(model => model.ScriptColumns, "", new { @class = "text-danger" })
+    </div>
+  </div>
 </div>

@@ -191,6 +191,16 @@ namespace Aiwe.Helpers {
           .Where(x => x.EditShowOnlyColumns != null &&
             x.EditShowOnlyColumns.ToLower().Contains(filter.EditShowOnlyColumns.ToLower()));
 
+      if (!string.IsNullOrWhiteSpace(filter.ScriptConstructorColumns))
+        filtered = filtered
+          .Where(x => x.ScriptConstructorColumns != null &&
+            x.ScriptConstructorColumns.ToLower().Contains(filter.ScriptConstructorColumns.ToLower()));
+
+      if (!string.IsNullOrWhiteSpace(filter.ScriptColumns))
+        filtered = filtered
+          .Where(x => x.ScriptColumns != null &&
+            x.ScriptColumns.ToLower().Contains(filter.ScriptColumns.ToLower()));
+
       return filtered;
     }
 
