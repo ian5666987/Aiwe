@@ -1,4 +1,4 @@
-v0.6.0.0 alpha
+v0.6.0.0 alpha (29-Sep-2017 18:25 PM)
 updates:
 - ListColumns are updated to support generic subcolumns making!
 - Please read the "AIWE Table Making guideline v20170929.xlsx" or later version, "ListColumns" tab to see the complete explanation of the updates.
