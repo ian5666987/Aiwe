@@ -1,7 +1,16 @@
+v0.6.0.0 alpha
+updates:
+- ListColumns are updated to support generic subcolumns making!
+- Please read the "AIWE Table Making guideline v20170929.xlsx" or later version, "ListColumns" tab to see the complete explanation of the updates.
+- Target framework is changed (downgraded) from .NET v4.6.2 to .NET v4.6.1. This is to prepare for further migration to ASP.NET Core 2.0 in the future.
+  Unfortunately, migration to ASP.NET Core 2.0 is only supported up to .NET v4.6.1.
+
+-----------------------------------------------------------------------------------------------
 v0.5.0.0 alpha (28-Sep-2017 15:26 PM)
 updates:
 - ScriptConstructorColumns and ScriptColumns are now available!
 - The two columns are major updates! Make sure you read the "AIWE Table Making guideline v20170928.xlsx" or later version to understand them!
+- TempData is no longer used for any data-passing between controllers and views except for "DataTableForExcel" in "Index.cshtml" View and its respective Controller's method
 
 -----------------------------------------------------------------------------------------------
 v0.4.2.1 alpha

@@ -19,19 +19,19 @@ function processLiveDd(element, ldColNames, dataTypes) {
   for (k = 0; k < originals.length; ++k) {
     arrOriginals.push(originals[k].value);
   }
-  var tName = $('#common-table-name').text();
+  var tableName = $('#common-table-name').text();
 
   $.ajax({
-    url: '../../../Common/GetLiveDropdownItems/' + tName,
+    url: '../../../Common/GetLiveDropdownItems/' + tableName,
     async: true,
     data: {
-      tableName: tName, changedColumnName: colName, originalColumnValues: arrOriginals,
+      tableName: tableName, changedColumnName: colName, originalColumnValues: arrOriginals,
       liveddColumnNames: ldColNames, liveddDataTypes: dataTypes, liveddItems: arr
     },
     traditional: true,
     success: function (data) {
       $.each(data, function (v, obj) {
-        $('#live-dd-' + obj.ColumnName).html(obj.HTMLString);
+        $('#live-dd-' + obj.ColumnName).html(obj.ViewString);
       });
     }
   });
@@ -40,25 +40,24 @@ function processLiveDd(element, ldColNames, dataTypes) {
 
   //now, the listColumn parts all the list columns affected by this must be found
   $.ajax({
-    url: '../../../Common/GetLiveSubcolumns/' + tName,
+    url: '../../../Common/GetLiveSubcolumns/' + tableName,
     async: true,
     data: {
-      tableName: tName, changedColumnName: colName,
+      tableName: tableName, changedColumnName: colName,
       changedColumnValue: inputValue
     },
     traditional: true,
     success: function (data) {
       $.each(data, function (v, obj) {
         if (obj.IsSuccessful) {
-          var divId = 'common-subcolumn-div-' + obj.Name;
           var datValId = 'common-subcolumn-datavalue-' + obj.Name;
+          var divId = 'common-subcolumn-div-' + obj.Name;
           $('#' + datValId).html('<input type="hidden" name="' + obj.Name + '" id="common-subcolumn-content-' + obj.Name + '" value="' + obj.DataValue + '"/>');
-          $('#' + divId).html(obj.HTMLString);
+          $('#' + divId).html(obj.ViewString);
         }
       });
     }
   });
-
 }
 
 function submitFilterModalForm(submitter, ev, filteredType) {
@@ -70,11 +69,11 @@ function submitFilterModalForm(submitter, ev, filteredType) {
     if (!inputs[index].name.startsWith("__RequestVerificationToken")
       && !inputs[index].classList.contains("uncounted-filter-item")
       && inputs[index].value != ''
-      && inputs[index].name.indexOf('@ConstantHelper.FilterTimeAppendixFrontName') == -1
+      && inputs[index].name.indexOf('@Aibe.DH.FilterTimeAppendixFrontName') == -1
     ) {
       msg += inputs[index].name + ': ' + inputs[index].value;
-      if (inputs[index].name.indexOf('@ConstantHelper.FilterDateAppendixFrontName') != -1) //If it date type
-        if (inputs[index + 1].name.indexOf('@ConstantHelper.FilterTimeAppendixFrontName') != -1) //check the time coutner part (necessarily one index after)
+      if (inputs[index].name.indexOf('@Aibe.DH.FilterDateAppendixFrontName') != -1) //If it date type
+        if (inputs[index + 1].name.indexOf('@Aibe.DH.FilterTimeAppendixFrontName') != -1) //check the time coutner part (necessarily one index after)
           msg += ' ' + inputs[index + 1].value; //add the time counterpart
       msg += '\n';
       count++;
@@ -200,69 +199,89 @@ $(document).ready(function () {
     //cancel the default action
     ev.preventDefault();
 
-    //To determine delete or add
-    var isAdd = $(this).attr('commonbuttontype') == "add";
-    var dNo = isAdd ? 0 : parseInt($(this).attr('commondeleteno'));
-
     //Get the tableName and the columnName
-    var tName = $('#common-table-name').text();
-    var cName = $(this).attr('commoncolumnname');
+    var tableName = $('#common-table-name').text();
+
+    //Take all info from the ListColumnExtension
+    var columnName = $(this).attr('commoncolumnname');
+    var isAdd = $(this).attr('commonbuttontype') == "add"; //to determine if it is add or delete
+    var deleteNo = isAdd ? 0 : parseInt($(this).attr('commondeleteno'));
 
     //get all basic variables needed to load the HTML later
-    var lcType = $('#common-subcolumn-span-' + cName).text(); //type of List Column
-    var datValId = 'common-subcolumn-datavalue-' + cName;
-    var divId = 'common-subcolumn-div-' + cName; //division to replace with the latest HTML
-    var content = $('#common-subcolumn-content-' + cName).val(); //content of the column
-    var addString = $('#common-subcolumn-addtext-' + cName).val();
+    var lcType = $('#common-subcolumn-span-' + columnName).text(); //type of List Column
+    var dataValue = $('#common-subcolumn-content-' + columnName).val(); //content of the column
 
+    //get all adds:
+    var allAdds = document.getElementsByClassName('common-subcolumn-input-add');
+    var addString = '';
+    for (i = 0; i < allAdds.length; ++i) {
+      if (i > 0)
+        addString += '|';
+      var subItemType = allAdds[i].attributes.getNamedItem('commonsubitemtype').value; //there are four possible subItemType here
+      var subItemVal = allAdds[i].value;
+      switch (subItemType) {
+        case 'L':
+        case 'V': addString += subItemVal; break;
+        case 'O':
+          if (subItemVal.contains("|")) {
+            addString += subItemVal;
+          } else {
+            addString += subItemVal + "|" + subItemVal;
+          }
+          break;
+        case 'C': addString += subItemVal + "|Yes,No"; break;
+        default:
+      }
+    }
+
+    //AJAX to update dynamically
     $.ajax({
-      url: '../../../Common/GetSubcolumnItems/' + tName,
+      url: '../../../Common/GetSubcolumnItems/' + tableName,
       async: true,
       data: {
-        tableName: tName, columnName: cName, dataValue: content,
-        lcType: lcType, deleteNo: dNo,
-        addString: addString
+        tableName: tableName, columnName: columnName,
+        dataValue: dataValue, lcType: lcType,
+        deleteNo: deleteNo, addString: addString
       },
       traditional: true,
       success: function (data) {
         if (data.IsSuccessful) {
-          $('#' + datValId).html('<input type="hidden" name="' + cName + '" id="common-subcolumn-content-' + cName + '" value="' + data.DataValue + '"/>');
-          $('#' + divId).html(data.HTMLString);
+          var datValId = 'common-subcolumn-datavalue-' + columnName; //this is where the hidden input value is placed
+          var divId = 'common-subcolumn-div-' + columnName; //division to replace with the latest HTML
+          $('#' + datValId).html('<input type="hidden" name="' + columnName + '" id="common-subcolumn-content-' + columnName + '" value="' + data.DataValue + '"/>');
+          $('#' + divId).html(data.ViewString);
         }
       }
     });
   });
 
   $('body').on('focusout', '.common-subcolumn-input', function () {
-    //Get the tableName and the columnName
-    var tName = $('#common-table-name').text();
-    var cName = $(this).attr('commoncolumnname');
-
-    //Get the input no and type
-    var iNo = parseInt($(this).attr('commoninputno'));
-    var datValId = 'common-subcolumn-datavalue-' + cName;
-    var isText = $(this).attr('commoninputtype') == "text";
-
-    //Get the value of the input
+    //Get tableName and the input value obtained for this change
+    var tableName = $('#common-table-name').text();
     var inputValue = $(this).val(); //straightforwards
 
-    //get all basic variables needed to load the HTML later
-    var lcType = $('#common-subcolumn-span-' + cName).text(); //type of List Column
-    var content = $('#common-subcolumn-content-' + cName).val(); //content of the column (before the change)
-    var inputPart = $(this).attr('commoninputpart');
+    //All these are obtained from the ListColumnInfoExtension
+    var columnName = $(this).attr('commoncolumnname'); //this is the columnName
+    var rowNo = parseInt($(this).attr('commonrowno')); //this is the rowNo
+    var columnNo = parseInt($(this).attr('commoncolumnno')); //this is the columnNo
+
+    //get all other basic variables needed to load the HTML later
+    var lcType = $('#common-subcolumn-span-' + columnName).text(); //type of List Column
+    var dataValue = $('#common-subcolumn-content-' + columnName).val(); //content of the column (before the change)
 
     $.ajax({
-      url: '../../../Common/UpdateSubcolumnItemsDescription/' + tName,
+      url: '../../../Common/UpdateSubcolumnItemsDescription/' + tableName,
       async: true,
       data: {
-        tableName: tName, columnName: cName, inputPart: inputPart,
-        dataValue: content, isText: isText, inputNo: iNo,
-        inputValue: inputValue, lcType: lcType
+        tableName: tableName, rowNo: rowNo, columnNo: columnNo,
+        dataValue: dataValue, inputValue: inputValue,
+        lcType: lcType
       },
       traditional: true,
       success: function (data) {
-        if (data.IsSuccessful) {
-          $('#' + datValId).html('<input type="hidden" name="' + cName + '" id="common-subcolumn-content-' + cName + '" value="' + data.DataValue + '"/>');
+        if (data.IsSuccessful) { //when this is successful, change the hidden input of the ListColumn item here to the new value
+          var datValId = 'common-subcolumn-datavalue-' + columnName; //this is a div, inside this contains the hidden input for the listColumn
+          $('#' + datValId).html('<input type="hidden" name="' + columnName + '" id="common-subcolumn-content-' + columnName + '" value="' + data.DataValue + '"/>');
         }
       }
     });

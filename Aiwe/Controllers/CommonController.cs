@@ -42,8 +42,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       FilterIndexModel model = new FilterIndexModel(meta, commonDataFilterPage, dictCollections);
 
       //Filter related stuffs
-      //if (model.StringDictionary != null && model.StringDictionary.Count > 0)
-      //  AiweTranslationHelper.FillTempDataFromDictionary(TempData, model.StringDictionary);
       ViewBag.FilterNo = model.FilterNo;
       ViewBag.FilterMsg = getFilterMessage(model.StringDictionary, model.FilterNo > 0);
 
@@ -56,7 +54,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
     [CommonActionFilter]
     public ActionResult Create(string tableName) {
-      TempData.Clear();
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.CreateActionName, null);
       return View(model);
@@ -65,7 +62,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     [HttpPost]
     [CommonActionFilter]
     public ActionResult Create(string tableName, FormCollection collections) {
-      TempData.Clear();
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       DateTime now = DateTime.Now;
       Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
@@ -81,7 +77,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid) {
         CreateEditInfo ceInfo = new CreateEditInfo(meta, Aibe.DH.CreateActionName, null);
-        //AiweTranslationHelper.FillTempDataFromCollections(TempData, dictCollections, checkExclusions);
         return View(ceInfo);
       }
 
@@ -109,7 +104,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     public ActionResult Edit(string tableName, int id) {
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(tableName, id);
-      //AiweTranslationHelper.FillTempDataFromObjectDictionary(meta.ColumnSequence, TempData, objectDictionary);
       CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.EditActionName, AiweTranslationHelper.ObjectDictionaryToStringDictionary(objectDictionary));
       return View(model);
     }
@@ -133,7 +127,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid) {
         CreateEditInfo model = new CreateEditInfo(meta, Aibe.DH.EditActionName, dictCollections);
-        //AiweTranslationHelper.FillTempDataFromCollections(TempData, dictCollections, checkExclusions);
         return View(model);
       }
 
@@ -153,12 +146,9 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
     [CommonActionFilter]
     public ActionResult Delete(string tableName, int id) { //Where all common tables details are returned and can be deleted
-      TempData.Clear();
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(tableName, id);
-      //List<KeyValuePair<string, string>> sequencedItems = AiweTranslationHelper.SequenceDataFromObjectDictionary(meta.ColumnSequence, objectDictionary);
       DetailsInfo model = new DetailsInfo(meta, id, AiweTranslationHelper.ObjectDictionaryToStringDictionary(objectDictionary));
-      //AiweTranslationHelper.FillTempDataFromObjectDictionary(meta.ColumnSequence, TempData, objectDictionary); //TempData is prepared inside!
       return View(model);
     }
 
@@ -166,7 +156,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     [CommonActionFilter]
     [ActionName("Delete")]
     public ActionResult DeletePost(string tableName, int id) { //Where all common tables deletes are returned and can be deleted
-      TempData.Clear();
       LogicHelper.DeleteItem(tableName, id); //Currently do not return any error
       return RedirectToAction("Index", new { tableName = tableName });
     }
@@ -174,12 +163,9 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     //Later add filter to check if a user has right to see this table
     [CommonActionFilter]
     public ActionResult Details(string tableName, int id) { //there must be a number named cid (common Id)
-      TempData.Clear();
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(tableName, id);
-      //List<KeyValuePair<string, string>> sequencedItems = AiweTranslationHelper.SequenceDataFromObjectDictionary(meta.ColumnSequence, objectDictionary);
       DetailsInfo model = new DetailsInfo(meta, id, AiweTranslationHelper.ObjectDictionaryToStringDictionary(objectDictionary));
-      //AiweTranslationHelper.FillTempDataFromObjectDictionary(meta.ColumnSequence, TempData, objectDictionary); //TempData is prepared inside!
       return View(model);
     }
 
@@ -258,7 +244,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         string ddStr = buildDropdownString(dd.Key, dd.Value, arg?.OriginalValue?.ToString(), arg);
         LiveDropDownResult res = new LiveDropDownResult {
           ColumnName = dd.Key,
-          HTMLString = ddStr,
+          ViewString = ddStr,
         };
         resultPairs.Add(res);
       }
@@ -269,134 +255,32 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     //Called when live dropdown is lifted up
     [CommonActionFilter]
     public JsonResult GetLiveSubcolumns(string tableName, string changedColumnName, string changedColumnValue) {
-      //for the given table and column, first find in the
-      List<ListColumnResult> results = new List<ListColumnResult>();
-      if (string.IsNullOrWhiteSpace(changedColumnValue))
-        return Json(results, JsonRequestBehavior.AllowGet);
-
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
-
-      var affectedColumnNames = meta.ArrangedDataColumns
-        .Where(x => meta.IsListColumn(x.ColumnName) && meta.IsListColumnAffectedBy(x.ColumnName, changedColumnName))
-        .Select(x => x.ColumnName)
-        .ToList();
-
-      foreach(var affectedColumnName in affectedColumnNames) {
-        ListColumnResult result = new ListColumnResult() {
-          IsSuccessful = false,
-          Name = affectedColumnName,
-        };
-
-        //I need to get the info from the affected columnName
-        ListColumnInfo info = meta.GetListColumnInfo(affectedColumnName);
-        if (info == null || !info.IsValid)
-          continue;
-
-        //From the given info, perform searches to get the wanted data value!
-        string newDataValue = string.Empty;
-        bool extractResult = info.GetRefDataValue(changedColumnName, changedColumnValue, out newDataValue);
-        if (!extractResult)
-          continue;
-        result.DataValue = newDataValue;
-
-        //And from the dataValue, creates the HTML
-        result.HTMLString = info.GetHTML(newDataValue);
-
-        //Add the successful result
-        result.IsSuccessful = true;
-        results.Add(result); //only return data that is successful
-      }
-
+      List<ListColumnResult> results = meta.GetLiveListColumnResults(changedColumnName, changedColumnValue);
+      foreach (var result in results)
+        result.ViewString = result.UsedListColumnInfo.GetHTML(result.DataValue);
       return Json(results, JsonRequestBehavior.AllowGet);
     }
 
     //Called for add or delete, when a list-column button (add or delete) is pressed
     [CommonActionFilter]
     public JsonResult GetSubcolumnItems(string tableName, string columnName, string dataValue, string lcType, int deleteNo, string addString) {
-      ListColumnResult result = new ListColumnResult() {
-        IsSuccessful = false,
-        DataValue = dataValue,
-      };
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
-      string newDataValue = dataValue;
-
-      if (deleteNo == 0) { //add        
-        //do something for checking add
-        //if this column is supposed to be checkList, then one check type, else, another check type
-        if (!meta.IsListColumn(columnName) || string.IsNullOrWhiteSpace(addString))
-          return Json(result, JsonRequestBehavior.AllowGet);
-
-        var addParts = addString.Split(';').Select(x => x.Trim()).ToList();
-        List<ListColumnItem> items = new List<ListColumnItem>();
-        
-        foreach (var addPart in addParts) {
-          ListColumnItem item = new ListColumnItem(addPart, lcType);
-          if (item.IsValid)
-            items.Add(item);
-        }
-
-        if (items.Count <= 0)
-          return Json(result, JsonRequestBehavior.AllowGet);
-
-        //Add this point, only valid add strings are used
-        var validAddString = string.Join(";", items.Select(x => x.CurrentDesc));
-
-        //do something to really add
-        newDataValue = string.Concat(string.IsNullOrWhiteSpace(dataValue) ? string.Empty : dataValue + ";", validAddString);
-      } else { //delete
-        int deleteIndex = deleteNo - 1;
-        var dataParts = dataValue.Split(';').Select(x => x.Trim()).ToList();
-        dataParts.RemoveAt(deleteIndex);
-        newDataValue = string.Join(";", dataParts);        
-      }
-
-      //I need to get the info from the columnName
-      ListColumnInfo info = meta.GetListColumnInfo(columnName);
-
-      result.DataValue = newDataValue;
-      result.HTMLString = info.GetHTML(newDataValue);
-      result.IsSuccessful = true;
-
+      ListColumnResult result = new ListColumnResult(null, dataValue); //no need to have columnName here, only dataValue is needed
+      if(!result.AddOrDeleteDataValue(deleteNo, meta, columnName, addString, lcType))
+        return Json(result, JsonRequestBehavior.AllowGet); //if not successful, no need to take time and built HTML string      
+      ListColumnInfo info = meta.GetListColumnInfo(columnName); //Need to get the info from the columnName
+      result.ViewString = info.GetHTML(result.DataValue); //if successful, do not forget to recreate the HTML string before return
       return Json(result, JsonRequestBehavior.AllowGet);
     }
 
     //Called when list-column input is focused out (change the ListColumnItem description)
+    //IMPORTANT: tableName parameter, though not used in the function, is necessary to have because of the CommonActionFilter. Do not remove
     [CommonActionFilter]
-    public JsonResult UpdateSubcolumnItemsDescription(string tableName, string columnName, string inputPart, 
-      string dataValue, bool isText, int inputNo, string inputValue, string lcType) {
-      ListColumnResult result = new ListColumnResult() {
-        IsSuccessful = false,
-        DataValue = dataValue,
-      };
-      string newDataValue = dataValue;
-
-      if (inputNo < 1)
-        return Json(result, JsonRequestBehavior.AllowGet);
-
-      int inputIndex = inputNo - 1;
-
-      var dataValueParts = dataValue.Split(';').Select(x => new ListColumnItem(x.Trim(), lcType))
-        .Where(x => x.IsValid).ToList();      
-
-      if (inputIndex >= dataValueParts.Count) //no such parts
-        return Json(result, JsonRequestBehavior.AllowGet);
-
-      var changedItem = dataValueParts[inputIndex]; //able to get the wanted changed item 
-
-      //now it is to determine which part is actually changed
-      switch (inputPart) {
-        case "text":
-        case "check":
-        case "dropdown": changedItem.Value = inputValue; break;
-        case "remarks": changedItem.Remarks = inputValue; break;
-        case "unit": changedItem.Ending = inputValue; break;          
-      }
-
-      newDataValue = string.Join(";", dataValueParts.Select(x => x.CurrentDesc));        
-      result.DataValue = newDataValue;
-      result.IsSuccessful = true;
-
-      return Json(result, JsonRequestBehavior.AllowGet);
+    public JsonResult UpdateSubcolumnItemsDescription(string tableName, int rowNo, int columnNo, string dataValue, string inputValue, string lcType) {
+      ListColumnResult result = new ListColumnResult(null, dataValue);
+      result.UpdateDataValue(inputValue, rowNo, columnNo, lcType); //the result does not matter here, just return it anyway      
+      return Json(result, JsonRequestBehavior.AllowGet); //Return the result, successful or not
     }
     #endregion
 
@@ -480,7 +364,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       return sb.ToString();
     }
 
-
     private string getFilterMessage(Dictionary<string, string> filterDict, bool hasFilter) {
       //KeyValuePair<int, string> kvp = new KeyValuePair<int, string>();
       string msg = string.Empty;
@@ -498,3 +381,134 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     #endregion
   }
 }
+
+//Taken out further from GetLiveSubcolumns
+//for the given table and column, first find in the
+//List<ListColumnResult> results = new List<ListColumnResult>();
+//if (string.IsNullOrWhiteSpace(changedColumnValue))
+//  return Json(results, JsonRequestBehavior.AllowGet);
+
+//var affectedColumnNames = meta.ArrangedDataColumns
+//  .Where(x => meta.IsListColumn(x.ColumnName) && meta.IsListColumnAffectedBy(x.ColumnName, changedColumnName))
+//  .Select(x => x.ColumnName)
+//  .ToList();
+
+//foreach(var affectedColumnName in affectedColumnNames) {
+//  //I need to get the info from the affected columnName
+//  ListColumnInfo info = meta.GetListColumnInfo(affectedColumnName);
+//  if (info == null || !info.IsValid)
+//    continue;
+
+//  ListColumnResult result = new ListColumnResult(affectedColumnName, null); //no need to assign data value here
+//  if (result.UpdateLiveSubcolumnsDataValue(info, changedColumnName, changedColumnValue)) {
+//    result.ViewString = info.GetHTML(result.DataValue); //View String has to be filled outside
+//    results.Add(result);
+//  }
+//}
+
+//Taken out from UpdateSubcolumnItemsDescription
+//ListColumnResult result = new ListColumnResult() {
+//  IsSuccessful = false,
+//  DataValue = dataValue,
+//};
+//string newDataValue = dataValue;
+
+//if (rowNo < 1)
+//  return Json(result, JsonRequestBehavior.AllowGet);
+
+//int rowIndex = rowNo - 1;
+
+//List<ListColumnItem> listColumnItems = dataValue.Split(';')
+//  .Select(x => new ListColumnItem(x.Trim(), lcType))
+//  .Where(x => x.IsValid).ToList();      
+
+//if (rowIndex >= listColumnItems.Count) //no such row
+//  return Json(result, JsonRequestBehavior.AllowGet);
+
+//ListColumnItem changedListColumnItem = listColumnItems[rowIndex]; //able to get the wanted changed item
+
+//if (changedListColumnItem == null) //item not found
+//  return Json(result, JsonRequestBehavior.AllowGet);
+
+//int columnIndex = columnNo - 1;
+
+//if (changedListColumnItem.SubItems == null || columnIndex >= changedListColumnItem.SubItems.Count) //no such column
+//  return Json(result, JsonRequestBehavior.AllowGet);
+
+//ListColumnSubItem changedListColumnSubItem = changedListColumnItem.SubItems[columnIndex];
+
+////not, process the input value here...
+//changedListColumnSubItem.Value = inputValue;
+
+////Rejoin the string
+//newDataValue = string.Join(";", listColumnItems.Select(x => x.CurrentDesc));        
+//result.DataValue = newDataValue;
+//result.IsSuccessful = true;
+
+//Taken out from GetSubcolumnItems
+//ListColumnResult result = new ListColumnResult() {
+//  IsSuccessful = false,
+//  DataValue = dataValue,
+//};
+//MetaInfo meta = AiweTableHelper.GetMeta(tableName);
+//string newDataValue = dataValue;
+
+//if (deleteNo == 0) { //add        
+//  //do something for checking add
+//  //if this column is supposed to be checkList, then one check type, else, another check type
+//  if (!meta.IsListColumn(columnName) || string.IsNullOrWhiteSpace(addString))
+//    return Json(result, JsonRequestBehavior.AllowGet);
+
+//  //No more true, not can only add one item at a time
+//  //var addParts = addString.Split(';').Select(x => x.Trim()).ToList();
+//  //List<ListColumnItem> items = new List<ListColumnItem>();
+
+//  //foreach (var addPart in addParts) {
+//  //  ListColumnItem item = new ListColumnItem(addPart, lcType);
+//  //  if (item.IsValid)
+//  //    items.Add(item);
+//  //}
+
+//  //if (items.Count <= 0)
+//  //  return Json(result, JsonRequestBehavior.AllowGet);
+
+//  ListColumnItem item = new ListColumnItem(addString, lcType);
+//  if (!item.IsValid)
+//    return Json(result, JsonRequestBehavior.AllowGet);
+
+//  //Add this point, only valid add strings are used
+//  //var validAddString = string.Join(";", items.Select(x => x.CurrentDesc));
+
+//  //do something to really add
+//  //newDataValue = string.Concat(string.IsNullOrWhiteSpace(dataValue) ? string.Empty : dataValue + ";", validAddString);
+//  newDataValue = string.Concat(string.IsNullOrWhiteSpace(dataValue) ? string.Empty : dataValue + ";", item.CurrentDesc);
+//} else { //delete
+//  int deleteIndex = deleteNo - 1;
+//  var dataParts = dataValue.Split(';').Select(x => x.Trim()).ToList();
+//  dataParts.RemoveAt(deleteIndex);
+//  newDataValue = string.Join(";", dataParts);        
+//}
+
+
+//result.DataValue = newDataValue;
+//result.IsSuccessful = true;
+
+//Taken out from GetLiveSubcolumns
+//ListColumnResult result = new ListColumnResult() {
+//  IsSuccessful = false,
+//  Name = affectedColumnName,
+//};
+
+////From the given info, perform searches to get the wanted data value!
+//string newDataValue = string.Empty;
+//bool extractResult = info.GetRefDataValue(changedColumnName, changedColumnValue, out newDataValue);
+//if (!extractResult)
+//  continue;
+//result.DataValue = newDataValue;
+
+////And from the dataValue, creates the HTML
+//result.ViewString = info.GetHTML(newDataValue);
+
+////Add the successful result
+//result.IsSuccessful = true;
+//results.Add(result); //only return data that is successful
