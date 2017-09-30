@@ -34,7 +34,7 @@ namespace Aiwe {
     //Special items
     public readonly static List<string> OnlyAccessCheckingActions = new List<string> {
       Aibe.DH.IndexActionName,
-      "GetLiveDropdownItems", "GetLiveSubcolumns", "GetSubcolumnItems", "UpdateSubcolumnItemsDescription"
+      "GetLiveDropDownItems", "GetLiveSubcolumns", "GetSubcolumnItems", "UpdateSubcolumnItemsDescription"
     };
   }
 }

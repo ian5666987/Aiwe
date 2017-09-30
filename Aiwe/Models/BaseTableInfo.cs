@@ -33,10 +33,10 @@ namespace Aiwe.Models {
       return UnorderedData != null && UnorderedData.ContainsKey(columnName) ? UnorderedData[columnName] : columnName.Equals("Cid") ? "0" : nullAllowed ? null : string.Empty;
     }
 
-    public string GetDateTime(string columnName, DateTime? dtVal) {
-      if (UnorderedData == null || !UnorderedData.ContainsKey(columnName))
-        return null;
-      return UnorderedData[columnName] ?? (dtVal.HasValue ? dtVal.Value.ToString("HH:mm:ss") : null);
+    public string GetTime(string columnName, DateTime? dtVal) {
+      if (UnorderedData != null && UnorderedData.ContainsKey(columnName)) //if it exists in the dictionary, take it from there first
+        return UnorderedData[columnName];
+      return dtVal.HasValue ? dtVal.Value.ToString("HH:mm:ss") : null; //otherwise, check if the dtVal has value. If it has, pass it, otherwise, leave it as null.
     }
 
     //taken directly from meta

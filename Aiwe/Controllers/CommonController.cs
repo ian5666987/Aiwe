@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using System.Data;
-using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 using Extension.Database.SqlServer;
@@ -82,7 +81,6 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
       //Only if model state is correct that we could get valid key infos safely
       var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(tableName, dictCollections, dictCollections.Keys, meta.ArrangedDataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.CreateActionName);
-
       if (completeKeyInfo == null || completeKeyInfo.ValidKeys == null || !completeKeyInfo.ValidKeys.Any()) {
         ViewBag.ErrorMessage = string.Concat("Invalid/Empty parameters for [", tableName, "]");
         return View("Error");
@@ -199,57 +197,14 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     #region live javascript use
     //Called when live dropdown is lifted up
     [CommonActionFilter]
-    public JsonResult GetLiveDropdownItems(string tableName, string changedColumnName, string[] originalColumnValues,
+    public JsonResult GetLiveDropDownItems(string tableName, string changedColumnName, string[] originalColumnValues,
       string[] liveddColumnNames, string[] liveddDataTypes, string[] liveddItems) {
-
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
-
-      Dictionary<string, List<string>> dropdowns = new Dictionary<string, List<string>>();
-      int count = 0;
-      Dictionary<string, DropdownPassedArguments> passedColumnsAndValues = 
-        new Dictionary<string, DropdownPassedArguments>();
-      foreach (var col in liveddColumnNames) {
-        DropdownPassedArguments arg = new DropdownPassedArguments {
-          Value = liveddItems.Length > count ? liveddItems[count] : null,
-          OriginalValue = originalColumnValues[count],
-          DataType = liveddDataTypes[count]          
-        };
-        passedColumnsAndValues.Add(col, arg);
-        count++;
-      }
-      count = 0;
-      foreach (var col in liveddColumnNames) {
-        if (col == changedColumnName) { //skipped
-          count++;
-          continue;
-        }
-
-        //check if affected
-        DropDownInfo info = meta.GetCreateEditDropDownColumnInfo(col);
-        if (info == null || !info.IsValid || !meta.IsCreateEditDropDownColumnAffectedBy(col, changedColumnName)) {
-          count++;
-          continue; //if not affected, then leave it be...
-        }
-
-        List<string> dropdown = AiweDropDownHelper.CreateLiveCreateEditDropDownFor(
-          tableName, col, originalColumnValues[count], liveddDataTypes[count], passedColumnsAndValues);
-        dropdowns.Add(col, dropdown);
-        count++;
-      }
-
-      List<LiveDropDownResult> resultPairs = new List<LiveDropDownResult>();
-      foreach (var dd in dropdowns) {
-        DropdownPassedArguments arg = passedColumnsAndValues.ContainsKey(dd.Key) ?
-          passedColumnsAndValues[dd.Key] : null;
-        string ddStr = buildDropdownString(dd.Key, dd.Value, arg?.OriginalValue?.ToString(), arg);
-        LiveDropDownResult res = new LiveDropDownResult {
-          ColumnName = dd.Key,
-          ViewString = ddStr,
-        };
-        resultPairs.Add(res);
-      }
-
-      return Json(resultPairs, JsonRequestBehavior.AllowGet);
+      List<LiveDropDownResult> results = meta.GetLiveDropDownResults(
+        changedColumnName, originalColumnValues, liveddColumnNames, liveddDataTypes, liveddItems);
+      foreach (var result in results)
+        result.ViewString = result.BuildDropdownString();
+      return Json(results, JsonRequestBehavior.AllowGet);
     }
 
     //Called when live dropdown is lifted up
@@ -335,37 +290,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       }
     }
 
-    private string buildDropdownString(string columnName, List<string> values, string originalValue, DropdownPassedArguments arg) {
-      StringBuilder sb = new StringBuilder();
-      sb.Append("<select class=\"form-control form-control-common-plus common-column-dropdown\" id=\"");
-      sb.Append("common-column-dropdown-" + columnName);
-      sb.Append("\" name=\"");
-      sb.Append(columnName);
-      string prevValue = arg == null || arg.Value == null || string.IsNullOrWhiteSpace(arg.Value.ToString()) ?
-        string.Empty : arg.Value.ToString();
-      if (string.IsNullOrWhiteSpace(prevValue))
-        sb.Append("\"><option selected=\"selected\"></option>\n");
-      else
-        sb.Append("\"><option value=\"\"></option>\n");
-      if (values != null) { //if the null is put for the second time, then you cannot choose as freely TODO probably should return to everything?
-        if (!string.IsNullOrWhiteSpace(originalValue) && !values.Contains(originalValue))
-          values.Insert(0, originalValue);
-        foreach (var val in values) {
-          sb.Append("<option value=\"");
-          sb.Append(val);
-          if (!string.IsNullOrWhiteSpace(prevValue) && val == prevValue)
-            sb.Append("\" selected=\"selected");
-          sb.Append("\">");
-          sb.Append(val);
-          sb.Append("</option>\n");
-        }
-      }
-      sb.Append("</select>");
-      return sb.ToString();
-    }
-
     private string getFilterMessage(Dictionary<string, string> filterDict, bool hasFilter) {
-      //KeyValuePair<int, string> kvp = new KeyValuePair<int, string>();
       string msg = string.Empty;
       if (hasFilter) {
         int count = 0;
@@ -381,6 +306,82 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     #endregion
   }
 }
+
+//private string buildDropdownString(LiveDropDownResult result) {
+//  //string columnName, List<string> values, string originalValue, DropdownPassedArguments arg) {
+//  //string originalValue = result.Arg?.OriginalValue?.ToString();
+//  StringBuilder sb = new StringBuilder();
+//  sb.Append("<select class=\"form-control form-control-common-plus common-column-dropdown\" id=\"");
+//  sb.Append("common-column-dropdown-" + result.ColumnName);
+//  sb.Append("\" name=\"");
+//  sb.Append(result.ColumnName);
+//  string prevValue = result.Arg == null || result.Arg == null || string.IsNullOrWhiteSpace(result.Arg.Value.ToString()) ?
+//    string.Empty : result.Arg.Value.ToString();
+//  if (string.IsNullOrWhiteSpace(prevValue))
+//    sb.Append("\"><option selected=\"selected\"></option>\n");
+//  else
+//    sb.Append("\"><option value=\"\"></option>\n");
+//  if (result.Values != null) { //if the null is put for the second time, then you cannot choose as freely TODO probably should return to everything?
+//    if (!string.IsNullOrWhiteSpace(result.ArgOriginalValue) && !result.Values.Contains(result.ArgOriginalValue))
+//      result.Values.Insert(0, result.ArgOriginalValue);
+//    foreach (var val in result.Values) {
+//      sb.Append("<option value=\"");
+//      sb.Append(val);
+//      if (!string.IsNullOrWhiteSpace(prevValue) && val == prevValue)
+//        sb.Append("\" selected=\"selected");
+//      sb.Append("\">");
+//      sb.Append(val);
+//      sb.Append("</option>\n");
+//    }
+//  }
+//  sb.Append("</select>");
+//  return sb.ToString();
+//}
+
+//Dictionary<string, List<string>> dropdowns = new Dictionary<string, List<string>>();
+//int count = 0;
+//Dictionary<string, DropdownPassedArguments> passedColumnsAndValues = 
+//  new Dictionary<string, DropdownPassedArguments>();
+//foreach (var col in liveddColumnNames) {
+//  DropdownPassedArguments arg = new DropdownPassedArguments {
+//    Value = liveddItems.Length > count ? liveddItems[count] : null,
+//    OriginalValue = originalColumnValues[count],
+//    DataType = liveddDataTypes[count]          
+//  };
+//  passedColumnsAndValues.Add(col, arg);
+//  count++;
+//}
+//count = 0;
+//foreach (var col in liveddColumnNames) {
+//  if (col == changedColumnName) { //skipped
+//    count++;
+//    continue;
+//  }
+
+//  //check if affected
+//  DropDownInfo info = meta.GetCreateEditDropDownColumnInfo(col);
+//  if (info == null || !info.IsValid || !meta.IsCreateEditDropDownColumnAffectedBy(col, changedColumnName)) {
+//    count++;
+//    continue; //if not affected, then leave it be...
+//  }
+
+//  List<string> dropdown = meta.CreateLiveCreateEditDropDownFor(
+//    tableName, col, originalColumnValues[count], liveddDataTypes[count], passedColumnsAndValues);
+//  dropdowns.Add(col, dropdown);
+//  count++;
+//}
+
+//List<LiveDropDownResult> resultPairs = new List<LiveDropDownResult>();
+//foreach (var dd in dropdowns) {
+//  DropdownPassedArguments arg = passedColumnsAndValues.ContainsKey(dd.Key) ?
+//    passedColumnsAndValues[dd.Key] : null;
+//  string ddStr = buildDropdownString(dd.Key, dd.Value, arg?.OriginalValue?.ToString(), arg);
+//  LiveDropDownResult res = new LiveDropDownResult {
+//    ColumnName = dd.Key,
+//    ViewString = ddStr,
+//  };
+//  resultPairs.Add(res);
+//}
 
 //Taken out further from GetLiveSubcolumns
 //for the given table and column, first find in the

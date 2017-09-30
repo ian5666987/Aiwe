@@ -26,58 +26,24 @@ namespace Aiwe.Models {
       if (Table == null || meta == null)
         return;
 
-      columnNo = Table.Columns.Count;
-      RowNo = Table.Rows.Count;
-      ColumnInfos.Clear();
-
-      IndexExcludedColumnNos.Clear();
-      int count = 0;
-
-      FilterColumns.Clear(); //filter
+      //Handle columns
       List<DataColumn> columns = new List<DataColumn>();
       foreach (DataColumn column in Table.Columns)
         columns.Add(column);
-
       var arrangedDataColumns = meta.GetColumnSequenceFor(columns);
+      ColumnInfos = arrangedDataColumns.Select(x => meta.CreateColumnInfo(
+          x, IsColumnIncludedInIndex(x.ColumnName, user), IsColumnIncludedInFilter(x.ColumnName, user)
+        )).ToList();
+      FilterColumns = ColumnInfos.Where(x => x.IsFilterIncluded)
+        .Select(x => x.Column).ToList();
 
-      foreach (DataColumn column in arrangedDataColumns) {
-      //foreach (DataColumn column in Table.Columns) {
-        //Index
-        bool isColumnIncluded = IsColumnIncludedInIndex(column.ColumnName, user);
-        bool isPictureColumn = meta.IsPictureColumn(column.ColumnName);
-        ColumnInfo columnInfo = new ColumnInfo(column) { Name = column.ColumnName, DisplayName = meta.GetColumnDisplayName(column.ColumnName) };
-        columnInfo.IsIndexIncluded = isColumnIncluded;
-        columnInfo.IsIndexShowImage = isPictureColumn && meta.IsIndexShownPictureColumn(column.ColumnName);
-        columnInfo.IsSciptColumn = meta.IsScriptColumn(column.ColumnName);
-        //ScriptColumn cannot be shown in the index
-        if (columnInfo.IsIndexShowImage)
-          columnInfo.ImageWidth = meta.GetImageWidth(column.ColumnName);
-        columnInfo.IsListColumn = meta.IsListColumn(column.ColumnName);
-
-        if (meta.Colorings != null)
-          columnInfo.Colorings = meta.Colorings;
-
-        if (!columnInfo.IsIndexIncluded)
-          IndexExcludedColumnNos.Add(count);
-        count++;
-
-        //Filter
-        //picture link columns cannot be used as filter (naturally)
-        if (isColumnIncluded && IsColumnIncludedInFilter(column.ColumnName, user) && !isPictureColumn) {
-          FilterColumns.Add(column); //only things which are not excluded by column, by picture link, and by filters can be filtered
-          columnInfo.IsFilterIncluded = true;
-        }
-
-        //All
-        ColumnInfos.Add(columnInfo);
-      }
-
-      //Specific index usage
+      //Handle rows
+      RowNo = Table.Rows.Count;
       IndexRows.Clear();
       foreach (DataRow row in Table.Rows)
         IndexRows.Add(row);
 
-      //Specific filter usage
+      //Specific filter label portion usage
       List<string> filterColumnNames = FilterColumns.Select(x => Meta.GetColumnDisplayName(x.ColumnName)).ToList();
       List<string> filterDateTimeColumnNames = FilterColumns.Where(x =>
         x.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length).EqualsIgnoreCase(Aibe.DH.DateTimeDataType))
@@ -95,10 +61,8 @@ namespace Aiwe.Models {
     public List<ColumnInfo> ColumnInfos { get; private set; } = new List<ColumnInfo>();
 
     //Index usage
-    private int columnNo;
     public int RowNo { get; private set; }
     public List<DataRow> IndexRows { get; private set; } = new List<DataRow>();
-    public List<int> IndexExcludedColumnNos { get; private set; } = new List<int>();
 
     //Taken directly from Meta
     public List<DropDownInfo> DropDowns { get { return Meta.FilterDropDowns; } }
@@ -148,3 +112,46 @@ namespace Aiwe.Models {
 
   }
 }
+
+//bool isPictureColumn = meta.IsPictureColumn(column.ColumnName);
+//ColumnInfo columnInfo = new ColumnInfo(column) { Name = column.ColumnName, DisplayName = meta.GetColumnDisplayName(column.ColumnName) };
+//columnInfo.IsIndexIncluded = isColumnIncluded;
+//columnInfo.IsIndexShowImage = isPictureColumn && meta.IsIndexShownPictureColumn(column.ColumnName);
+//columnInfo.IsSciptColumn = meta.IsScriptColumn(column.ColumnName);
+////ScriptColumn cannot be shown in the index
+//if (columnInfo.IsIndexShowImage)
+//  columnInfo.ImageWidth = meta.GetImageWidth(column.ColumnName);
+//columnInfo.IsListColumn = meta.IsListColumn(column.ColumnName);
+
+//if (meta.Colorings != null)
+//  columnInfo.Colorings = meta.Colorings;
+
+//if (!columnInfo.IsIndexIncluded)
+//  IndexExcludedColumnNos.Add(count);
+//count++;
+
+////Filter
+////picture link columns cannot be used as filter (naturally)
+//if (isColumnIncluded && isColumnIncludedInFilter && !isPictureColumn) {
+//  FilterColumns.Add(column); //only things which are not excluded by column, by picture link, and by filters can be filtered
+//  columnInfo.IsFilterIncluded = true;
+//}
+
+//foreach (DataColumn column in arrangedDataColumns) {
+////foreach (DataColumn column in Table.Columns) {
+//  //Index
+//  ColumnInfo columnInfo = meta.CreateColumnInfo(column,
+//    IsColumnIncludedInIndex(column.ColumnName, user), 
+//    IsColumnIncludedInFilter(column.ColumnName, user), 
+//    count);
+//  ColumnInfos.Add(columnInfo); //Finalize
+//  count++;
+//}
+
+//columnNo = Table.Columns.Count;
+//ColumnInfos.Clear();
+//IndexExcludedColumnNos.Clear();
+//FilterColumns.Clear(); //filter
+
+//IndexExcludedColumnNos = ColumnInfos.Where(x => !x.IsIndexIncluded)
+//  .Select(x => x.ColumnNo).ToList();

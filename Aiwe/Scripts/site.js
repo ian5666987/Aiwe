@@ -22,7 +22,7 @@ function processLiveDd(element, ldColNames, dataTypes) {
   var tableName = $('#common-table-name').text();
 
   $.ajax({
-    url: '../../../Common/GetLiveDropdownItems/' + tableName,
+    url: '../../../Common/GetLiveDropDownItems/' + tableName,
     async: true,
     data: {
       tableName: tableName, changedColumnName: colName, originalColumnValues: arrOriginals,

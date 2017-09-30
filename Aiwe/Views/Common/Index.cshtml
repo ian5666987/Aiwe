@@ -161,12 +161,6 @@
               }
             }
 
-            @*@foreach (object val in row.ItemArray) {
-              if (!Model.IndexExcludedColumnNos.Contains(count)) {
-                ColumnInfo columnInfo = Model.ColumnInfos[count];
-              }
-              count++;
-            }*@
             @if (Model.Meta.HasNonCreateAction) {
               int actCount = 0;
               <td>

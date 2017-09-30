@@ -1,3 +1,15 @@
+v0.6.1.0 alpha
+bugs fixed:
+- Time value is not displayed in the common create-edit view. Fixed.
+- DetailsPart does not show ScriptColumns. Fixed.
+
+updates:
+- AiweDropDownHelper removed from Aiwe, moved to Aibe MetaInfo. 
+- LiveDropDownResult is moved to Aibe, LiveDropDownResultExtension created in Aiwe. 
+- ColumnInfo and ScTableInfo are moved to Aibe. 
+- MetaInfo can now create ColumnInfo
+
+-----------------------------------------------------------------------------------------------
 v0.6.0.0 alpha (29-Sep-2017 18:25 PM)
 updates:
 - ListColumns are updated to support generic subcolumns making!
