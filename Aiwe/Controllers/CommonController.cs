@@ -52,6 +52,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     [HttpPost]
     [CommonActionFilter]
     public ActionResult Create(string tableName, FormCollection collections) {
+      CheckerHelper checker = new AiweCheckerHelper();
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
       DateTime now = DateTime.Now;
       Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
@@ -62,7 +63,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       List<string> checkExclusions = new List<string> { Aibe.DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
 
       //Check model state's validity
-      Dictionary<string, string> errorDict = new AiweCheckerHelper().CheckModelValidity(Aiwe.DH.TableModelClassPrefix, tableName, meta.ArrangedDataColumns, 
+      Dictionary<string, string> errorDict = checker.CheckModelValidity(Aiwe.DH.TableModelClassPrefix, tableName, meta.ArrangedDataColumns, 
         dictCollections, ModelState.Keys.ToList(), meta, checkExclusions, AiweUserHelper.UserIsDeveloper(User), now, Aibe.DH.CreateActionName);
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid)

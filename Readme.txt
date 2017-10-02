@@ -1,3 +1,8 @@
+v0.6.3.0 alpha (2-Oct-2017 18:00)
+updates:
+- AiweCheckerHelper components reduced and moved to Aibe's CheckerHelper - made it compatible with .Net 4.0.
+
+-----------------------------------------------------------------------------------------------
 v0.6.2.1 alpha (2-Oct-2017 13:52)
 bugs fixed:
 - _SharedNavigation takes NavDataModel from the old Aibe.Models.Core instead of Aibe.Models. Fixed.
