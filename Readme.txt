@@ -1,3 +1,8 @@
+v0.6.2.1 alpha (2-Oct-2017 13:52)
+bugs fixed:
+- _SharedNavigation takes NavDataModel from the old Aibe.Models.Core instead of Aibe.Models. Fixed.
+
+-----------------------------------------------------------------------------------------------
 v0.6.2.0 alpha (2-Oct-2017 13:30)
 bugs fixed:
 - Authentication does not take from right table. Fixed.
