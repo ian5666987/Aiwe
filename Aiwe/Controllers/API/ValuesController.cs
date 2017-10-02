@@ -1,6 +1,10 @@
 ﻿using Aiwe.ActionFilters;
 using Aibe.Helpers;
+using Aiwe.Models;
 using Aiwe.Models.API;
+using Aiwe.Models.DB;
+using Extension.Database.SqlServer;
+using Extension.String;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,10 +16,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
-using Extension.Database.SqlServer;
-using Extension.String;
-using Aiwe.Models;
-using Aiwe.Models.DB;
 
 namespace Aiwe.Controllers {
   //[Authorize]

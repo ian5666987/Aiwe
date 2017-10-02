@@ -3,7 +3,7 @@ using Aiwe.Models;
 using Aiwe.Models.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
-using Aibe.Models.Core;
+using Aibe.Models;
 using Aibe.Helpers;
 
 namespace Aiwe.Helpers {

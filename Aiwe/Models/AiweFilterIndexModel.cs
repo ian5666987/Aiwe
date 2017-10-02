@@ -9,19 +9,19 @@ using Aiwe.Helpers;
 
 namespace Aiwe.Models {
   //To be used to display filter and index
-  public class FilterIndexInfo : BaseTableInfo {
+  public class AiweFilterIndexModel : AiweBaseTableModel {
     private IPrincipal user { get; set; }
     public DataTable Table { get; private set; }
     public bool HasTable { get { return Table != null; } }
+    public FilterIndexModel FiModel { get; private set; }
 
-    public FilterIndexInfo (MetaInfo meta, IPrincipal userInput, FilterIndexModel model) : 
-      this (meta, userInput, model.Data, model.NavData) { }
-
-    //FilterIndexInfo does not have dictionaryString since eachColumn will have its own "dictionaryString"
-    public FilterIndexInfo (MetaInfo meta, IPrincipal userInput, DataTable tableInput, NavDataModel navData) : base(meta, null) {
+    //: this (meta, userInput, model.Data, model.NavData) 
+    //AiweFilterIndexModel does not have dictionaryString since eachColumn will have its own "dictionaryString"
+    public AiweFilterIndexModel (MetaInfo meta, IPrincipal userInput, FilterIndexModel model) : base(meta, null){
+      FiModel = model;
       user = userInput;
-      Table = tableInput;
-      NavData = navData;
+      Table = model.Data;
+      NavData = model.NavData;
 
       if (Table == null || meta == null)
         return;
@@ -59,7 +59,6 @@ namespace Aiwe.Models {
 
     //Table related add info (combined usage)
     public List<ColumnInfo> ColumnInfos { get; private set; } = new List<ColumnInfo>();
-
     //Index usage
     public int RowNo { get; private set; }
     public List<DataRow> IndexRows { get; private set; } = new List<DataRow>();
@@ -112,46 +111,3 @@ namespace Aiwe.Models {
 
   }
 }
-
-//bool isPictureColumn = meta.IsPictureColumn(column.ColumnName);
-//ColumnInfo columnInfo = new ColumnInfo(column) { Name = column.ColumnName, DisplayName = meta.GetColumnDisplayName(column.ColumnName) };
-//columnInfo.IsIndexIncluded = isColumnIncluded;
-//columnInfo.IsIndexShowImage = isPictureColumn && meta.IsIndexShownPictureColumn(column.ColumnName);
-//columnInfo.IsSciptColumn = meta.IsScriptColumn(column.ColumnName);
-////ScriptColumn cannot be shown in the index
-//if (columnInfo.IsIndexShowImage)
-//  columnInfo.ImageWidth = meta.GetImageWidth(column.ColumnName);
-//columnInfo.IsListColumn = meta.IsListColumn(column.ColumnName);
-
-//if (meta.Colorings != null)
-//  columnInfo.Colorings = meta.Colorings;
-
-//if (!columnInfo.IsIndexIncluded)
-//  IndexExcludedColumnNos.Add(count);
-//count++;
-
-////Filter
-////picture link columns cannot be used as filter (naturally)
-//if (isColumnIncluded && isColumnIncludedInFilter && !isPictureColumn) {
-//  FilterColumns.Add(column); //only things which are not excluded by column, by picture link, and by filters can be filtered
-//  columnInfo.IsFilterIncluded = true;
-//}
-
-//foreach (DataColumn column in arrangedDataColumns) {
-////foreach (DataColumn column in Table.Columns) {
-//  //Index
-//  ColumnInfo columnInfo = meta.CreateColumnInfo(column,
-//    IsColumnIncludedInIndex(column.ColumnName, user), 
-//    IsColumnIncludedInFilter(column.ColumnName, user), 
-//    count);
-//  ColumnInfos.Add(columnInfo); //Finalize
-//  count++;
-//}
-
-//columnNo = Table.Columns.Count;
-//ColumnInfos.Clear();
-//IndexExcludedColumnNos.Clear();
-//FilterColumns.Clear(); //filter
-
-//IndexExcludedColumnNos = ColumnInfos.Where(x => !x.IsIndexIncluded)
-//  .Select(x => x.ColumnNo).ToList();

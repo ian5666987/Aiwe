@@ -1,4 +1,17 @@
-v0.6.1.0 alpha
+v0.6.2.0 alpha (2-Oct-2017 13:30)
+bugs fixed:
+- Authentication does not take from right table. Fixed.
+
+updates:
+- Created CheckerHelper astract class in Aibe. AiweCheckerHelper is derived from CheckerHelper now.
+- MetaItem's Columns related models are moved to more specific folder: "Core/Columns"
+- BaseTableModel and FilterIndexModel are created/updated in Aibe.
+- AiweTranslationHelper is reduced till only the Aiwe items left. Previous methods are moved to LogicHelper.
+- ...Info names changed to Aiwe...Model
+- Default MVC models are put under special folder: "Models/MVC"
+
+-----------------------------------------------------------------------------------------------
+v0.6.1.0 alpha (30-Sep-2017 20:40)
 bugs fixed:
 - Time value is not displayed in the common create-edit view. Fixed.
 - DetailsPart does not show ScriptColumns. Fixed.
@@ -10,7 +23,7 @@ updates:
 - MetaInfo can now create ColumnInfo
 
 -----------------------------------------------------------------------------------------------
-v0.6.0.0 alpha (29-Sep-2017 18:25 PM)
+v0.6.0.0 alpha (29-Sep-2017 18:25)
 updates:
 - ListColumns are updated to support generic subcolumns making!
 - Please read the "AIWE Table Making guideline v20170929.xlsx" or later version, "ListColumns" tab to see the complete explanation of the updates.
@@ -18,7 +31,7 @@ updates:
   Unfortunately, migration to ASP.NET Core 2.0 is only supported up to .NET v4.6.1.
 
 -----------------------------------------------------------------------------------------------
-v0.5.0.0 alpha (28-Sep-2017 15:26 PM)
+v0.5.0.0 alpha (28-Sep-2017 15:26)
 updates:
 - ScriptConstructorColumns and ScriptColumns are now available!
 - The two columns are major updates! Make sure you read the "AIWE Table Making guideline v20170928.xlsx" or later version to understand them!

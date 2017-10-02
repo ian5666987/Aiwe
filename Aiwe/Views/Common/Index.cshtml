@@ -1,10 +1,11 @@
-﻿@using Aibe.Models.Core;
+﻿@using Aibe.Models;
+@using Aibe.Models.Core;
 @using Aiwe.Models;
 @using Extension.String;
 @using System.Data;
 @using System.Collections.Generic;
 
-@model FilterIndexInfo
+@model AiweFilterIndexModel
 
 @{
   //initialize variables
@@ -27,8 +28,8 @@
     </span>
     <small>
       <span id="span-for-@ViewBag.SenderName-filter">
-        @if (ViewBag.FilterNo != null && (int)ViewBag.FilterNo > 0) {
-          <span class="glyphicon glyphicon-ok-circle text-success" title="@ViewBag.FilterMsg"></span> <span title="Filter elements">@ViewBag.FilterNo</span>
+        @if (Model.FiModel.FilterNo > 0) {
+          <span class="glyphicon glyphicon-ok-circle text-success" title="@Model.FiModel.FilterMsg"></span> <span title="Filter elements">@Model.FiModel.FilterNo</span>
         }
       </span>
     </small>
@@ -81,7 +82,7 @@
     }
 
     if (Model.RowNo <= 0) {
-      string addFilterString = !Model.Meta.FilterIsDisabled && ViewBag.FilterNo != null && ((int)ViewBag.FilterNo) > 0 ?
+      string addFilterString = !Model.Meta.FilterIsDisabled && Model.FiModel.FilterNo > 0 ?
         "matching the applied filter(s)" : string.Empty;
       <h4 style="color:red">No record found in table [@Model.TableDisplayName] @addFilterString</h4>
       <br/>

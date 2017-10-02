@@ -1,4 +1,4 @@
-﻿using Aibe.Models.Core;
+﻿using Aibe.Models;
 using System.Text;
 
 namespace Aiwe.Extensions {

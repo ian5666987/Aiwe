@@ -1,11 +1,11 @@
 ﻿@using Aibe.Models.Core;
-@using Aiwe.Helpers;
+@using Aibe.Models;
 @using Aiwe.Models;
 @using Aiwe.Extensions;
 @using System.Data;
 @using Extension.String;
 
-@model CreateEditInfo
+@model AiweCreateEditModel
 
 @{ 
   bool isCreate = Model.ActionType.EqualsIgnoreCase(Aibe.DH.CreateActionName);

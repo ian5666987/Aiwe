@@ -7,7 +7,7 @@ using Aiwe.Helpers;
 using Aiwe.Models;
 using Aiwe.Models.Filters;
 using Aibe.Helpers;
-using Aibe.Models.Core;
+using Aibe.Models;
 
 namespace Aiwe.Controllers {
   [Authorize(Roles = Aiwe.DH.AdminAuthorizedRoles)]

@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNet.Identity;
-using System.Linq;
-using System.Security.Principal;
-using Aiwe.Models;
+﻿using Aiwe.Models;
 using Aiwe.Models.ViewModels;
 using Extension.String;
+using Microsoft.AspNet.Identity;
+using System.Linq;
+using System.Security.Principal;
 
 namespace Aiwe.Helpers {
   public class AiweUserHelper {
