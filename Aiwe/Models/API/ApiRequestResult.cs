@@ -10,8 +10,7 @@ namespace Aiwe.Models.API {
     public List<ApiRequestRowInfo> Rows { get; set; } = new List<ApiRequestRowInfo>();
     public bool Success { get; set; }
     public string Message { get; set; }
-    public ApiRequestResult() {
-    }
+    public ApiRequestResult() { }
 
     public ApiRequestResult(CheckedClientApiRequest checkedRequest, DataTable table) {
       try {

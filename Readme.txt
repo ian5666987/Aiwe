@@ -1,3 +1,8 @@
+v0.6.3.1 alpha (3-Oct-2017 13:22)
+bugs fixed:
+- _SharedBody and index pages of Meta, Role, Team and User take NavDataModel from the old Aibe.Models.Core instead of Aibe.Models. Fixed.
+
+-----------------------------------------------------------------------------------------------
 v0.6.3.0 alpha (2-Oct-2017 18:00)
 updates:
 - AiweCheckerHelper components reduced and moved to Aibe's CheckerHelper - made it compatible with .Net 4.0.

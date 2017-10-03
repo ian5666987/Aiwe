@@ -12,8 +12,10 @@
     }
 
     public bool IsValid() {
-      return !string.IsNullOrWhiteSpace(ColumnName) && !string.IsNullOrWhiteSpace(FileName) &&
-        !string.IsNullOrWhiteSpace(Format) && !string.IsNullOrWhiteSpace(Data);
+      return !string.IsNullOrWhiteSpace(ColumnName) && 
+        !string.IsNullOrWhiteSpace(FileName) &&
+        !string.IsNullOrWhiteSpace(Format) && 
+        !string.IsNullOrWhiteSpace(Data);
     }
   }
 }
