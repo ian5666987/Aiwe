@@ -96,7 +96,6 @@
 
     <!--The table-->
 
-    int count = 0;
     List<ColumnInfo> includedColumns = Model.ColumnInfos.Where(x => x.IsIndexIncluded).ToList();
     bool isCidForced = !includedColumns.Any(x => x.Name.EqualsIgnoreCase("Cid"));
 
@@ -113,7 +112,6 @@
           <tr>
             @{
               int id = 0; //record Id
-              count = 0;
               object cid = row["Cid"]; //included or not, Cid must be taken to get the data id
               if (cid != null) {
                 id = (int)cid;
@@ -132,13 +130,16 @@
                 </td>
               }
               else if (columnInfo.IsIndexShowImage) {
+                PictureColumnInfo pcInfo = Model.Meta.GetPictureColumnInfo(columnInfo.Name);
+                string imgSizeStr = pcInfo.IndexIsStretched ? "width:" + pcInfo.IndexWidth + "px;height:" + pcInfo.IndexHeight + "px" :
+                  pcInfo.IndexHeightComesFirst ? "height:" + pcInfo.IndexHeight + "px" : "width:" + pcInfo.IndexWidth + "px";
                 <td>
                   @if (val is DBNull || val == null || string.IsNullOrWhiteSpace(val.ToString())) {
                     <i>[no picture]</i>
                   } else if (val.ToString().Contains("/") || val.ToString().Contains("\\")) { //longer relative path
-                    <img src="~/Images/@val" width="@columnInfo.ImageWidth" />
+                    <img src="~/Images/@val" style="@imgSizeStr" />
                   } else {
-                    <img src="~/Images/@Model.TableName/@id/@val" width="@columnInfo.ImageWidth" />
+                    <img src="~/Images/@Model.TableName/@id/@val" style="@imgSizeStr" />
                   }
                 </td>
               } else if (columnInfo.IsListColumn) {

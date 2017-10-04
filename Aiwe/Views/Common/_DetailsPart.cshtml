@@ -1,5 +1,6 @@
 ﻿@using Aiwe.Models;
 @using Aibe.Models;
+@using Aibe.Models.Core;
 @using System.Data;
 @using Extension.String;
 
@@ -58,13 +59,15 @@
             }
           </table>
         } else if (Model.Meta.IsPictureColumn(data.Key)) {
-          int imgWidth = Model.Meta.GetImageWidth(data.Key);
+          PictureColumnInfo pcInfo = Model.Meta.GetPictureColumnInfo(data.Key);
+          string imgSizeStr = pcInfo.IsStretched ? "width:" + pcInfo.Width + "px;height:" + pcInfo.Height + "px" :
+            pcInfo.HeightComesFirst ? "height:" + pcInfo.Height + "px" : "width:" + pcInfo.Width + "px";
           if (string.IsNullOrWhiteSpace(data.Value)) {
             <i>[no picture]</i>
           } else if (data.Value.Contains("/") || data.Value.Contains("\\")) { //longer relative path
-            <img src="~/Images/@data.Value" width="@imgWidth" title="@data.Value" />
+            <img src="~/Images/@data.Value" style="@imgSizeStr" title="@data.Value" />
           } else {
-            <img src="~/Images/@Model.TableName/@Model.Cid/@data.Value" width="@imgWidth" title="@data.Value" />
+            <img src="~/Images/@Model.TableName/@Model.Cid/@data.Value" style="@imgSizeStr" title="@data.Value" />
           }
         } else if (Model.Meta.IsListColumn(data.Key)) {
           string dataValue = data.Value ?? string.Empty;

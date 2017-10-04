@@ -1,3 +1,9 @@
+v0.6.5.0 alpha (4-Oct-2017 23:40)
+updates:
+- PictureColumn now supports height definition and non-retaining-aspect-ratio mode! Read the guideline for more details.
+- PictureColumn now supports different size and rules for index and non-index pages! Read the guideline for more details.
+
+-----------------------------------------------------------------------------------------------
 v0.6.4.0 alpha (4-Oct-2017 17:40)
 updates:
 - ListColumn now supports different width for different columns! Read the guideline for more details.
