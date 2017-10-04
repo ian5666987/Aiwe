@@ -22,17 +22,17 @@ namespace Aiwe.Extensions {
     public static string GetHTML(this ListColumnInfo info, string dataValue, bool isReadOnly = false) {      
       //Initialization
       List<ListColumnItem> listColumnItems = new List<ListColumnItem>();
-      int textCol = 20; //TODO currently hardcoded
       string readOnlyBackgroundColor = "ececec";
       if (!string.IsNullOrWhiteSpace(dataValue))
         listColumnItems = dataValue.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries)
-          ?.Select(x => new ListColumnItem(x.Trim(), info.ListType)).ToList();
+          ?.Select(x => new ListColumnItem(x.Trim(), info.ListType, info.Widths)).ToList();
       StringBuilder sb = new StringBuilder();
       sb.Append("<table style=\"border-collapse:separate;border-spacing:10px 5px;border:1px solid black\">");
 
       //Create headers
       List<string> usedHeaders = new List<string>();
       string header = string.Empty;
+      int width = ListColumnInfo.DefaultWidth;
       info.ResetHeaderCount();
       sb.Append("<tr>");
       foreach (char c in info.ListType) { //for every item known, one header
@@ -61,7 +61,7 @@ namespace Aiwe.Extensions {
               sb.Append("<input");
               sb.Append(" readonly=\"readonly\"");
               sb.Append(" style=\"background-color:#" + readOnlyBackgroundColor + "\"");
-              sb.Append(" type=\"text\" size=\"" + textCol + "\" value=\"");
+              sb.Append(" type=\"text\" size=\"" + subItem.Width + "\" value=\"");
               sb.Append(subItem.Value);
               sb.Append("\" />");
             }
@@ -73,7 +73,7 @@ namespace Aiwe.Extensions {
               case 'V': //Value type, print it...
                 sb.Append("<input");
                 insertCommonHTMLAttributes(sb, info.Name, count, subItem.SubItemType, columnNo, false);
-                sb.Append(" type=\"text\" size=\"" + textCol + "\" value=\"");
+                sb.Append(" type=\"text\" size=\"" + subItem.Width + "\" value=\"");
                 sb.Append(subItem.Value);
                 sb.Append("\" />");
                 break;
@@ -148,7 +148,7 @@ namespace Aiwe.Extensions {
           sb.Append("<td>");
           sb.Append("<input");
           insertCommonHTMLAttributes(sb, info.Name, count, subItemType, columnNo, true);
-          sb.Append(" type=\"text\" size=\"" + textCol + "\" value=\"\"");
+          sb.Append(" type=\"text\" size=\"" + info.Widths[i] + "\" value=\"\"");
           sb.Append(" placeholder=\"");
           switch (subItemType) {
             case 'L': //L an V share the same placeholder
@@ -183,7 +183,7 @@ namespace Aiwe.Extensions {
     public static string GetDetailsHTML(this ListColumnInfo info, string dataValue) {
       //Checking
       var listColumnItems = dataValue.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries)
-        ?.Select(x => new ListColumnItem(x.Trim(), info.ListType)).ToList();
+        ?.Select(x => new ListColumnItem(x.Trim(), info.ListType, info.Widths)).ToList();
 
       if (listColumnItems.Count <= 0)
         return null;

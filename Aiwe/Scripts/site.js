@@ -273,7 +273,8 @@ $(document).ready(function () {
       url: '../../../Common/UpdateSubcolumnItemsDescription/' + tableName,
       async: true,
       data: {
-        tableName: tableName, rowNo: rowNo, columnNo: columnNo,
+        tableName: tableName, columnName: columnName,
+        rowNo: rowNo, columnNo: columnNo,
         dataValue: dataValue, inputValue: inputValue,
         lcType: lcType
       },

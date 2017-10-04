@@ -221,9 +221,11 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     //Called when list-column input is focused out (change the ListColumnItem description)
     //IMPORTANT: tableName parameter, though not used in the function, is necessary to have because of the CommonActionFilter. Do not remove
     [CommonActionFilter]
-    public JsonResult UpdateSubcolumnItemsDescription(string tableName, int rowNo, int columnNo, string dataValue, string inputValue, string lcType) {
+    public JsonResult UpdateSubcolumnItemsDescription(string tableName, string columnName, int rowNo, int columnNo, string dataValue, string inputValue, string lcType) {
       ListColumnResult result = new ListColumnResult(null, dataValue);
-      result.UpdateDataValue(inputValue, rowNo, columnNo, lcType); //the result does not matter here, just return it anyway      
+      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
+      ListColumnInfo info = meta.GetListColumnInfo(columnName);
+      result.UpdateDataValue(info, inputValue, rowNo, columnNo, lcType); //the result does not matter here, just return it anyway      
       return Json(result, JsonRequestBehavior.AllowGet); //Return the result, successful or not
     }
     #endregion

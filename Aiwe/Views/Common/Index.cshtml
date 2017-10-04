@@ -141,24 +141,21 @@
                     <img src="~/Images/@Model.TableName/@id/@val" width="@columnInfo.ImageWidth" />
                   }
                 </td>
+              } else if (columnInfo.IsListColumn) {
+                string dataValue = val == null ? string.Empty : val.ToString();
+                <td>
+                  @Html.Raw(Model.GetListColumnDetailsHTML(columnInfo.Name, dataValue))
+                </td>
               } else {
-                if (columnInfo.IsListColumn) {
-                  string dataValue = val == null ? string.Empty : val.ToString();
-                  <td>
-                    @Html.Raw(Model.GetListColumnDetailsHTML(columnInfo.Name, dataValue))
-                  </td>
+                //List<ColoringItem> colorItems = columnInfo.CreateColorItems(id);
+                if (columnInfo.Colorings == null) {
+                  <td>@val</td>
+                } else if (columnInfo.Colorings.Any(x => x.CheckConditionMet(columnInfo.DataType, val, id))) {
+                  ColoringInfo colorItem = columnInfo.Colorings.FirstOrDefault(x => x.CheckConditionMet(columnInfo.DataType, val, id));
+                  <td style="background-color:@colorItem.Color">@val</td>
                 } else {
-                  //List<ColoringItem> colorItems = columnInfo.CreateColorItems(id);
-                  if (columnInfo.Colorings == null) {
-                    <td>@val</td>
-                  } else if (columnInfo.Colorings.Any(x => x.CheckConditionMet(columnInfo.DataType, val, id))) {
-                    ColoringInfo colorItem = columnInfo.Colorings.FirstOrDefault(x => x.CheckConditionMet(columnInfo.DataType, val, id));
-                    <td style="background-color:@colorItem.Color">@val</td>
-                  } else {
-                    <td>@val</td>
-                  }
-
-                }
+                  <td>@val</td>
+                }                
               }
             }
 
@@ -188,16 +185,9 @@
                   }
                 }
               </td>
-
-            } else {
-              
-
             }
-
           </tr>
-
-              }
-
+        }
       </table>
 
       <!--The lower data navigation-->
