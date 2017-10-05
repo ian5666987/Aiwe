@@ -9,7 +9,7 @@ using System.Data;
 namespace Aiwe.Extensions {
   public static class ListColumnInfoExtension {
     private static void insertCommonHTMLAttributes(StringBuilder sb, string columnName, int rowNo, char subItemType, int columnNo, bool isAdd) {
-      sb.Append(isAdd ? " class=\"common-subcolumn-input-add\"" : " class=\"common-subcolumn-input\"");
+      sb.Append(isAdd ? " class=\"common-subcolumn-input-add-" + columnName +"\"" : " class=\"common-subcolumn-input\"");
       sb.Append(" commoncolumnname=\"" + columnName + "\"");
       sb.Append(" commonrowno=\"" + rowNo + "\"");
       sb.Append(" commonsubitemtype=\"" + subItemType + "\"");
@@ -23,9 +23,14 @@ namespace Aiwe.Extensions {
       //Initialization
       List<ListColumnItem> listColumnItems = new List<ListColumnItem>();
       string readOnlyBackgroundColor = "ececec";
-      if (!string.IsNullOrWhiteSpace(dataValue))
-        listColumnItems = dataValue.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries)
-          ?.Select(x => new ListColumnItem(x.Trim(), info.ListType, info.Widths)).ToList();
+      if (!string.IsNullOrWhiteSpace(dataValue)) {
+        var descs = dataValue.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
+        foreach(var subdesc in descs) {
+          ListColumnItem lcItem = new ListColumnItem(subdesc.Trim(), info.ListType, info.Widths);
+          listColumnItems.Add(lcItem);
+        }
+        //listColumnItems = descs?.Select(x => new ListColumnItem(x.Trim(), info.ListType, info.Widths)).ToList();
+      }
       StringBuilder sb = new StringBuilder();
       sb.Append("<table style=\"border-collapse:separate;border-spacing:10px 5px;border:1px solid black\">");
 

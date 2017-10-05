@@ -248,6 +248,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\ListColumnResultExtension.cs" />
+    <Compile Include="Extensions\MetaInfoExtension.cs" />
     <Compile Include="Extensions\LiveDropDownResultExtension.cs" />
     <Compile Include="Helpers\AiweCheckerHelper.cs" />
     <Compile Include="Helpers\AiweQueryHelper.cs" />

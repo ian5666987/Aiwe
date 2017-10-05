@@ -1,3 +1,15 @@
+v0.6.6.0 alpha (6-Oct-2017 00:17)
+bugs fixed:
+- Widths for ListColumns can be empty, not initialized correctly with three default values. Fixed.
+- ListColumn javascript breaks due to ".contains()". Fixed.
+- ListColumn add or delete does not work when the table has more than one ListColumn because javascript refers to all add subitems instead of the changed ones. Fixed.
+- ListColumn ListType "check" legacy mapping is to "C". It is supposed to be to "LC". Fixed.
+- ListColumn dynamic template fails due to wrong condition in the ListColumnInfo.GetRefDataValue. Fixed.
+
+updates:
+- ListColumn now supports table-referenced options for ListType "O"! Read the guideline for more details.
+
+-----------------------------------------------------------------------------------------------
 v0.6.5.0 alpha (4-Oct-2017 23:40)
 updates:
 - PictureColumn now supports height definition and non-retaining-aspect-ratio mode! Read the guideline for more details.

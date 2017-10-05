@@ -6,6 +6,7 @@ using Aibe.Models.Core;
 
 namespace Aiwe.Extensions {
   public static class ActionInfoExtension {
+
     public static bool IsAllowed(this ActionInfo actInfo, IPrincipal user) {
       return actInfo.Roles == null || actInfo.Roles.Count <= 0 || actInfo.Roles.Any(x => user.IsInRole(x)); //if user is found or is not defined
     }

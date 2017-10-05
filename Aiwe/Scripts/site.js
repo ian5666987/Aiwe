@@ -212,7 +212,7 @@ $(document).ready(function () {
     var dataValue = $('#common-subcolumn-content-' + columnName).val(); //content of the column
 
     //get all adds:
-    var allAdds = document.getElementsByClassName('common-subcolumn-input-add');
+    var allAdds = document.getElementsByClassName('common-subcolumn-input-add-' + columnName);
     var addString = '';
     for (i = 0; i < allAdds.length; ++i) {
       if (i > 0)
@@ -223,13 +223,13 @@ $(document).ready(function () {
         case 'L':
         case 'V': addString += subItemVal; break;
         case 'O':
-          if (subItemVal.contains("|")) {
+          if (subItemVal.toString().indexOf('|') !== -1) {
             addString += subItemVal;
           } else {
-            addString += subItemVal + "|" + subItemVal;
+            addString += subItemVal + '|' + subItemVal;
           }
           break;
-        case 'C': addString += subItemVal + "|Yes,No"; break;
+        case 'C': addString += subItemVal + '|Yes,No'; break;
         default:
       }
     }
