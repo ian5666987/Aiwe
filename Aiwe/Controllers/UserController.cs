@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Data;
+﻿using Aibe.Helpers;
 using Aiwe.Helpers;
 using Aiwe.Models;
 using Aiwe.Models.DB;
 using Aiwe.Models.Filters;
 using Aiwe.Models.ViewModels;
+using Extension.String;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using Extension.String;
-using Aibe.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Web;
+using System.Web.Mvc;
 
 namespace Aiwe.Controllers {
   [Authorize(Roles = Aiwe.DH.AdminAuthorizedRoles)]
@@ -61,12 +62,12 @@ namespace Aiwe.Controllers {
     }
 
     private RedirectToRouteResult redirectToError(string error) {
-      return RedirectToAction("ErrorLocal", new { error = error });
+      return RedirectToAction(Aiwe.DH.ErrorLocalActionName, new { error = error });
     }
 
     public ActionResult ErrorLocal(string error) {
       ViewBag.Error = error;
-      return View("Error");
+      return View(Aiwe.DH.ErrorViewName);
     }
 
     CoreDataModel db = new CoreDataModel();
@@ -76,8 +77,8 @@ namespace Aiwe.Controllers {
     public ActionResult Create(ApplicationUserCreateViewModel model) {
       //try {
       if (string.IsNullOrWhiteSpace(model.AdminRole) && string.IsNullOrWhiteSpace(model.WorkingRole)) {
-        ModelState.AddModelError("WorkingRole", "[Working Role] and [Admin Role] cannot be both empty");
-        ModelState.AddModelError("AdminRole", "[Working Role] and [Admin Role] cannot be both empty");
+        ModelState.AddModelError(Aiwe.LCZ.I_WorkingRole, string.Format(Aiwe.LCZ.E_RolesCannotBeBothEmpty, Aiwe.LCZ.W_WorkingRole, Aiwe.LCZ.W_AdminRole));
+        ModelState.AddModelError(Aiwe.LCZ.I_AdminRole, string.Format(Aiwe.LCZ.E_RolesCannotBeBothEmpty, Aiwe.LCZ.W_WorkingRole, Aiwe.LCZ.W_AdminRole));
       }
 
       if (ModelState.IsValid) {
@@ -103,18 +104,18 @@ namespace Aiwe.Controllers {
             Aiwe.DH.WorkingRoles.Any(x => x.EqualsIgnoreCase(model.WorkingRole))) {
             var addRoleResult = UserManager.AddToRole(user.Id, model.WorkingRole);
             if (!addRoleResult.Succeeded)
-              return RedirectToAction("ErrorLocal");
+              return RedirectToAction(Aiwe.DH.ErrorLocalActionName);
           }
           if (!string.IsNullOrWhiteSpace(model.AdminRole) &&
             Aibe.DH.AllowedAdminRoles.Any(x => x.EqualsIgnoreCase(model.AdminRole))) {
             var addRoleResult = UserManager.AddToRole(user.Id, model.AdminRole);
             if (!addRoleResult.Succeeded)
-              return RedirectToAction("ErrorLocal");
+              return RedirectToAction(Aiwe.DH.ErrorLocalActionName);
           }
 
           UserHelper.CreateUserMap(model.Email, model.Password);
 
-          return RedirectToAction("Index");
+          return RedirectToAction(Aibe.DH.IndexActionName);
         }
       }
 
@@ -125,46 +126,51 @@ namespace Aiwe.Controllers {
     public ActionResult Details(string id) {
       ApplicationUser user = UserManager.Users.FirstOrDefault(x => x.Id == id);
       if (user == null)
-        return redirectToError("User Id not found");
+        return redirectToError(Aibe.LCZ.NFE_UserIdNotFound);
       ApplicationUserViewModel model = new ApplicationUserViewModel(user);
       if (model == null)
-        return redirectToError("Fail to create application user model");
+        return redirectToError(string.Format(Aibe.LCZ.E_FailToDoActionOnItemIn, Aibe.LCZ.W_Create, Aiwe.LCZ.W_ApplicationUserModel, Aibe.LCZ.W_Details));
       return View(model);
     }
 
     public ActionResult Delete(string id) {
       ApplicationUser user = UserManager.Users.FirstOrDefault(x => x.Id == id);
       if (user == null) 
-        return redirectToError("User Id not found");
+        return redirectToError(Aibe.LCZ.NFE_UserIdNotFound);
       ApplicationUserViewModel model = new ApplicationUserViewModel(user);
       if (model == null)
-        return redirectToError("Fail to create application user model");
+        return redirectToError(string.Format(Aibe.LCZ.E_FailToDoActionOnItemIn, Aibe.LCZ.W_Create, Aiwe.LCZ.W_ApplicationUserModel, Aibe.LCZ.W_Delete));
       return View(model);
     }
 
     [HttpPost]
-    [ActionName("Delete")]
+    [ActionName(Aibe.DH.DeleteActionName)]
     public ActionResult DeletePost(string id) {
       ApplicationUser user = UserManager.Users.FirstOrDefault(x => x.Id == id);
       if (user == null)
-        return redirectToError("User Id not found");      
+        return redirectToError(Aibe.LCZ.NFE_UserIdNotFound);      
       if (AiweUserHelper.UserHasMainAdminRight(user))
-        return redirectToError(user.AdminRole + " User cannot be edited or deleted");
+        return redirectToError(string.Format(Aibe.LCZ.E_CannotBeEditedOrDeleted, user.AdminRole));
       UserHelper.DeleteUserMap(user.UserName);
       var result = UserManager.Delete(user);
-      if (!result.Succeeded)
-        return redirectToError("User manager fails to delete the user. Errors: " +
-          string.Join("<br/>", result.Errors.ToArray()));
-      return RedirectToAction("Index");
+      if (!result.Succeeded) {
+        StringBuilder sb = new StringBuilder(string.Format(Aibe.LCZ.E_FailToDoActionOnItem, Aibe.LCZ.W_Delete, Aibe.LCZ.W_User));
+        sb.Append(".<br/>");
+        sb.Append(Aibe.LCZ.W_ErrorList);
+        sb.Append(":<br/>");
+        sb.Append(string.Join("<br/>", result.Errors.ToArray()));
+        return redirectToError(sb.ToString());
+      }
+      return RedirectToAction(Aibe.DH.IndexActionName);
     }
 
     public ActionResult Edit(string id) {
       ApplicationUser user = UserManager.Users.FirstOrDefault(x => x.Id == id);
       if (user == null)
-        return redirectToError("User Id not found");
+        return redirectToError(Aibe.LCZ.NFE_UserIdNotFound);
       ApplicationUserEditViewModel model = new ApplicationUserEditViewModel(user);
       if (model == null)
-        return redirectToError("Fail to create application user model");
+        return redirectToError(string.Format(Aibe.LCZ.E_FailToDoActionOnItemIn, Aibe.LCZ.W_Create, Aiwe.LCZ.W_ApplicationUserModel, Aibe.LCZ.W_Edit));
       return View(model);
     }
 
@@ -172,16 +178,16 @@ namespace Aiwe.Controllers {
     public ActionResult Edit(ApplicationUserEditViewModel model) {
       ApplicationUser user = UserManager.Users.FirstOrDefault(x => x.Id == model.Id);
       if (string.IsNullOrWhiteSpace(model.AdminRole) && string.IsNullOrWhiteSpace(model.WorkingRole)) {
-        ModelState.AddModelError("WorkingRole", "[Working Role] and [Admin Role] cannot be both empty");
-        ModelState.AddModelError("AdminRole", "[Working Role] and [Admin Role] cannot be both empty");
+        ModelState.AddModelError(Aiwe.LCZ.I_WorkingRole, string.Format(Aiwe.LCZ.E_RolesCannotBeBothEmpty, Aiwe.LCZ.W_WorkingRole, Aiwe.LCZ.W_AdminRole));
+        ModelState.AddModelError(Aiwe.LCZ.I_AdminRole, string.Format(Aiwe.LCZ.E_RolesCannotBeBothEmpty, Aiwe.LCZ.W_WorkingRole, Aiwe.LCZ.W_AdminRole));
       }
 
       if (!ModelState.IsValid)
         return View(model);
       if (user == null)
-        return redirectToError("User Id not found");
+        return redirectToError(Aibe.LCZ.NFE_UserIdNotFound);
       if (AiweUserHelper.UserHasMainAdminRight(user))
-        return redirectToError(user.AdminRole + " User cannot be edited or deleted");
+        return redirectToError(string.Format(Aibe.LCZ.E_CannotBeEditedOrDeleted, user.AdminRole));
 
       string oldAdminRole = user.AdminRole;
       string oldWorkingRole = user.WorkingRole;
@@ -197,9 +203,14 @@ namespace Aiwe.Controllers {
       user.WorkingRole = model.WorkingRole;
 
       var result = UserManager.Update(user);
-      if (!result.Succeeded)
-        return redirectToError("User manager fails to update the user. Errors: " + 
-          string.Join("<br/>", result.Errors.ToArray()));
+      if (!result.Succeeded) {
+        StringBuilder sb = new StringBuilder(string.Format(Aibe.LCZ.E_FailToDoActionOnItem, Aibe.LCZ.W_Delete, Aibe.LCZ.W_User));
+        sb.Append(".<br/>");
+        sb.Append(Aibe.LCZ.W_ErrorList);
+        sb.Append(":<br/>");
+        sb.Append(string.Join("<br/>", result.Errors.ToArray()));
+        return redirectToError(sb.ToString());
+      }
 
       if (oldAdminRole != model.AdminRole) {
         if (!string.IsNullOrWhiteSpace(oldAdminRole)) //if old role is not empty, remove the old role
@@ -210,7 +221,7 @@ namespace Aiwe.Controllers {
           Aibe.DH.AllowedAdminRoles.Any(x => x.EqualsIgnoreCase(model.AdminRole))) { //just add new role
           var addRoleResult = UserManager.AddToRole(user.Id, model.AdminRole);
           if (!addRoleResult.Succeeded)
-            return RedirectToAction("ErrorLocal");
+            return RedirectToAction(Aiwe.DH.ErrorLocalActionName);
         }
       }
 
@@ -223,12 +234,12 @@ namespace Aiwe.Controllers {
           Aiwe.DH.WorkingRoles.Any(x => x.EqualsIgnoreCase(model.WorkingRole))) { //just add new role
           var addRoleResult = UserManager.AddToRole(user.Id, model.WorkingRole);
           if (!addRoleResult.Succeeded)
-            return RedirectToAction("ErrorLocal");
+            return RedirectToAction(Aiwe.DH.ErrorLocalActionName);
         }
       }
 
       UserHelper.EditUserMapName(oldUserName, model.Email);
-      return RedirectToAction("Index");
+      return RedirectToAction(Aibe.DH.IndexActionName);
     }
   }
 }

@@ -3,7 +3,7 @@
 @model AiweDetailsModel
 
 @{
-  ViewBag.Title = "Details";
+  ViewBag.Title = Aibe.LCZ.W_Details;
 }
 
 <h2>@Model.TableDisplayName <small>(@ViewBag.Title)</small></h2>
@@ -12,10 +12,10 @@
 @Html.Partial("_DetailsPart")
 <div class="row">
   <div class="form-group">
-    <a href="../../../../../../Common/Index/@Model.TableName"
+    <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@Aibe.DH.IndexActionName/@Model.TableName"
        class="btn btn-primary col-md-2"
        style="margin-left:12px; margin-top:15px;">
-      <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> Back To List</font></span>
+      <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> @Aibe.LCZ.W_BackToList</font></span>
     </a>
   </div>
   <br />

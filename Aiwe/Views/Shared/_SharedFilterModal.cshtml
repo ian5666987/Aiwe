@@ -7,7 +7,7 @@
                 onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
           &times;
         </button>
-        <h4 class="modal-title" id="modal-for-@ViewBag.SenderName-header">Filter for @ViewBag.Title</h4>
+        <h4 class="modal-title" id="modal-for-@ViewBag.SenderName-header">@string.Format(Aibe.LCZ.M_FilterFor, ViewBag.Title)</h4>
       </div>
       <div class="modal-body">
         @Html.Partial("_SharedFilterConverter")
@@ -15,15 +15,15 @@
       <div class="modal-footer" style="background-color:#e9e9e9">
         <button type="button" class="btn btn-default" data-dismiss="modal"
                 id="@ViewBag.SenderName-filter-use-button"
-                title="Use this button to apply the filter form"
+                title="@Aibe.LCZ.NFM_ApplyFilterButtonHelp"
                 onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
-          Apply
+          @Aibe.LCZ.W_Apply
         </button>
         <button type="button" class="btn btn-default" data-dismiss="modal"
                 id="@ViewBag.SenderName-filter-close-button"
-                title="Use this button to close the filter form"
+                title="@Aibe.LCZ.NFM_CloseFilterButtonHelp"
                 onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
-          Close
+          @Aibe.LCZ.W_Close
         </button>
       </div>
     </div>

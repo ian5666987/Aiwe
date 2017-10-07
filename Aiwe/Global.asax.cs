@@ -18,6 +18,7 @@ namespace Aiwe {
       RouteConfig.RegisterRoutes(RouteTable.Routes);
       BundleConfig.RegisterBundles(BundleTable.Bundles);
       CryptographyHelper.Init();
+      LCZ.Init(); //For localization
 
 #if DEBUG
       AiweTableHelper.PrepareMetas();
@@ -30,7 +31,7 @@ namespace Aiwe {
     protected void Application_Error(object sender, EventArgs e) {      
       Exception exception = Server.GetLastError();
       string exStr = exception.ToString();
-      LogHelper.Error("Global", "Final", null, null, null, null, null, exception.ToString());
+      LogHelper.Error(Aibe.LCZ.W_Global, Aibe.LCZ.W_Final, null, null, null, null, null, exception.ToString());
       Server.ClearError();
       Response.RedirectToRoute("FinalErrorRoute");      
     }

@@ -1,13 +1,13 @@
 ﻿@model Aiwe.Models.ChangeDisplayNameViewModel
 @{
-  ViewBag.Title = "Change Display Name";
+  ViewBag.Title = Aibe.LCZ.NFM_ChangeDisplayName;
 }
 
 <h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm("ChangeDisplayName", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" })) {
+@using (Html.BeginForm("ChangeDisplayName", Aiwe.DH.MvcManageControllerName, FormMethod.Post, new { @class = "form-horizontal", role = "form" })) {
   @Html.AntiForgeryToken()
-  <h4>Change Display Name Form</h4>
+  <h4>@Aibe.LCZ.NFM_ChangeDisplayNameForm</h4>
     <hr />
     @Html.ValidationSummary("", new { @class = "text-danger" })
     <div class="form-group">
@@ -25,7 +25,7 @@
     </div>
     <div class="form-group">
       <div class="col-md-offset-2 col-md-10">
-        <input type="submit" value="Change Display Name" class="btn btn-default" />
+        <input type="submit" value="@Aibe.LCZ.NFM_ChangeDisplayName" class="btn btn-default" />
       </div>
     </div>
 }

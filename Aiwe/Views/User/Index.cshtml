@@ -2,17 +2,17 @@
 @using Aibe.Models
 @model List<ApplicationUserViewModel>
 @{
-  ViewBag.Title = "Users";
-  ViewBag.PageTitle = "Users";
-  ViewBag.ActionName = "Index";
-  ViewBag.ControllerName = "User";
+  ViewBag.Title = Aibe.LCZ.W_Users;
+  ViewBag.PageTitle = Aibe.LCZ.W_Users;
+  ViewBag.ActionName = Aibe.DH.IndexActionName;
+  ViewBag.ControllerName = Aiwe.DH.MvcUserControllerName;
   ViewBag.FilterName = "ApplicationUser"; //used for correct filter rendering in the common
   ViewBag.SenderName = "user";
   ViewBag.TablePartialViewName = "_Table";
   ViewBag.NavPartialViewName = "_AddBackToAdmin";
   NavDataModel navData = (NavDataModel)ViewBag.NavData;
   if (navData != null && navData.QueryCount > 0) {
-    navData.DataName = "User"; //for giving name below
+    navData.DataName = Aibe.LCZ.W_User; //for giving name below
   }
 }
 

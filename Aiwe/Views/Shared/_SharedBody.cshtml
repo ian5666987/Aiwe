@@ -13,12 +13,12 @@
     <br />
   } else {
     <h4 style="color:red">
-      No record found in [@ViewBag.PageTitle]
+      @string.Format(Aibe.LCZ.E_NoRecordFoundIn, ViewBag.PageTitle)
       @if (ViewBag.Filter != null) {
         BaseFilter filter = (BaseFilter)ViewBag.Filter;
         if (filter != null && filter.No > 0) {
-          @:matching the applied filter(s)
-    }
+          @:@Aibe.LCZ.NFE_MatchingTheAppliedFilter
+        }
       }
       </h4>
       <br/>

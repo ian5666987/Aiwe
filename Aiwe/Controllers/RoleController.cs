@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using System.Data;
+﻿using Aibe.Models.Filters;
 using Aiwe.Helpers;
 using Aiwe.Models;
 using Aiwe.Models.ViewModels;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity;
 using Extension.String;
-using Aibe.Helpers;
-using Aibe.Models.Filters;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Web.Mvc;
 
 namespace Aiwe.Controllers {
   [Authorize(Roles = Aibe.DH.DevRole)]
@@ -50,12 +50,12 @@ namespace Aiwe.Controllers {
     }
 
     private RedirectToRouteResult redirectToError(string error) {
-      return RedirectToAction("ErrorLocal", new { error = error });
+      return RedirectToAction(Aiwe.DH.ErrorLocalActionName, new { error = error });
     }
 
     public ActionResult ErrorLocal(string error) {
       ViewBag.Error = error;
-      return View("Error");
+      return View(Aiwe.DH.ErrorViewName);
     }
 
     [HttpPost]
@@ -66,53 +66,58 @@ namespace Aiwe.Controllers {
       IdentityRole role = new IdentityRole { Name = model.Name };
       var result = RoleManager.Create(role);
       if (result.Succeeded)
-        return RedirectToAction("Index");
+        return RedirectToAction(Aibe.DH.IndexActionName);
       return View(model);
     }
 
     public ActionResult Details(string id) {      
       IdentityRole role = RoleManager.Roles.FirstOrDefault(x => x.Id == id);
       if (role == null)
-        return redirectToError("Role Id not found");
+        return redirectToError(Aibe.LCZ.NFE_RoleIdNotFound);
       RoleViewModel model = new RoleViewModel(role);
       if (model == null)
-        return redirectToError("Fail to create role view model");
+        return redirectToError(string.Format(Aibe.LCZ.E_FailToDoActionOnItemIn, Aibe.LCZ.W_Create, Aiwe.LCZ.W_RoleViewModel, Aibe.LCZ.W_Details));
       return View(model);
     }
 
     public ActionResult Delete(string id) {
       IdentityRole role = RoleManager.Roles.FirstOrDefault(x => x.Id == id);
       if (role == null)
-        return redirectToError("Role Id not found");
+        return redirectToError(Aibe.LCZ.NFE_RoleIdNotFound);
       RoleViewModel model = new RoleViewModel(role);
       if (model == null)
-        return redirectToError("Fail to create role view model");
+        return redirectToError(string.Format(Aibe.LCZ.E_FailToDoActionOnItemIn, Aibe.LCZ.W_Create, Aiwe.LCZ.W_RoleViewModel, Aibe.LCZ.W_Delete));
       return View(model);
     }
 
     [HttpPost]
-    [ActionName("Delete")]
+    [ActionName(Aibe.DH.DeleteActionName)]
     public ActionResult DeletePost(string id) {
       IdentityRole role = RoleManager.Roles.FirstOrDefault(x => x.Id == id);
       if (role == null)
-        return redirectToError("Role Id not found");
+        return redirectToError(Aibe.LCZ.NFE_RoleIdNotFound);
       if (Aibe.DH.AdminRoles.Any(x => x.EqualsIgnoreCase(role.Name))) //Admin roles cannot be edited, deleted, or changed
-        return redirectToError(role.Name + " Role cannot be edited or deleted");
+        return redirectToError(string.Format(Aibe.LCZ.E_CannotBeEditedOrDeleted, role.Name));
       var result = RoleManager.Delete(role);
-      if (!result.Succeeded)
-        return redirectToError("Role manager fails to delete the role. Errors: " +
-          string.Join("<br/>", result.Errors.ToArray()));
-      return RedirectToAction("Index");
+      if (!result.Succeeded) {
+        StringBuilder sb = new StringBuilder(string.Format(Aibe.LCZ.E_FailToDoActionOnItem, Aibe.LCZ.W_Delete, Aibe.LCZ.W_Role));
+        sb.Append(".<br/>");
+        sb.Append(Aibe.LCZ.W_ErrorList);
+        sb.Append(":<br/>");
+        sb.Append(string.Join("<br/>", result.Errors.ToArray()));
+        return redirectToError(sb.ToString());
+      }
+      return RedirectToAction(Aibe.DH.IndexActionName);
     }
 
     public ActionResult Edit(string id) {
       IdentityRole role = RoleManager.Roles.FirstOrDefault(x => x.Id == id);
 
       if (role == null)
-        return redirectToError("Role Id not found");
+        return redirectToError(Aibe.LCZ.NFE_RoleIdNotFound);
       RoleViewModel model = new RoleViewModel(role);
       if (model == null)
-        return redirectToError("Fail to create role view model");
+        return redirectToError(string.Format(Aibe.LCZ.E_FailToDoActionOnItemIn, Aibe.LCZ.W_Create, Aiwe.LCZ.W_RoleViewModel, Aibe.LCZ.W_Edit));
       return View(model);
     }
 
@@ -122,16 +127,19 @@ namespace Aiwe.Controllers {
       if (!ModelState.IsValid)
         return View(model);
       if (role == null)
-        return redirectToError("Role Id not found");
+        return redirectToError(Aibe.LCZ.NFE_RoleIdNotFound);
       if (Aibe.DH.AdminRoles.Any(x => x.EqualsIgnoreCase(role.Name))) //Admin roles cannot be edited, deleted, or changed
-        return redirectToError(role.Name + " Role cannot be edited or deleted");
+        return redirectToError(string.Format(Aibe.LCZ.E_CannotBeEditedOrDeleted, role.Name));
       role.Name = model.Name;
       var result = RoleManager.Update(role);
-      if (!result.Succeeded)
-        return redirectToError("Role manager fails to update the role. Errors: " +
-          string.Join("<br/>", result.Errors.ToArray()));
-
-      return RedirectToAction("Index");
+      if (!result.Succeeded) {
+        StringBuilder sb = new StringBuilder(string.Format(Aibe.LCZ.E_FailToDoActionOnItem, Aibe.LCZ.W_Update, Aibe.LCZ.W_Role));
+        sb.Append(".<br/>");
+        sb.Append(Aibe.LCZ.W_ErrorList);
+        sb.Append(":<br/>");
+        sb.Append(string.Join("<br/>", result.Errors.ToArray()));
+      }
+      return RedirectToAction(Aibe.DH.IndexActionName);
     }
   }
 }

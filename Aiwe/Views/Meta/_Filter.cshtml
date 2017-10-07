@@ -1,4 +1,5 @@
 ﻿@using Aibe.Models.Filters
+@using Aiwe.Helpers;
 @model MetaFilter
 @{
   ViewBag.LabelClasses = "col-md-5";
@@ -143,11 +144,7 @@
   </div>
 
   @{ 
-    List<SelectListItem> dfs = new List<SelectListItem> {
-      new SelectListItem {Text = null, Value = null },
-      new SelectListItem {Text = "True", Value = "True" },
-      new SelectListItem {Text = "False", Value = "False" },
-    };
+    List<SelectListItem> dfs = AiweDropDownHelper.GetBooleanOptions();
   }
 
   <div class="form-group">

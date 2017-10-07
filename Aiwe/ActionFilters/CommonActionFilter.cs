@@ -17,7 +17,7 @@ namespace Aiwe.ActionFilters {
   public class CommonActionFilterAttribute : ActionFilterAttribute {
     private ActionResult redirectTo(string action, int? errorNo) {
       return new RedirectToRouteResult(
-          new RouteValueDictionary(new { controller = "Home", action = action, errorNo = errorNo })
+          new RouteValueDictionary(new { controller = Aiwe.DH.MvcHomeControllerName, action = action, errorNo = errorNo })
         );
     }
 
@@ -66,7 +66,7 @@ namespace Aiwe.ActionFilters {
           }
         }
 
-        LogHelper.Action(userName, "MVC", controllerName, tableName, actionName, sb.ToString());
+        LogHelper.Action(userName, Aiwe.DH.Mvc, controllerName, tableName, actionName, sb.ToString());
       }
 
       if (value == null) { //table description not found, do nothing right now

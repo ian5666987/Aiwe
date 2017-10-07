@@ -2,6 +2,7 @@
 @using Aibe.Models.Core;
 @using Aiwe.Models;
 @using Extension.String;
+@using System;
 @using System.Data;
 @using System.Collections.Generic;
 
@@ -9,7 +10,7 @@
 
 @{
   //initialize variables
-  ViewBag.Title = "Index";
+  ViewBag.Title = Aibe.LCZ.W_Index;
   ViewBag.SenderName = Model.TableName.ToLower(); //for javascript use
   TempData["DataTableForExcel"] = Model.Table;
 }
@@ -24,12 +25,12 @@
     <span class="btn btn-default"
           data-toggle="modal"
           data-target="#modal-for-@ViewBag.SenderName">
-      <span class="glyphicon glyphicon-filter"></span> Filter
+      <span class="glyphicon glyphicon-filter"></span> @Aibe.LCZ.W_Filter
     </span>
     <small>
       <span id="span-for-@ViewBag.SenderName-filter">
         @if (Model.FiModel.FilterNo > 0) {
-          <span class="glyphicon glyphicon-ok-circle text-success" title="@Model.FiModel.FilterMsg"></span> <span title="Filter elements">@Model.FiModel.FilterNo</span>
+          <span class="glyphicon glyphicon-ok-circle text-success" title="@Model.FiModel.FilterMsg"></span> <span title="@Aibe.LCZ.W_FilterElements">@Model.FiModel.FilterNo</span>
         }
       </span>
     </small>
@@ -38,12 +39,12 @@
 <br />
 
 @if (!Model.HasTable) {
-  <h4 style="color:red">No data table found</h4>
+  <h4 style="color:red">@Aibe.LCZ.NFE_NoDataTableFound</h4>
 } else {
   <!--The data presentation-->
   List<int> excludedColumnNo = new List<int>();
 
-  using (Html.BeginForm("Index", "Common", FormMethod.Post, new { id = "filterForm" })) {
+  using (Html.BeginForm(Aibe.DH.IndexActionName, Aiwe.DH.MvcCommonControllerName, FormMethod.Post, new { id = "filterForm" })) {
 
   <!--The filter-->
 
@@ -57,7 +58,7 @@
                       onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
                 &times;
               </button>
-              <h4 class="modal-title" id="modal-for-@ViewBag.SenderName-header">Filter for @Model.TableDisplayName</h4>
+              <h4 class="modal-title" id="modal-for-@ViewBag.SenderName-header">@string.Format(Aibe.LCZ.M_FilterFor, Model.TableDisplayName)</h4>
             </div>
             <div class="modal-body">
               @Html.Partial("_Filter", Model)
@@ -65,15 +66,15 @@
             <div class="modal-footer" style="background-color:#e9e9e9">
               <button type="button" class="btn btn-default" data-dismiss="modal"
                       id="@ViewBag.SenderName-filter-use-button"
-                      title="Use this button to apply the filter form"
+                      title="@Aibe.LCZ.NFM_ApplyFilterButtonHelp"
                       onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
-                Apply
+                @Aibe.LCZ.W_Apply
               </button>
               <button type="button" class="btn btn-default" data-dismiss="modal"
                       id="@ViewBag.SenderName-filter-close-button"
-                      title="Use this button to close the filter form"
+                      title="@Aibe.LCZ.NFM_CloseFilterButtonHelp"
                       onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
-                Close
+                @Aibe.LCZ.W_Close
               </button>
             </div>
           </div>
@@ -83,8 +84,8 @@
 
     if (Model.RowNo <= 0) {
       string addFilterString = !Model.Meta.FilterIsDisabled && Model.FiModel.FilterNo > 0 ?
-        "matching the applied filter(s)" : string.Empty;
-      <h4 style="color:red">No record found in table [@Model.TableDisplayName] @addFilterString</h4>
+        Aibe.LCZ.NFE_MatchingTheAppliedFilter : string.Empty;
+      <h4 style="color:red">@string.Format(Aibe.LCZ.E_NoRecordFoundInTable, Model.TableDisplayName) @addFilterString</h4>
       <br/>
     }
 
@@ -97,7 +98,7 @@
     <!--The table-->
 
     List<ColumnInfo> includedColumns = Model.ColumnInfos.Where(x => x.IsIndexIncluded).ToList();
-    bool isCidForced = !includedColumns.Any(x => x.Name.EqualsIgnoreCase("Cid"));
+    bool isCidForced = !includedColumns.Any(x => x.Name.EqualsIgnoreCase(Aibe.DH.Cid));
 
       <table class="table table-bordered table-striped">
         <tr>
@@ -105,14 +106,14 @@
             <th>@column.DisplayName</th>
           }
           @if (Model.Meta.HasNonCreateAction) {
-            <th>Action</th>
+            <th>@Aibe.LCZ.W_Actions</th>
           }
         </tr>
         @foreach (DataRow row in Model.IndexRows) {                    
           <tr>
             @{
               int id = 0; //record Id
-              object cid = row["Cid"]; //included or not, Cid must be taken to get the data id
+              object cid = row[Aibe.DH.Cid]; //included or not, Cid must be taken to get the data id
               if (cid != null) {
                 id = (int)cid;
               }
@@ -125,8 +126,7 @@
               }
               if (columnInfo.IsSciptColumn) { //takes too long if all data is loaded here
                 <td>
-                  <i>[Table Not Shown]</i><br/>
-                  <i>[Use Details To See]</i>
+                  <i>[@Aibe.LCZ.NFM_SeeOnDetails]</i>
                 </td>
               }
               else if (columnInfo.IsIndexShowImage) {
@@ -135,11 +135,11 @@
                   pcInfo.IndexHeightComesFirst ? "height:" + pcInfo.IndexHeight + "px" : "width:" + pcInfo.IndexWidth + "px";
                 <td>
                   @if (val is DBNull || val == null || string.IsNullOrWhiteSpace(val.ToString())) {
-                    <i>[no picture]</i>
+                    <i>[@Aibe.LCZ.NFM_NoPicture]</i>
                   } else if (val.ToString().Contains("/") || val.ToString().Contains("\\")) { //longer relative path
-                    <img src="~/Images/@val" style="@imgSizeStr" />
+                    <img src="~/@Aibe.DH.DefaultImageFolderName/@val" style="@imgSizeStr" />
                   } else {
-                    <img src="~/Images/@Model.TableName/@id/@val" style="@imgSizeStr" />
+                    <img src="~/@Aibe.DH.DefaultImageFolderName/@Model.TableName/@id/@val" style="@imgSizeStr" />
                   }
                 </td>
               } else if (columnInfo.IsListColumn) {
@@ -171,9 +171,9 @@
 
                     if (Model.Meta.IsDefaultAction(action.Name)) { //actions with default action links
                       if (id == 0) {
-                      <a href="../../../../../../Common/@action.Name/@Model.TableName">@action.Name.ToCamelBrokenString()</a>
+                      <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@action.Name/@Model.TableName">@action.Name.ToCamelBrokenString()</a>
                       } else {
-                      <a href="../../../../../../Common/@action.Name/@Model.TableName/@id">@action.Name.ToCamelBrokenString()</a>
+                      <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@action.Name/@Model.TableName/@id">@action.Name.ToCamelBrokenString()</a>
                       }
                     } else { //action with customized custom link
                       if (id == 0) {
@@ -195,17 +195,17 @@
       @Html.Partial(ViewBag.NavigationUsed == null ? "_SharedNavigation" : (string)ViewBag.NavigationUsed, Model.NavData)
       <br />
 
-    if (Model.Meta.HasCreateAction) {      
-      if (Model.IsAllowedToCallAction("Create")){
-        bool defaultCreateAction = Model.Meta.IsDefaultAction("create");
-        string createLink = defaultCreateAction ? "../../../../../../Common/Create/" + Model.TableName :
-          "../../../../../../" + Model.TableName + "/Create";
+              if (Model.Meta.HasCreateAction) {
+                if (Model.IsAllowedToCallAction(Aibe.DH.CreateActionName)){
+                  bool defaultCreateAction = Model.Meta.IsDefaultAction(Aibe.DH.CreateActionName);
+                  string createLink = defaultCreateAction ? "../../../../../../" + Aiwe.DH.MvcCommonControllerName + "/" + Aibe.DH.CreateActionName + "/" + Model.TableName :
+                    "../../../../../../" + Model.TableName + "/" + Aibe.DH.CreateActionName;
         <div class="row">
           <div class="col-md-3">
             <a href="@createLink"
                 class="btn btn-success"
                 style="margin-top:5px;margin-right:5px;">
-              <span class="glyphicon glyphicon-plus"></span> Create New
+              <span class="glyphicon glyphicon-plus"></span> @Aibe.LCZ.W_CreateNew
             </a>
           </div>
         </div>
@@ -218,7 +218,7 @@
           if (Model.IsAllowedToCallTableAction(tableAction.Name)) {
             <div class="col-md-2">
               @if (Model.Meta.IsDefaultTableAction(tableAction.Name)) {
-                <a href="../../../../../Common/@tableAction.Name/@Model.TableName" class="btn btn-primary btn-block" style="margin-top:5px;margin-right:5px;">
+                <a href="../../../../../@Aiwe.DH.MvcCommonControllerName/@tableAction.Name/@Model.TableName" class="btn btn-primary btn-block" style="margin-top:5px;margin-right:5px;">
                   @tableAction.Name.ToCamelBrokenString()
                 </a>
               } else {

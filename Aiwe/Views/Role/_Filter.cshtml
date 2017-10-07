@@ -11,7 +11,7 @@
   @Html.HiddenFor(m => m.Msg, htmlAttributes: new { id = (string)ViewBag.SenderName + "-filter-msg", @class = "uncounted-filter-item" })
 
   <div class="form-group">
-    <label class="control-label @ViewBag.LabelClasses">Name</label>
+    <label class="control-label @ViewBag.LabelClasses">@Aibe.LCZ.W_Name</label>
     <div class="@ViewBag.EditorClass">
       @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control form-control-plus" } })
       @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })

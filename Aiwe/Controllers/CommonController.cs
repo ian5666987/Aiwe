@@ -72,8 +72,8 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       //Only if model state is correct that we could get valid key infos safely
       var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(tableName, dictCollections, dictCollections.Keys, meta.ArrangedDataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.CreateActionName);
       if (completeKeyInfo == null || completeKeyInfo.ValidKeys == null || !completeKeyInfo.ValidKeys.Any()) {
-        ViewBag.ErrorMessage = string.Concat("Invalid/Empty parameters for [", tableName, "]");
-        return View("Error");
+        ViewBag.ErrorMessage = string.Format(Aibe.LCZ.E_InvalidOrEmptyParameter, tableName);
+        return View(Aiwe.DH.ErrorViewName);
       }
 
       //TODO Beware of duplicate record because the client clicks more than once
@@ -83,8 +83,8 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
       BaseScriptModel scriptModel = LogicHelper.CreateInsertScriptModel(tableName, completeKeyInfo, dictCollections, now, meta);
       object generatedId = SQLServerHandler.ExecuteScalar(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
-      AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/Images/" + tableName + "/" + generatedId?.ToString()));
-      return RedirectToAction("Index", new { tableName = tableName });
+      AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + tableName + "/" + generatedId?.ToString()));
+      return RedirectToAction(Aibe.DH.IndexActionName, new { tableName = tableName });
     }
 
     //Likely used by filter and create edit
@@ -100,7 +100,8 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     [CommonActionFilter]
     public ActionResult Edit(string tableName, int cid, FormCollection collections) {
       MetaInfo meta = AiweTableHelper.GetMeta(tableName);
-      ModelState.Remove("cid"); //Again, so that it will replaced with the given collection, using capital "C" -> "Cid"
+      //Again, so that it will replaced with the given collection, using capital "C" -> "Cid"
+      ModelState.Remove("cid"); //This is unique because the field parameters here contain "cid". 
       DateTime now = DateTime.Now;
       Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
 
@@ -118,17 +119,17 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         return View(model);
       }
 
-      var filteredKeys = dictCollections.Keys.Where(x => !x.EqualsIgnoreCase("Cid")); //everything filled but the Cid
+      var filteredKeys = dictCollections.Keys.Where(x => !x.EqualsIgnoreCase(Aibe.DH.Cid)); //everything filled but the Cid
       var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(tableName, dictCollections, filteredKeys, meta.ArrangedDataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.EditActionName);
       if (completeKeyInfo == null || completeKeyInfo.ValidKeys == null || !completeKeyInfo.ValidKeys.Any()) {
-        ViewBag.ErrorMessage = string.Concat("Invalid/Empty parameters for [", tableName, "]");
-        return View("Error");
+        ViewBag.ErrorMessage = string.Format(Aibe.LCZ.E_InvalidOrEmptyParameter, tableName);
+        return View(Aiwe.DH.ErrorViewName);
       }
 
       BaseScriptModel scriptModel = LogicHelper.CreateUpdateScriptModel(tableName, cid, completeKeyInfo, dictCollections, now);
       SQLServerHandler.ExecuteScript(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
-      AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/Images/" + tableName + "/" + cid));
-      return RedirectToAction("Index", new { tableName = tableName });
+      AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + tableName + "/" + cid));
+      return RedirectToAction(Aibe.DH.IndexActionName, new { tableName = tableName });
     }
 
     [CommonActionFilter]
@@ -141,10 +142,10 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
     [HttpPost]
     [CommonActionFilter]
-    [ActionName("Delete")]
+    [ActionName(Aibe.DH.DeleteActionName)]
     public ActionResult DeletePost(string tableName, int id) { //Where all common tables deletes are returned and can be deleted
       LogicHelper.DeleteItem(tableName, id); //Currently do not return any error
-      return RedirectToAction("Index", new { tableName = tableName });
+      return RedirectToAction(Aibe.DH.IndexActionName, new { tableName = tableName });
     }
 
     //Later add filter to check if a user has right to see this table
@@ -174,12 +175,12 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         return File(buff, mimeType);
       } catch (Exception ex) {
         string exStr = ex.ToString();
-        LogHelper.Error(User.Identity.Name, null, "MVC", "Common",
+        LogHelper.Error(User.Identity.Name, null, Aiwe.DH.Mvc, Aiwe.DH.MvcCommonControllerName,
           tableName, "ExportToExcel", null, exStr);
 #if DEBUG
         ViewBag.ErrorMessage = exStr;
 #endif
-        return View("Error");
+        return View(Aiwe.DH.ErrorViewName);
       }
     }
 

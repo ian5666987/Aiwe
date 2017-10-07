@@ -71,14 +71,14 @@ namespace Aiwe.Controllers {
       var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
 
       if (!Aiwe.DH.DeveloperNames.Any(x => x.EqualsIgnoreCase(model.Email)))
-        LogHelper.Access(model.Email, "Log-In", result.ToString());
+        LogHelper.Access(model.Email, Aibe.LCZ.W_LogIn, result.ToString());
 
       switch (result) {
         case SignInStatus.Success:
           return RedirectToLocal(returnUrl);
         case SignInStatus.Failure:
         default:
-          ModelState.AddModelError("", "Invalid login attempt.");
+          ModelState.AddModelError("", Aibe.LCZ.NFE_InvalidLoginAttempt);
           return View(model);
       }
     }
@@ -89,11 +89,11 @@ namespace Aiwe.Controllers {
     [ValidateAntiForgeryToken]
     public ActionResult LogOff() {
       if (!AiweUserHelper.UserIsDeveloper(User))
-        LogHelper.Access(User.Identity.Name, "Log-Off");
+        LogHelper.Access(User.Identity.Name, Aibe.LCZ.W_LogOff);
 
       AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
 
-      return RedirectToAction("Index", "Home");
+      return RedirectToAction(Aibe.DH.IndexActionName, Aiwe.DH.MvcHomeControllerName);
     }
 
     protected override void Dispose(bool disposing) {
@@ -132,7 +132,7 @@ namespace Aiwe.Controllers {
       if (Url.IsLocalUrl(returnUrl)) {
         return Redirect(returnUrl);
       }
-      return RedirectToAction("Index", "Home");
+      return RedirectToAction(Aibe.DH.IndexActionName, Aiwe.DH.MvcHomeControllerName);
     }
 
     internal class ChallengeResult : HttpUnauthorizedResult {

@@ -20,15 +20,17 @@ namespace Aiwe.Models {
       // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
       var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
       // Add custom user claims here
-      userIdentity.AddClaim(new Claim("DisplayName", DisplayName));
+      userIdentity.AddClaim(new Claim(Aiwe.DH.UserDisplayName, DisplayName));
       return userIdentity;
     }
   }
 
   public class Team {
     [Key]
+    [Display(Name = Aiwe.LCZ.F.Team.Id)]
     public int Id { get; set; }
-    
+
+    [Display(Name = Aiwe.LCZ.F.Team.Name)]
     public string Name { get; set; }
   }
 

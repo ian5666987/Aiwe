@@ -295,12 +295,14 @@ namespace Aiwe.Models.API {
           if (componentContent == null) { //not something in between []
             if (!columnNames.Any(x => x.EqualsIgnoreCase(component))) //cannot find it in the columnNames, not a column
               if (!allowedOrderByNonColumnNameComponents.Any(x => x.EqualsIgnoreCase(component))) { //cannot find it in the allowed non column name components, not order directive either
-                errorMsg = string.Concat("Desc: ", desc, "\nAction: Order check\nError: Invalid keyword/component\nItem: ", component);
+                errorMsg = string.Concat(Aibe.LCZ.W_Desc, ": ", desc, "\n", Aibe.LCZ.W_Action, ": ",
+                  Aiwe.LCZ.W_OrderCheck, "\n", Aibe.LCZ.W_Error, ": ", Aibe.LCZ.NFE_InvalidKeywordOrComponent, "\n", Aibe.LCZ.W_Item, ": ", component);
                 return false;
               }
           } else { //not something in between []
             if (!columnNames.Any(x => x.EqualsIgnoreCase(componentContent))) { //does not correspond to any valid column name
-              errorMsg = string.Concat("Desc: ", desc, "\nAction: Order check\nError: Invalid column name\nItem: ", component);
+              errorMsg = string.Concat(Aibe.LCZ.W_Desc, ": ", desc, "\n", Aibe.LCZ.W_Action, ": ",
+                Aiwe.LCZ.W_OrderCheck, "\n", Aibe.LCZ.W_Error, ": ", Aibe.LCZ.NFE_InvalidColumnName, "\n", Aibe.LCZ.W_Item, ": ", component);
               return false;
             }
           }
@@ -351,14 +353,17 @@ namespace Aiwe.Models.API {
             //Currently, do nothing, since it is considered valid if having ''
           } else if (component.StartsWith("[") && component.EndsWith("]") && component.Length > 2) { //components with tableName or columnName
             if (!checkNameValidity(component.Substring(1, component.Length - 2).ToLower().Trim())) { //check if the name is invalid
-              errorMsg = string.Concat("Desc: ", desc, "\nAction: Filter check\nError: Invalid name\nItem: ", component);
+              errorMsg = string.Concat(Aibe.LCZ.W_Desc, ": ", desc, "\n", Aibe.LCZ.W_Action, ": ",
+                Aiwe.LCZ.W_FilterCheck, "\n", Aibe.LCZ.W_Error, ": ", Aibe.LCZ.NFE_InvalidName, "\n", Aibe.LCZ.W_Item, ": ", component);
               return false; //returns false
             }
           } else if (comparatorComponents.Contains(component) && index < components.Count - 1 && index > 0 && components.Count > 2){ //check for tautology, not the beginning or the end
             string prevComponent = components[index - 1];
             string nextComponent = components[index + 1];
             if (checkComparisonContainsTautologyInjection(prevComponent, nextComponent)) {
-              errorMsg = string.Concat("Desc: ", desc, "\nAction: Filter check\nError: Bad comparison\nItem: ", prevComponent, component, nextComponent);
+              errorMsg = string.Concat(Aibe.LCZ.W_Desc, ": ", desc, "\n", Aibe.LCZ.W_Action, ": ",
+                Aiwe.LCZ.W_FilterCheck, "\n", Aibe.LCZ.W_Error, ": ", Aibe.LCZ.NFE_BadComparison, "\n", Aibe.LCZ.W_Item, ": ",
+                prevComponent, component, nextComponent);
               return false; //must be allowed items, otherwise harmful!
             }
           } else { //all other classes
@@ -370,7 +375,8 @@ namespace Aiwe.Models.API {
                 continue;
               //If it is not number, then it must only be table names or columns (checked in the square bracket above)               
               if (!allowedFilterNonTableNameNonColumnNameComponents.Any(x => x == part.ToLower())) { //all others must be registered
-                errorMsg = string.Concat("Desc: ", desc, "\nAction: Filter check\nError: Invalid keyword/component\nItem: ", component);
+                errorMsg = string.Concat(Aibe.LCZ.W_Desc, ": ", desc, "\n", Aibe.LCZ.W_Action, ": ",
+                  Aiwe.LCZ.W_FilterCheck, "\n", Aibe.LCZ.W_Error, ": ", Aibe.LCZ.NFE_InvalidKeywordOrComponent, "\n", Aibe.LCZ.W_Item, ": ", component);
                 return false; //must be not-allowed items, otherwise harmful!
               }
             }
@@ -390,7 +396,7 @@ namespace Aiwe.Models.API {
         return null;
 
       StringBuilder sb = new StringBuilder("DELETE FROM ");
-      sb.Append(string.Concat("[", TableName, "] WHERE [Cid] = ", Id.Value));
+      sb.Append(string.Concat("[", TableName, "] WHERE [", Aibe.DH.Cid , "] = ", Id.Value));
 
       return sb.ToString();
     }
@@ -403,7 +409,7 @@ namespace Aiwe.Models.API {
         List<SqlParameter> pars = new List<SqlParameter>();
         List<string> items = StringHelper.CreateSqlValueList(Value); //Value.Split(',').Select(x => x.Trim()).ToList(); //this is a wrong way to do it since SQL string may contain comma!
         int index = 0; //take from the item one by one
-        List<string> columnNamesExceptCid = columnNames.Where(x => x.ToLower() != "cid").ToList(); //take the columnName except Cid
+        List<string> columnNamesExceptCid = columnNames.Where(x => x.EqualsIgnoreCase(Aibe.DH.Cid)).ToList(); //take the columnName except Cid
         if (items.Count > columnNamesExceptCid.Count) //not possible to do this be it insert or update
           return null;
         DateTime refDtNow = DateTime.Now;
@@ -427,21 +433,21 @@ namespace Aiwe.Models.API {
           usedColumnNames.Add(columnName);
 
           DataColumn column = columns.FirstOrDefault(x => x.ColumnName.EqualsIgnoreCase(columnName));
-          if (column == null || columnName.EqualsIgnoreCase("cid")) //if the column information is not around or it is Cid
+          if (column == null || columnName.EqualsIgnoreCase(Aibe.DH.Cid)) //if the column information is not around or it is Cid
             return null; //then fails it
 
           //get the Value
           string dataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
 
           //additional info to extract auto-generated object
-          string actionName = isInsert ? "create" : "edit";
+          string actionName = isInsert ? Aibe.DH.CreateActionName : Aibe.DH.EditActionName;
           bool isTimeStamp = meta.IsTimeStampAppliedFor(columnName, actionName);
           bool isTimeStampFixed = meta.IsTimeStampFixedFor(columnName, actionName);
           int timeStampShift = meta.GetTimeStampShiftFor(columnName, actionName);
           bool isAutoGenerated = meta.IsAutoGenerated(columnName);
 
           List<KeyValuePair<string, string>> tableColumnNamePairs = KeyInfo.GetTableColumnPairs(meta, columnName);
-          if (!string.IsNullOrWhiteSpace(valueStr) && valueStr.EqualsIgnoreCaseTrim("NULL"))
+          if (!string.IsNullOrWhiteSpace(valueStr) && valueStr.EqualsIgnoreCaseTrim(Aibe.DH.NULL))
             par.Value = DBNull.Value;
           else {
             object value = null;
@@ -484,7 +490,7 @@ namespace Aiwe.Models.API {
         ++index;
       }
 
-      sb.Append(string.Concat(" WHERE [Cid] = ", Id.Value));
+      sb.Append(string.Concat(" WHERE [", Aibe.DH.Cid, "] = ", Id.Value));
 
       return sb.ToString();
     }
@@ -539,7 +545,7 @@ namespace Aiwe.Models.API {
       }
       sb.Append(" FROM ");
       sb.Append(string.Concat("[", TableName, "]"));
-      sb.Append(" WHERE [Cid] = ");
+      sb.Append(" WHERE [" + Aibe.DH.Cid + "] = ");
       sb.Append(Id.Value);
 
       return sb.ToString();

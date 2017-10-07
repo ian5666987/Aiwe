@@ -24,19 +24,19 @@ namespace Aiwe.ActionFilters {
       if (actionContext.ActionDescriptor.ActionName.EqualsIgnoreCase(Aibe.DH.AuthenticateActionName)) //authenticate action cannot have error here.
         return;
 
-      string errorName = "ValuesActionFilterError";
+      string errorName = Aiwe.DH.ValuesActionFilterError;
 
       if (!actionContext.ModelState.IsValid) { //could probably be used to force the existence of tableName
         actionContext.Request.Properties.Add(new KeyValuePair<string, object>(errorName, ValuesActionFilterResult.ModelStateInvalid));
         return;
       }
 
-      if (!actionContext.ActionArguments.ContainsKey("request")) {
+      if (!actionContext.ActionArguments.ContainsKey(Aiwe.DH.Request)) {
         actionContext.Request.Properties.Add(new KeyValuePair<string, object>(errorName, ValuesActionFilterResult.RequestNotFound));
         return; //error, returning certain HttpResponse would be great
       }
 
-      ClientApiRequest request = (ClientApiRequest)actionContext.ActionArguments["request"];
+      ClientApiRequest request = (ClientApiRequest)actionContext.ActionArguments[Aiwe.DH.Request];
 
       if (request == null) {
         actionContext.Request.Properties.Add(new KeyValuePair<string, object>(errorName, ValuesActionFilterResult.NullRequest));
@@ -71,7 +71,7 @@ namespace Aiwe.ActionFilters {
         context.Users.FirstOrDefault(x => x.UserName.ToLower().Trim() == request.UserName.ToLower().Trim());
 
       if (!AiweUserHelper.UserIsDeveloper(user))
-        LogHelper.Action(user.UserName, "Web Api", "Values", request.TableName, request.RequestType, request.CreateLogValue(3000)); //TODO as of now 3000 is hardcoded
+        LogHelper.Action(user.UserName, Aiwe.DH.WebApi, Aiwe.DH.WebApiControllerName, request.TableName, request.RequestType, request.CreateLogValue(3000)); //TODO as of now 3000 is hardcoded
 
       if (!Aiwe.DH.RequestToActionDict.Any(x => x.Key.EqualsIgnoreCase(request.RequestType))) {
         actionContext.Request.Properties.Add(new KeyValuePair<string, object>(errorName, ValuesActionFilterResult.InvalidRequestType));

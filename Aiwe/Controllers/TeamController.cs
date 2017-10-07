@@ -8,6 +8,7 @@ using Aiwe.Models;
 using Aiwe.Models.Filters;
 using Aibe.Helpers;
 using Aibe.Models;
+using Extension.String;
 
 namespace Aiwe.Controllers {
   [Authorize(Roles = Aiwe.DH.AdminAuthorizedRoles)]
@@ -43,12 +44,12 @@ namespace Aiwe.Controllers {
     }
 
     private RedirectToRouteResult redirectToError(string error) {
-      return RedirectToAction("ErrorLocal", new { error = error });
+      return RedirectToAction(Aiwe.DH.ErrorLocalActionName, new { error = error });
     }
 
     public ActionResult ErrorLocal(string error) {
       ViewBag.Error = error;
-      return View("Error");
+      return View(Aiwe.DH.ErrorViewName);
     }
 
     [HttpPost]
@@ -65,40 +66,40 @@ namespace Aiwe.Controllers {
       context.Teams.Add(team);
       context.SaveChanges();
 
-      return RedirectToAction("Index");
+      return RedirectToAction(Aibe.DH.IndexActionName);
     }
 
     public ActionResult Details(int id) {
       Team team = context.Teams.FirstOrDefault(x => x.Id == id);
       if (team == null)
-        return redirectToError("Id not found");
+        return redirectToError(Aibe.LCZ.NFE_IdNotFound);
       return View(team);
     }
 
     public ActionResult Delete(int id) {
       Team team = context.Teams.FirstOrDefault(x => x.Id == id);
       if (team == null)
-        return redirectToError("Id not found");
+        return redirectToError(Aibe.LCZ.NFE_IdNotFound);
       return View(team);
     }
 
     [HttpPost]
-    [ActionName("Delete")]
+    [ActionName(Aibe.DH.DeleteActionName)]
     public ActionResult DeletePost(int id) {
       Team team = context.Teams.FirstOrDefault(x => x.Id == id);
       if (team == null)
-        return redirectToError("Id not found");
-      if (team.Name == "Home")
-        return redirectToError(team.Name + " Team cannot be edited or deleted");
+        return redirectToError(Aibe.LCZ.NFE_IdNotFound);
+      if (team.Name.EqualsIgnoreCase(Aiwe.LCZ.W_HomeTeam))
+        return redirectToError(string.Format(Aibe.LCZ.E_CannotBeEditedOrDeleted, team.Name));
       context.Teams.Remove(team);
       context.SaveChanges();
-      return RedirectToAction("Index");
+      return RedirectToAction(Aibe.DH.IndexActionName);
     }
 
     public ActionResult Edit(int id) {
       Team team = context.Teams.FirstOrDefault(x => x.Id == id);
       if (team == null)
-        return redirectToError("Id not found");
+        return redirectToError(Aibe.LCZ.NFE_IdNotFound);
       return View(team);
     }
 
@@ -106,12 +107,12 @@ namespace Aiwe.Controllers {
     public ActionResult Edit(Team teamModel) {
       Team team = context.Teams.FirstOrDefault(x => x.Id == teamModel.Id);
       if (team == null)
-        return redirectToError("Id not found");
-      if (team.Name == "Home")
-        return redirectToError(team.Name + " Team cannot be edited or deleted");
+        return redirectToError(Aibe.LCZ.NFE_IdNotFound);
+      if (team.Name.EqualsIgnoreCase(Aiwe.LCZ.W_HomeTeam))
+        return redirectToError(string.Format(Aibe.LCZ.E_CannotBeEditedOrDeleted, team.Name));
       context.Teams.AddOrUpdate(teamModel);
       context.SaveChanges();
-      return RedirectToAction("Index");
+      return RedirectToAction(Aibe.DH.IndexActionName);
     }
   }
 }

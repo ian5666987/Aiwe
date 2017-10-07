@@ -43,12 +43,12 @@ namespace Aiwe.Controllers {
     }
 
     private RedirectToRouteResult redirectToError(string error) {
-      return RedirectToAction("ErrorLocal", new { error = error });
+      return RedirectToAction(Aiwe.DH.ErrorLocalActionName, new { error = error });
     }
 
     public ActionResult ErrorLocal(string error) {
       ViewBag.Error = error;
-      return View("Error");
+      return View(Aiwe.DH.ErrorViewName);
     }
 
     [HttpPost]
@@ -62,39 +62,39 @@ namespace Aiwe.Controllers {
       db.SaveChanges();
       AiweTableHelper.AddMeta(new MetaInfo(model)); //has validity check in the AddMeta method
 
-      return RedirectToAction("Index");
+      return RedirectToAction(Aibe.DH.IndexActionName);
     }
 
     public ActionResult Details(string id) {
       MetaItem meta = db.MetaItems.FirstOrDefault(x => x.TableName == id);
       if (meta == null)
-        return redirectToError("Id not found");
+        return redirectToError(Aibe.LCZ.NFE_IdNotFound);
       return View(meta);
     }
 
     public ActionResult Delete(string id) {
       MetaItem meta = db.MetaItems.FirstOrDefault(x => x.TableName == id);
       if (meta == null)
-        return redirectToError("Id not found");
+        return redirectToError(Aibe.LCZ.NFE_IdNotFound);
       return View(meta);
     }
 
     [HttpPost]
-    [ActionName("Delete")]
+    [ActionName(Aibe.DH.DeleteActionName)]
     public ActionResult DeletePost(string id) {
       MetaItem meta = db.MetaItems.FirstOrDefault(x => x.TableName == id);
       if (meta == null)
-        return redirectToError("Id not found");
+        return redirectToError(Aibe.LCZ.NFE_IdNotFound);
       db.MetaItems.Remove(meta);
       db.SaveChanges();
       AiweTableHelper.DeleteMeta(id);
-      return RedirectToAction("Index");
+      return RedirectToAction(Aibe.DH.IndexActionName);
     }
 
     public ActionResult Edit(string id) {
       MetaItem meta = db.MetaItems.FirstOrDefault(x => x.TableName == id);
       if (meta == null)
-        return redirectToError("Id not found");
+        return redirectToError(Aibe.LCZ.NFE_IdNotFound);
       return View(meta);
     }
 
@@ -106,7 +106,7 @@ namespace Aiwe.Controllers {
         return View(model);
 
       if (meta == null)
-        return redirectToError("Id not found");
+        return redirectToError(Aibe.LCZ.NFE_IdNotFound);
 
       //meta.TableName = model.TableName; //Not needed because it is the key
       meta.DisplayName = model.DisplayName;
@@ -151,33 +151,33 @@ namespace Aiwe.Controllers {
 
       AiweTableHelper.UpdateMeta(meta);
 
-      return RedirectToAction("Index");
+      return RedirectToAction(Aibe.DH.IndexActionName);
     }
 
     public ActionResult CryptoSerialize(string id) {
       MetaItem meta = db.MetaItems.FirstOrDefault(x => x.TableName == id);
       if (meta == null)
-        return redirectToError("Id not found");
+        return redirectToError(Aibe.LCZ.NFE_IdNotFound);
       return View(meta);
     }
 
     [HttpPost]
-    [ActionName("CryptoSerialize")]
+    [ActionName(Aibe.DH.CryptoSerializeAction)]
     public ActionResult CryptoSerializePost(string id) {
       MetaItem meta = db.MetaItems.FirstOrDefault(x => x.TableName == id);
       if (meta == null)
-        return redirectToError("Id not found");
-      string folderPath = Server.MapPath("~/Settings");
+        return redirectToError(Aibe.LCZ.NFE_IdNotFound);
+      string folderPath = Server.MapPath("~/" + Aibe.DH.DefaultSettingFolderName);
       Cryptography.CryptoSerialize(meta, folderPath, id);
-      return RedirectToAction("Index");
+      return RedirectToAction(Aibe.DH.IndexActionName);
     }
 
     public ActionResult CryptoSerializeAll() {
       var all = db.MetaItems.ToList();
       var fileNames = all.Select(x => x.TableName).ToList();
-      string folderPath = Server.MapPath("~/Settings");
+      string folderPath = Server.MapPath("~/" + Aibe.DH.DefaultSettingFolderName);
       Cryptography.CryptoSerializeAll(all, folderPath, fileNames);
-      return RedirectToAction("Success", new { msg = "You have successfully crypto-serialize all (" + all.Count + ") meta table entries!" });
+      return RedirectToAction(Aiwe.DH.SuccessActionName, new { msg = string.Format(Aibe.LCZ.M_CryptoSerializeAllSuccess, all.Count) });
     }
 
 #endif
@@ -188,10 +188,10 @@ namespace Aiwe.Controllers {
     }
 
     public ActionResult DecryptoSerializeAll() {
-      string folderPath = Server.MapPath("~/Settings");
+      string folderPath = Server.MapPath("~/" + Aibe.DH.DefaultSettingFolderName);
       int count = AiweTableHelper.DecryptMetaItems(folderPath);
       AiweTableHelper.PrepareMetas();
-      return RedirectToAction("Success", new { msg = "You have successfully decrypto-serialize all (" + count + ") meta table ASTRIOCFILE(s)!" });
+      return RedirectToAction(Aiwe.DH.SuccessActionName, new { msg = string.Format(Aibe.LCZ.M_DecryptoSerializeAllSuccess, count, Cryptography.Extension.ToUpper()) });
     }
 
   }

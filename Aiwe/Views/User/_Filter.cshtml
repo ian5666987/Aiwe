@@ -15,7 +15,7 @@
   @Html.HiddenFor(m => m.Msg, htmlAttributes: new { id = (string)ViewBag.SenderName + "-filter-msg", @class = "uncounted-filter-item" })
 
   <div class="form-group">
-    <label class="control-label @ViewBag.LabelClasses">Full Name</label>
+    <label class="control-label @ViewBag.LabelClasses">@Html.DisplayNameFor(x => x.FullName)</label>
     <div class="@ViewBag.EditorClass">
       @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control form-control-plus" } })
       @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
@@ -23,7 +23,7 @@
   </div>
 
   <div class="form-group">
-    <label class="control-label @ViewBag.LabelClasses">Display Name</label>
+    <label class="control-label @ViewBag.LabelClasses">@Html.DisplayNameFor(x => x.DisplayName)</label>
     <div class="@ViewBag.EditorClass">
       @Html.EditorFor(model => model.DisplayName, new { htmlAttributes = new { @class = "form-control form-control-plus" } })
       @Html.ValidationMessageFor(model => model.DisplayName, "", new { @class = "text-danger" })
@@ -31,7 +31,7 @@
   </div>
 
   <div class="form-group">
-    <label class="control-label @ViewBag.LabelClasses">Email</label>
+    <label class="control-label @ViewBag.LabelClasses">@Html.DisplayNameFor(x => x.Email)</label>
     <div class="@ViewBag.EditorClass">
       @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control form-control-plus" } })
       @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
@@ -54,14 +54,14 @@
 
     List<SelectListItem> teams = new List<SelectListItem> { //TODO Bad! next time, has to be replaced with list of items from the datatable
       new SelectListItem {Text = null, Value = null },
-      new SelectListItem {Text = "Home", Value = "Home" },
+      new SelectListItem {Text = Aiwe.LCZ.W_HomeTeam, Value = Aiwe.LCZ.W_HomeTeam },
       new SelectListItem {Text = "Philippine", Value = "Philippine" },
       new SelectListItem {Text = "Thailand", Value = "Thailand" },
     };
   }
 
   <div class="form-group">
-    <label class="control-label @ViewBag.LabelClasses">Team</label>
+    <label class="control-label @ViewBag.LabelClasses">@Html.DisplayNameFor(x => x.Team)</label>
     <div class="@ViewBag.EditorClass">
       @Html.DropDownList(Html.NameFor(m => m.Team).ToString(), teams, new { @class = "form-control form-control-plus" })
       @Html.ValidationMessageFor(model => model.Team, "", new { @class = "text-danger" })
@@ -69,7 +69,7 @@
   </div>
 
   <div class="form-group">
-    <label class="control-label @ViewBag.LabelClasses">Working Role</label>
+    <label class="control-label @ViewBag.LabelClasses">@Html.DisplayNameFor(x => x.WorkingRole)</label>
     <div class="@ViewBag.EditorClass">
       @Html.DropDownList(Html.NameFor(m => m.WorkingRole).ToString(), workingRoles, new { @class = "form-control form-control-plus" })
       @Html.ValidationMessageFor(model => model.WorkingRole, "", new { @class = "text-danger" })
@@ -77,7 +77,7 @@
   </div>
 
   <div class="form-group">
-    <label class="control-label @ViewBag.LabelClasses">Admin Role</label>
+    <label class="control-label @ViewBag.LabelClasses">@Html.DisplayNameFor(x => x.AdminRole)</label>
     <div class="@ViewBag.EditorClass">
       @Html.DropDownList(Html.NameFor(m => m.AdminRole).ToString(), adminRoles, new { @class = "form-control form-control-plus" })
       @Html.ValidationMessageFor(model => model.AdminRole, "", new { @class = "text-danger" })

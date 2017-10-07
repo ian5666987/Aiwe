@@ -1,10 +1,10 @@
 ﻿@model System.Web.Mvc.HandleErrorInfo
 
 @{
-    ViewBag.Title = "Insufficient Access Right";
+    ViewBag.Title = Aibe.LCZ.NFM_InsufficientAccessRight;
 }
 
 <h1 class="text-danger">@ViewBag.Title</h1>
-<h2>You do not have sufficient right to do this action</h2>
-<a href="../../../../Account/Login">&laquo; Login with different user account</a>
+<h2>@Aibe.LCZ.NFM_InsufficientAccessRightActionMessage</h2>
+<a href="../../../../@Aiwe.DH.MvcAccountControllerName/@Aiwe.DH.LogInActionName">&laquo; @Aibe.LCZ.NFM_LoginWithDifferentUserAccount</a>
 

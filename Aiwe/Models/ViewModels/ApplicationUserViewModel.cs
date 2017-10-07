@@ -6,29 +6,31 @@ namespace Aiwe.Models.ViewModels {
   public class ApplicationUserViewModel {
     public static DateTime DefaultDateTime = new DateTime(1999, 12, 31, 23, 59, 59);
 
-    [DisplayName("Full Name")]
+    [DisplayName(Aiwe.LCZ.F.ApplicationUserViewModel.FullName)]
     public string FullName { get; set; }
 
-    [DisplayName("Display Name")]
+    [DisplayName(Aiwe.LCZ.F.ApplicationUserViewModel.DisplayName)]
     public string DisplayName { get; set; }
 
-    [DisplayName("Email")]
+    [DisplayName(Aiwe.LCZ.F.ApplicationUserViewModel.Email)]
     public string Email { get; set; }
 
-    [DisplayName("Team")]
+    [DisplayName(Aiwe.LCZ.F.ApplicationUserViewModel.Team)]
     public string Team { get; set; }
 
-    [DisplayName("Working Role")]
+    [DisplayName(Aiwe.LCZ.F.ApplicationUserViewModel.WorkingRole)]
     public string WorkingRole { get; set; }
 
-    [DisplayName("Admin Role")]
+    [DisplayName(Aiwe.LCZ.F.ApplicationUserViewModel.AdminRole)]
     public string AdminRole { get; set; }
 
-    [DisplayName("Registration Date")]
+    [DisplayName(Aiwe.LCZ.F.ApplicationUserViewModel.RegistrationDate)]
     public DateTime RegistrationDate { get; set; } = DefaultDateTime; //when the user is registered, then it has its registration date
 
-    [DisplayName("Last Login")]
+    [DisplayName(Aiwe.LCZ.F.ApplicationUserViewModel.LastLogin)]
     public DateTime LastLogin { get; set; } = DefaultDateTime; //To check when was the last login of the user
+
+    [DisplayName(Aiwe.LCZ.F.ApplicationUserViewModel.Id)]
     public string Id { get; set; } //hidden but needed to do the actions
 
     public ApplicationUserViewModel(ApplicationUser appUser) {

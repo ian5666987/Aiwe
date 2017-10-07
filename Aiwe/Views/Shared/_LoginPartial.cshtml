@@ -2,14 +2,14 @@
 @using Aiwe.Extensions
 @if (Request.IsAuthenticated)
 {
-    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-left" }))
+    using (Html.BeginForm(Aiwe.DH.LogOffActionName, Aiwe.DH.MvcAccountControllerName, FormMethod.Post, new { id = "logoutForm", @class = "navbar-left" }))
     {
     @Html.AntiForgeryToken()
 
     <ul class="nav navbar-nav navbar-left">
         <li>
-            @Html.ActionLink("Hello " + User.Identity.GetDisplayName() + "!", "Index", "Manage", routeValues: null, 
-         htmlAttributes: new { title = "Manage You Account", style = "margin-top:20px;font-size:20px;color:grey" })
+            @Html.ActionLink(Aibe.LCZ.W_Hello + " " + User.Identity.GetDisplayName() + "!", Aibe.DH.IndexActionName, Aiwe.DH.MvcManageControllerName, routeValues: null, 
+         htmlAttributes: new { title = Aibe.LCZ.NFM_ManageYourAccount, style = "margin-top:20px;font-size:20px;color:grey" })
         </li>
         <li><a href="javascript:document.getElementById('logoutForm').submit()" style="margin-top:20px;font-size:20px;color:grey">Log off</a></li>
     </ul>
@@ -18,7 +18,7 @@
 else
 {
     <ul class="nav navbar-nav navbar-left">
-      <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", style = "margin-top:20px;font-size:20px;color:grey" })</li>
+      <li>@Html.ActionLink(Aibe.LCZ.W_LogIn, Aiwe.DH.LogInActionName, Aiwe.DH.MvcAccountControllerName, routeValues: null, htmlAttributes: new { id = "loginLink", style = "margin-top:20px;font-size:20px;color:grey" })</li>
     </ul>
 }
 

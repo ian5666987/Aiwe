@@ -14,9 +14,9 @@
         <td>@((i + 1).ToString())</td>
         <td>@Model[i].TableName</td>
         <td>@Model[i].DisplayName</td>
-        <td>@Html.ActionLink("Edit", "Edit", new { id = Model[i].TableName }) |
-        @Html.ActionLink("Details", "Details", new { id = Model[i].TableName }) |          
-          @Html.ActionLink("Delete", "Delete", new { id = Model[i].TableName }) |
+        <td>@Html.ActionLink(Aibe.LCZ.W_Edit, Aibe.DH.EditActionName, new { id = Model[i].TableName }) |
+        @Html.ActionLink(Aibe.LCZ.W_Details, Aibe.DH.DetailsActionName, new { id = Model[i].TableName }) |          
+          @Html.ActionLink(Aibe.LCZ.W_Delete, Aibe.DH.DeleteActionName, new { id = Model[i].TableName }) |
         @Html.ActionLink("Crypto-Serialize", "CryptoSerialize", new { id = Model[i].TableName })
         </td>
       </tr>

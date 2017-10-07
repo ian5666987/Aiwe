@@ -1,5 +1,6 @@
 ﻿@using Aibe.Models.Core;
 @using Aibe.Models;
+@using Aiwe.Helpers;
 @using Aiwe.Models;
 @using Aiwe.Extensions;
 @using System.Data;
@@ -30,15 +31,15 @@
     string dataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
 
     if (!isColumnIncluded) { //skipped columns
-      if (cn == "Cid") { //must already be declared outside for edit otherwise must not be included. Either case, skips.
-        continue;
+      if (cn == Aibe.DH.Cid) { //must already be declared outside for edit otherwise must not be included. Either case, skips.
+        continue; //TODO not sure if we are to retain the capital 'C' here and thus must use equal-equal signs...
       }
 
       //all non-edited items must exist but is hidden       
       if (dataType.EqualsIgnoreCase(Aibe.DH.DateTimeDataType)) { //The only data type that is quite problematic to deal with is DateTime
         string dataValueRaw = Model.GetData(cn);
         DateTime? dataValueDt = string.IsNullOrWhiteSpace(dataValueRaw) ? null : new DateTime?(DateTime.Parse(dataValueRaw));
-        string dataDateValue = dataValueDt.HasValue ? dataValueDt.Value.ToString("yyyy-MM-dd") : string.Empty;
+        string dataDateValue = dataValueDt.HasValue ? dataValueDt.Value.ToString(Aibe.DH.DefaultDateFormat) : string.Empty;
         string dataTimeName = cn + Aibe.DH.CreateEditTimeAppendixName;
         string dataTimeValue = Model.GetTime(dataTimeName, dataValueDt);
         <input type="hidden" name="@cn" class="@controlClasses" value="@dataDateValue" />
@@ -58,7 +59,7 @@
         <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
         <div class="@ViewBag.EditorClass" style="margin-top:7px">
           @if (scTable == null || !scTable.IsValid) {
-            <i>[Table-referenced column is not available]</i>
+            <i>[@Aibe.LCZ.W_NA]</i>
           } else {
             List<DataColumn> scColumns = scTable.GetAvailableDataColumns();
             <table border=1>
@@ -69,7 +70,7 @@
               }
               @if (scTable.HasRow) { //only edit requires to show the rows
                 foreach (var scRow in scTable.Rows) {
-                  int scCid = scTable.HasCidColumn ? (int)scRow["Cid"] : -1;
+                  int scCid = scTable.HasCidColumn ? (int)scRow[Aibe.DH.Cid] : -1;
                   <tr>
                     @foreach (var scColumn in scTable.Columns) {
                       string scColumnName = scColumn.ColumnName;
@@ -79,9 +80,9 @@
                           string scLink = scData.ToString();
                           if (scLink.Contains("/") || scLink.Contains("\\") || !scTable.HasCidColumn ||
                             string.IsNullOrWhiteSpace(scTable.ScInfo.RefTableName)) { //longer relative path
-                            <img src="~/Images/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
+                            <img src="~/@Aibe.DH.DefaultImageFolderName/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
                           } else { //the RefTableName must exists if it is to be used
-                            <img src="~/Images/@scTable.ScInfo.RefTableName/@scCid/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
+                            <img src="~/@Aibe.DH.DefaultImageFolderName/@scTable.ScInfo.RefTableName/@scCid/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
                           }
                         } else { //if not a picture link column, just print as it is but if it is picture link column... then it is going to be different
                           @scData
@@ -113,19 +114,19 @@
         <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
         <div class="@ViewBag.EditorClass">
           @if (isDropDown) {
-            List<string> dropdowns = Model.Meta.GetStaticCreateEditDropDownFor(cn, dataValue, "string");
+            List<string> dropdowns = Model.Meta.GetStaticCreateEditDropDownFor(cn, dataValue, Aibe.DH.DropDownTextDataType);
             if (dropdowns == null || dropdowns.Count <= 0) {
               <input type="text" name="@cn" class="@controlClasses" value="@dataValue" @readOnlyAttrIfReadOnly/>
             } else if (isReadOnly) {
               <input type="text" name="@cn" class="@controlClasses" value="@dataValue" readonly="readonly" />
             } else { //string dropdown case
-              <div id="live-dd-@cn" class="live-dd" commondatatype="string">
+              <div id="live-dd-@cn" class="live-dd" commondatatype="@Aibe.DH.DropDownTextDataType">
                 @{ 
                   List<SelectListItem> dropdownItems = new List<SelectListItem> {
                     new SelectListItem { Text = null, Value = null },
                   };
                   dropdownItems.AddRange(dropdowns.Select(x => new SelectListItem { Text = x, Value = x }).ToArray());
-                  SelectListItem item = dropdownItems.FirstOrDefault(x => x.Text == dataValue);
+                  SelectListItem item = dropdownItems.FirstOrDefault(x => x.Value == dataValue);
                   if (item != null && !string.IsNullOrWhiteSpace(dataValue)) {
                     item.Selected = true;
                   }
@@ -145,29 +146,31 @@
               pcInfo.HeightComesFirst ? "height:" + pcInfo.Height + "px" : "width:" + pcInfo.Width + "px";
             string picColumnName = cn + Aibe.DH.CreateEditPictureLinkAppendixName;
             string picColumnValue = Model.GetData(picColumnName);
-            string columnValue = Model.GetData(cn,false);
+            string columnValue = Model.GetData(cn, false);
             <div style="margin-top:7px">
               @if (!string.IsNullOrWhiteSpace(columnValue)) { //try to load the image
-                string cid = Model.GetData("Cid");
+                string cid = Model.GetData(Aibe.DH.Cid);
                 if (columnValue.Contains("/") || columnValue.Contains("\\")) { //longer relative (folder-contain) path
-                  <img src="../../../Images/@columnValue" style="@imgSizeStr" id="picturedisplay-@cn" />
+                  <img src="../../../@Aibe.DH.DefaultImageFolderName/@columnValue" style="@imgSizeStr" id="picturedisplay-@cn" />
                 } else {
-                  <img src="../../../Images/@Model.TableName/@cid/@columnValue" style="@imgSizeStr" id="picturedisplay-@cn" />
+                  <img src="../../../@Aibe.DH.DefaultImageFolderName/@Model.TableName/@cid/@columnValue" style="@imgSizeStr" id="picturedisplay-@cn" />
                 }
-                <button class="common-remove-picture" type="button" id="pictureremove-@cn" @hiddenAttrIfReadOnly>remove</button>
+                <button class="common-remove-picture" type="button" id="pictureremove-@cn" @hiddenAttrIfReadOnly>@Aibe.LCZ.W_Remove</button>
               } else {
                 <img src="" style="@imgSizeStr" id="picturedisplay-@cn" hidden="hidden"/>
-                <button class="common-remove-picture" type="button" id="pictureremove-@cn" hidden="hidden">remove</button>
+                <button class="common-remove-picture" type="button" id="pictureremove-@cn" hidden="hidden">@Aibe.LCZ.W_Remove</button>
               }
               @if (!isReadOnly) {
+                //TODO look at https://stackoverflow.com/questions/1944267/how-to-change-the-button-text-of-input-type-file
+                //It is possible to change the text of the button here using bootstrap
                 <input type="file" name="@picColumnName" accept="image/*" class="common-input-picture" id="picture-@cn" />
                 if (!string.IsNullOrWhiteSpace(columnValue) && !isCreate) {
                 <span class="text-danger" id="pictureinfotext-@cn"> 
-                  DO NOT BOTHER the 'No file chosen' phrase. If you see a picture, it means THERE IS a picture linked to the data.
+                  @Aiwe.LCZ.D_DoNotBother
                 </span>
                 } else {
                 <span class="text-danger" id="pictureinfotext-@cn" hidden="hidden">
-                  DO NOT BOTHER the 'No file chosen' phrase. If you see a picture, it means THERE IS a picture linked to the data.
+                  @Aiwe.LCZ.D_DoNotBother
                 </span>
                 }
               }
@@ -226,13 +229,13 @@
             if (dropdowns == null || dropdowns.Count <= 0) {
               <input type="number" name="@cn" class="@controlClasses" value="@dataValue" @readOnlyAttrIfReadOnly/>
             } else { //number dropdown case
-              <div id="live-dd-@cn" class="live-dd" commondatatype="number">
+              <div id="live-dd-@cn" class="live-dd" commondatatype="@Aibe.DH.DropDownNumberDataType">
                 @{
                   List<SelectListItem> dropdownItems = new List<SelectListItem> {
                     new SelectListItem { Text = null, Value = null },
                   };
                   dropdownItems.AddRange(dropdowns.Select(x => new SelectListItem { Text = x, Value = x }).ToArray());
-                  SelectListItem item = dropdownItems.FirstOrDefault(x => x.Text == dataValue);
+                  SelectListItem item = dropdownItems.FirstOrDefault(x => x.Value == dataValue);
                   if (item != null) {
                     item.Selected = true;
                   }
@@ -252,7 +255,7 @@
     if (dataType.EqualsIgnoreCase(Aibe.DH.DateTimeDataType)) { //DateTime type
       string dataValueRaw = Model.GetData(cn);
       DateTime? dataValueDt = string.IsNullOrWhiteSpace(dataValueRaw) ? null : new DateTime?(DateTime.Parse(dataValueRaw));
-      string dataDateValue = dataValueDt.HasValue ? dataValueDt.Value.ToString("yyyy-MM-dd") : string.Empty;
+      string dataDateValue = dataValueDt.HasValue ? dataValueDt.Value.ToString(Aibe.DH.DefaultDateFormat) : string.Empty;
       string dataTimeName = cn + Aibe.DH.CreateEditTimeAppendixName;
       string dataTimeValue = Model.GetTime(dataTimeName, dataValueDt);
 
@@ -288,13 +291,8 @@
         continue;
       } 
 
-      List<SelectListItem> dropdownItems = new List<SelectListItem> {
-        new SelectListItem { Text = null, Value = null },
-        new SelectListItem { Text = "True", Value = "true" },
-        new SelectListItem { Text = "False", Value = "false" },
-      };
-
-      SelectListItem item = dropdownItems.FirstOrDefault(x => x.Text == dataValue);
+      List<SelectListItem> dropdownItems = AiweDropDownHelper.GetBooleanOptions();
+      SelectListItem item = dropdownItems.FirstOrDefault(x => x.Value.EqualsIgnoreCase(dataValue));
       if (item != null) {
         item.Selected = true;
       }
@@ -312,6 +310,6 @@
     <p>Name: @Model.Meta.GetColumnDisplayName(cn), Type: @dataType</p>    
   }
   <div id="common-table-name" hidden>@Model.TableName</div>
-  @Html.ValidationMessage("UnknownColumn", new { @class = "text-danger" })
+  @Html.ValidationMessage(Aibe.LCZ.I_UnknownColumn, new { @class = "text-danger" })
 </div>
 

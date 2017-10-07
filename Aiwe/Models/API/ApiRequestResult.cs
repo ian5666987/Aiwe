@@ -39,14 +39,14 @@ namespace Aiwe.Models.API {
               RowData = row.ItemArray.ToList(),
               RowColumnNames = Columns.Select(x => x.ColumnName).ToList(),
             };
-            object cid = row["Cid"];
+            object cid = row[Aibe.DH.Cid];
             foreach (var pictureLinkColumn in pictureLinkColumns) { //if there is any picture link columns returned
               string fileName = row[pictureLinkColumn].ToString();
               if (!string.IsNullOrWhiteSpace(fileName)) { //and if it refers to something, try to read first
                 try {
                   var folderPath = fileName.Contains("/") || fileName.Contains("\\") ? //if the fileName is "complex", for display, just take from whatever it is meant to be
-                    System.Web.Hosting.HostingEnvironment.MapPath("~/Images") :
-                    System.Web.Hosting.HostingEnvironment.MapPath("~/Images/" + checkedRequest.TableName + "/" + 
+                    System.Web.Hosting.HostingEnvironment.MapPath("~/" + Aibe.DH.DefaultImageFolderName) :
+                    System.Web.Hosting.HostingEnvironment.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + checkedRequest.TableName + "/" + 
                       (checkedRequest.RequestType == ApiRequestType.SelectMany || checkedRequest.RequestType == ApiRequestType.Create ?  
                       cid?.ToString() : checkedRequest.Id.ToString())); //only if fileName is simple tableName and id are added in the loading path
                   Directory.CreateDirectory(folderPath);

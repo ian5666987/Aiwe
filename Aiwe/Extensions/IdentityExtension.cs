@@ -11,7 +11,7 @@ namespace Aiwe.Extensions {
       }
       var ci = identity as ClaimsIdentity;
       if (ci != null) {
-        return ci.FindFirstValue("DisplayName");
+        return ci.FindFirstValue(Aiwe.DH.UserDisplayName);
       }
       return null;
     }

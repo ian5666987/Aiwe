@@ -12,10 +12,10 @@
 }
 
 @if (Model.SequencedItems == null) {
-  <h4 style="color:red">No record found</h4>
+  <h4 style="color:red">@Aibe.LCZ.NFE_NoRecordFound</h4>
 } else {
   if (Model.SequencedItems.Count <= 0) {
-    <h4 style="color:red">No record found on Table @Model.TableDisplayName with Cid = @Model.Cid</h4>
+    <h4 style="color:red">@string.Format(Aibe.LCZ.E_NoRecordFoundInTableForCid, Model.TableDisplayName, Model.Cid)</h4>
   } else {
     foreach (var data in Model.SequencedItems) {
       if(!Model.IsColumnIncludedInDetails(data.Key, User)) {
@@ -35,7 +35,7 @@
             }
             @if (scTable.HasRow) { //only edit requires to show the rows
               foreach (var scRow in scTable.Rows) {
-                int scCid = scTable.HasCidColumn ? (int)scRow["Cid"] : -1;
+                int scCid = scTable.HasCidColumn ? (int)scRow[Aibe.DH.Cid] : -1;
                 <tr>
                   @foreach (var scColumn in scTable.Columns) {
                     string scColumnName = scColumn.ColumnName;
@@ -45,9 +45,9 @@
                         string scLink = scData.ToString();
                         if (scLink.Contains("/") || scLink.Contains("\\") || !scTable.HasCidColumn || 
                           string.IsNullOrWhiteSpace(scTable.ScInfo.RefTableName)) { //longer relative path
-                          <img src="~/Images/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
+                          <img src="~/@Aibe.DH.DefaultImageFolderName/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
                         } else { //the RefTableName must exists if it is to be used
-                          <img src="~/Images/@scTable.ScInfo.RefTableName/@scCid/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
+                          <img src="~/@Aibe.DH.DefaultImageFolderName/@scTable.ScInfo.RefTableName/@scCid/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
                         }                         
                       } else { //if not a picture link column, just print as it is but if it is picture link column... then it is going to be different
                         @scData
@@ -65,9 +65,9 @@
           if (string.IsNullOrWhiteSpace(data.Value)) {
             <i>[no picture]</i>
           } else if (data.Value.Contains("/") || data.Value.Contains("\\")) { //longer relative path
-            <img src="~/Images/@data.Value" style="@imgSizeStr" title="@data.Value" />
+            <img src="~/@Aibe.DH.DefaultImageFolderName/@data.Value" style="@imgSizeStr" title="@data.Value" />
           } else {
-            <img src="~/Images/@Model.TableName/@Model.Cid/@data.Value" style="@imgSizeStr" title="@data.Value" />
+            <img src="~/@Aibe.DH.DefaultImageFolderName/@Model.TableName/@Model.Cid/@data.Value" style="@imgSizeStr" title="@data.Value" />
           }
         } else if (Model.Meta.IsListColumn(data.Key)) {
           string dataValue = data.Value ?? string.Empty;

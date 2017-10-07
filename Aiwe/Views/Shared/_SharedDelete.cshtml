@@ -1,5 +1,5 @@
 ﻿<h2>@ViewBag.ControllerName <small>(@ViewBag.Title)</small></h2>
-<h3 class="text-danger"><span class="glyphicon glyphicon-warning-sign text-danger"></span> Are you sure to delete this?</h3>
+<h3 class="text-danger"><span class="glyphicon glyphicon-warning-sign text-danger"></span> @Aibe.LCZ.NFQ_DeleteConfirmation</h3>
 <hr />
 
 <div>
@@ -8,16 +8,16 @@
 <br />
 
 <div class="row">
-  @using (Html.BeginForm("Delete", (string)ViewBag.ControllerName, FormMethod.Post, new { id = "deleteForm" })) {
+  @using (Html.BeginForm(Aibe.DH.DeleteActionName, (string)ViewBag.ControllerName, FormMethod.Post, new { id = "deleteForm" })) {
     @Html.AntiForgeryToken()
     <div class="form-group">
       <button class="btn btn-danger col-md-1" style="margin-left:12px; margin-right:8px; margin-top:15px;" onclick="submitDeleteForm()">
-        <span class="glyphicon glyphicon-remove"><font style="font-family:verdana;"> Delete</font></span>
+        <span class="glyphicon glyphicon-remove"><font style="font-family:verdana;"> @Aibe.LCZ.W_Delete</font></span>
       </button>
-      <a href="@Url.Action("Index", (string)ViewBag.ControllerName)"
+      <a href="@Url.Action(Aibe.DH.IndexActionName, (string)ViewBag.ControllerName)"
          class="btn btn-primary col-md-2"
          style="margin-left:12px; margin-top:15px;">
-        <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> Back To List</font></span>
+        <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> @Aibe.LCZ.W_BackToList</font></span>
       </a>
     </div>
   }

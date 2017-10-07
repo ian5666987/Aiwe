@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
+using Extension.String;
 
 namespace Aiwe.Extensions {
   public static class ListColumnInfoExtension {
@@ -48,7 +49,7 @@ namespace Aiwe.Extensions {
         sb.Append("</b></td>");
       }
       if (!isReadOnly)
-        sb.Append("<td><b>Actions</b></td>"); //last header would be action, if there is any
+        sb.Append("<td><b>" + Aibe.LCZ.W_Actions + "</b></td>"); //last header would be actions, if there is any
       sb.Append("</tr>");
 
       //Create items
@@ -112,10 +113,10 @@ namespace Aiwe.Extensions {
                 string selectedStr = " selected=\"selected\"";
                 string addStr = string.IsNullOrWhiteSpace(def) ? selectedStr : string.Empty;
                 sb.Append(string.Concat("<option value=\"\"", addStr, "></option>"));
-                addStr = def == "yes" ? selectedStr : string.Empty;
-                sb.Append(string.Concat("<option value=\"Yes\"", addStr, ">Yes</option>"));
-                addStr = def == "no" ? selectedStr : string.Empty;
-                sb.Append(string.Concat("<option value=\"No\"", addStr, ">No</option>"));
+                addStr = def.EqualsIgnoreCase(Aibe.DH.LcYes) ? selectedStr : string.Empty;
+                sb.Append(string.Concat("<option value=\"", Aibe.DH.LcYes, "\"", addStr, ">", Aibe.LCZ.W_LcYes, "</option>"));
+                addStr = def.EqualsIgnoreCase(Aibe.DH.LcNo) ? selectedStr : string.Empty;
+                sb.Append(string.Concat("<option value=\"", Aibe.DH.LcNo, "\"", addStr, ">", Aibe.LCZ.W_LcNo, "</option>"));
                 sb.Append("</select>");
                 break;
               default: break;
@@ -133,7 +134,7 @@ namespace Aiwe.Extensions {
           sb.Append(" id=\"common-subcolumn-button-delete-" + info.Name + "-" + count + "\"");
           sb.Append(" commondeleteno=\"" + count + "\"");
           sb.Append(" commoncolumnname=\"" + info.Name + "\"");
-          sb.Append(">Delete</button>");
+          sb.Append(">" + Aibe.LCZ.W_Delete + "</button>");
           sb.Append("</td>");
         }
 
@@ -158,8 +159,9 @@ namespace Aiwe.Extensions {
           switch (subItemType) {
             case 'L': //L an V share the same placeholder
             case 'V': sb.Append(usedHeader); break;
-            case 'O': sb.Append(usedHeader + " Or " + usedHeader + " | Option 1, Option 2, ..., Option N"); break;
-            case 'C': sb.Append("Yes or No"); break; //very special for the check
+            case 'O': sb.Append(usedHeader + " " + Aibe.LCZ.W_Or + " " + usedHeader + " | " + Aibe.LCZ.W_Option + 
+              " 1, " + Aibe.LCZ.W_Option + " 2, ..., " + Aibe.LCZ.W_Option + " N"); break;
+            case 'C': sb.Append(Aibe.LCZ.W_LcYes + " " + Aibe.LCZ.W_Or + " " + Aibe.LCZ.W_LcNo); break; //very special for the check
             default: break;
           }
           sb.Append("\""); //end of placeholder
@@ -174,7 +176,7 @@ namespace Aiwe.Extensions {
         sb.Append(" commonbuttontype=\"add\"");
         sb.Append(" id=\"common-subcolumn-button-add-" + info.Name + "\"");
         sb.Append(" commoncolumnname=\"" + info.Name + "\"");
-        sb.Append(">Add</button>");
+        sb.Append(">" + Aibe.LCZ.W_Add + "</button>");
         sb.Append("</td>");
 
         sb.Append("</tr>");

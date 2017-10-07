@@ -248,8 +248,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\ListColumnResultExtension.cs" />
-    <Compile Include="Extensions\MetaInfoExtension.cs" />
+    <Compile Include="Helpers\AiweDropDownHelper.cs" />
+    <Compile Include="Localization.cs" />
     <Compile Include="Extensions\LiveDropDownResultExtension.cs" />
     <Compile Include="Helpers\AiweCheckerHelper.cs" />
     <Compile Include="Helpers\AiweQueryHelper.cs" />
@@ -511,6 +511,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201703200751588_InitialCreate.resx">
       <DependentUpon>201703200751588_InitialCreate.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -20,7 +20,7 @@ namespace Aiwe.Models {
     }
 
     public virtual bool IsColumnIncludedInCreateEdit(DataColumn column, IPrincipal user) {
-      if (column.Unique || column.ColumnName.EqualsIgnoreCase("Cid")) //Cid and unique column always not included in the create and edit
+      if (column.Unique || column.ColumnName.EqualsIgnoreCase(Aibe.DH.Cid)) //Cid and unique column always not included in the create and edit
         return false;
       return IsColumnIncluded(Meta.CreateEditExclusions, column.ColumnName, user);
     }

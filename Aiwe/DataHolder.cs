@@ -19,6 +19,31 @@ namespace Aiwe {
     public const string PutRequest = "PUT";
     public const string DeleteRequest = "DELETE";
 
+    //Website related
+    public const string JsonType = "application/json";
+    public const string WebApi = "Web Api";
+    public const string Mvc = "MVC";
+    public const string ValuesActionFilterError = "ValuesActionFilterError";
+    public const string Request = "request";
+    public const string WebApiControllerName = "Values";
+    public const string Id = "Id";
+    public const string MvcCommonControllerName = "Common";
+    public const string MvcMetaControllerName = "Meta";
+    public const string MvcHomeControllerName = "Home";
+    public const string MvcTeamControllerName = "Team";
+    public const string MvcUserControllerName = "User";
+    public const string MvcRoleControllerName = "Role";
+    public const string MvcAdminControllerName = "Admin";
+    public const string MvcAccountControllerName = "Account";
+    public const string MvcManageControllerName = "Manage";
+    public const string UserDisplayName = "DisplayName";
+    public const string SuccessActionName = "Success";
+    public const string LogInActionName = "Login";
+    public const string LogOffActionName = "LogOff";
+    public const string ErrorLocalActionName = "ErrorLocal";
+    public const string ErrorActionName = "Error";
+    public const string ErrorViewName = "Error";
+
     //Table
     public const string TableModelClassPrefix = "Aiwe.Models.DB.";
 

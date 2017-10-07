@@ -4,39 +4,40 @@ namespace Aiwe.Models.ViewModels {
   // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
   public class ApplicationUserCreateViewModel {
     [Required]
-    [Display(Name = "Full Name *")]
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserCreateViewModel.FullName)]
     public string FullName { get; set; }
 
     [Required]
-    [Display(Name = "Display Name *")]
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserCreateViewModel.DisplayName)]
     public string DisplayName { get; set; }
 
     [Required]
     [EmailAddress]
-    [Display(Name = "Email *")]
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserCreateViewModel.Email)]
     public string Email { get; set; }
 
     [Required]
-    [Display(Name = "Team *")]
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserCreateViewModel.Team)]
     public string Team { get; set; }
 
     [Required]
-    [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 4)]
+    [StringLength(100, ErrorMessage = Aiwe.LCZ.F.ApplicationUserCreateViewModel.Password_ErrorMessage, MinimumLength = 4)]
     [DataType(DataType.Password)]
-    [Display(Name = "Password *")]
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserCreateViewModel.Password)]
     public string Password { get; set; }
 
     [DataType(DataType.Password)]
-    [Display(Name = "Confirm password")]
-    [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserCreateViewModel.ConfirmPassword)]
+    [Compare("Password", ErrorMessage = Aiwe.LCZ.F.ApplicationUserCreateViewModel.ConfirmPassword_ErrorMessage)]
     public string ConfirmPassword { get; set; }
 
-    [Display(Name = "Working Role **")]
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserCreateViewModel.WorkingRole)]
     public string WorkingRole { get; set; }
 
-    [Display(Name = "Admin Role **")]
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserCreateViewModel.AdminRole)]
     public string AdminRole { get; set; }
 
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserCreateViewModel.Id)]
     public string Id { get; set; } //remains hidden, not shown only used in edit
 
     public ApplicationUserCreateViewModel() { }

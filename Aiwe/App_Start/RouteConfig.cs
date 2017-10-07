@@ -8,20 +8,20 @@ namespace Aiwe {
 
       routes.MapRoute(
         name: "FinalErrorRoute",
-        url: "Home/Error",
-        defaults: new { controller = "Home", action = "Error" }
+        url: Aiwe.DH.MvcHomeControllerName + "/" + Aiwe.DH.ErrorActionName,
+        defaults: new { controller = Aiwe.DH.MvcHomeControllerName, action = Aiwe.DH.ErrorActionName }
       );
 
       routes.MapRoute(
         name: "CommonRoute",
-        url: "Common/{action}/{tablename}/{id}",
-        defaults: new { controller = "Common", tablename = "NotFound", action = "Index", id = UrlParameter.Optional }
+        url: Aiwe.DH.MvcCommonControllerName + "/{action}/{tablename}/{id}",
+        defaults: new { controller = Aiwe.DH.MvcCommonControllerName, tablename = "NotFound", action = Aibe.DH.IndexActionName, id = UrlParameter.Optional }
       );
 
       routes.MapRoute(
         name: "Default",
         url: "{controller}/{action}/{id}",
-        defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+        defaults: new { controller = Aiwe.DH.MvcHomeControllerName, action = Aibe.DH.IndexActionName, id = UrlParameter.Optional }
       );
     }
   }

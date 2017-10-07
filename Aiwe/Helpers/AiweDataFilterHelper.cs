@@ -169,7 +169,7 @@ namespace Aiwe.Helpers {
       }
 
       if (!string.IsNullOrWhiteSpace(filter.DisableFilter)) {
-        if (filter.DisableFilter.EqualsIgnoreCase("true")) {
+        if (filter.DisableFilter.EqualsIgnoreCase(Aibe.DH.True)) {
           filtered = filtered.Where(x => x.DisableFilter.Value);
         } else {
           filtered = filtered.Where(x => !x.DisableFilter.Value);

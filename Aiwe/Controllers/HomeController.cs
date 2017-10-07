@@ -7,13 +7,13 @@ namespace Aiwe.Controllers {
     }
 
     public ActionResult About() {
-      ViewBag.Message = "Your application description page.";
+      ViewBag.Message = Aibe.LCZ.D_About;
 
       return View();
     }
 
     public ActionResult Contact() {
-      ViewBag.Message = "Your contact page.";
+      ViewBag.Message = Aibe.LCZ.D_Contact;
 
       return View();
     }

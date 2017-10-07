@@ -2,17 +2,17 @@
 @using Aibe.Models
 @model List<Team>
 @{
-  ViewBag.Title = "Teams";
-  ViewBag.PageTitle = "Teams";
-  ViewBag.ActionName = "Index";
-  ViewBag.ControllerName = "Team";
+  ViewBag.Title = Aibe.LCZ.W_Teams;
+  ViewBag.PageTitle = Aibe.LCZ.W_Teams;
+  ViewBag.ActionName = Aibe.DH.IndexActionName;
+  ViewBag.ControllerName = Aiwe.DH.MvcTeamControllerName;
   ViewBag.FilterName = "Team"; //used for correct filter rendering in the common
   ViewBag.SenderName = "team";
   ViewBag.TablePartialViewName = "_Table";
   ViewBag.NavPartialViewName = "_AddBackToAdmin";
   NavDataModel navData = (NavDataModel)ViewBag.NavData;
   if (navData != null && navData.QueryCount > 0) {
-    navData.DataName = "Team"; //for giving name below
+    navData.DataName = Aibe.LCZ.W_Team; //for giving name below
   }
 }
 

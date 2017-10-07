@@ -1,6 +1,6 @@
 ﻿@{ 
-  string createLink = "../../../../../../" + (string)ViewBag.ControllerName + "/Create";
-  string backLink = "../../../../../../Admin/Index";
+  string createLink = "../../../../../../" + (string)ViewBag.ControllerName + "/" + Aibe.DH.CreateActionName;
+  string backLink = "../../../../../../" + Aiwe.DH.MvcAdminControllerName + "/" + Aibe.DH.IndexActionName;
 }
 
 <div class="row">
@@ -8,14 +8,14 @@
     <a href="@createLink"
        class="btn btn-success"
        style="margin-top:5px;margin-right:5px;">
-      <span class="glyphicon glyphicon-plus"></span> Create New
+      <span class="glyphicon glyphicon-plus"></span> @Aibe.LCZ.W_CreateNew
     </a>
   </div>
   <div class="col-md-2">
     <a href="@backLink"
        class="btn btn-primary"
        style="margin-top:5px;margin-right:5px;">
-      <span class="glyphicon glyphicon-hand-left"></span> Back to Admin
+      <span class="glyphicon glyphicon-hand-left"></span> @Aibe.LCZ.W_BackToAdmin
     </a>
   </div>
 </div>

@@ -25,12 +25,12 @@
         @Html.Partial("_LoginPartial")
         <ul class="nav navbar-nav navbar-right">
           @if (AiweUserHelper.UserHasAdminRight(User)) {
-            <li>@Html.ActionLink("Admin", "Index", "Admin", routeValues: null, htmlAttributes: new { style = "margin-top:20px;font-size:20px;color:grey" })</li>
+            <li>@Html.ActionLink(Aibe.LCZ.W_Admin, Aibe.DH.IndexActionName, Aiwe.DH.MvcAdminControllerName, routeValues: null, htmlAttributes: new { style = "margin-top:20px;font-size:20px;color:grey" })</li>
           }
-          <li>@Html.ActionLink("Home", "Index", "Home", routeValues: null, htmlAttributes: new { style = "margin-top:20px;font-size:20px;color:grey" })</li>                    
+          <li>@Html.ActionLink(Aibe.LCZ.W_Home, Aibe.DH.IndexActionName, Aiwe.DH.MvcHomeControllerName, routeValues: null, htmlAttributes: new { style = "margin-top:20px;font-size:20px;color:grey" })</li>                    
           <li>
             <img class="nav navbar-nav navbar-left"
-                 src="../../../../Images/feinmetall-logo.png" height="50px;" width="170px;" style="margin-top:10px;margin-bottom:10px;margin-right:10px;margin-left:15px;background-color:white" />
+                 src="../../../../@Aibe.DH.DefaultImageFolderName/feinmetall-logo.png" height="50px;" width="170px;" style="margin-top:10px;margin-bottom:10px;margin-right:10px;margin-left:15px;background-color:white" />
           </li>
         </ul>
       </div>
@@ -41,7 +41,7 @@
     @RenderBody()
     <hr />
     <footer>
-      <p>&copy; @DateTime.Now.Year - Powered by ASTrio Pte Ltd</p>
+      <p>&copy; @DateTime.Now.Year - @Aibe.LCZ.W_PoweredBy ASTrio Pte Ltd</p>
     </footer>
   </div>
 

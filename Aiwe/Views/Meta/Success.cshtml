@@ -1,13 +1,13 @@
 ﻿@{
-  ViewBag.Title = "Success";
-  ViewBag.ControllerName = "Meta";
+  ViewBag.Title = Aibe.LCZ.W_Success;
+  ViewBag.ControllerName = Aiwe.DH.MvcMetaControllerName;
 }
 
 <h1 class="text-success">@ViewBag.Title!</h1>
 <h2>@ViewBag.SuccessMessage</h2>
 <br/>
-<a href="@Url.Action("Index", (string)ViewBag.ControllerName)"
+<a href="@Url.Action(Aibe.DH.IndexActionName, (string)ViewBag.ControllerName)"
    class="btn btn-primary">
-  <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> Back To List</font></span>
+  <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> @Aibe.LCZ.W_BackToList</font></span>
 </a>
 

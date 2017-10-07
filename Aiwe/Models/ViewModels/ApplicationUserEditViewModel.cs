@@ -4,29 +4,30 @@ namespace Aiwe.Models.ViewModels {
   // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
   public class ApplicationUserEditViewModel {
     [Required]
-    [Display(Name = "Full Name *")]
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserEditViewModel.FullName)]
     public string FullName { get; set; }
 
     [Required]
-    [Display(Name = "Display Name *")]
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserEditViewModel.DisplayName)]
     public string DisplayName { get; set; }
 
     [Required]
     [EmailAddress]
-    [Display(Name = "Email *")]
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserEditViewModel.Email)]
     public string Email { get; set; }
 
     [Required]
-    [Display(Name = "Team *")]
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserEditViewModel.Team)]
     public string Team { get; set; }
 
-    [Display(Name = "Working Role **")]
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserEditViewModel.WorkingRole)]
     public string WorkingRole { get; set; }
 
-    [Display(Name = "Admin Role **")]
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserEditViewModel.AdminRole)]
     public string AdminRole { get; set; }
 
-    public string Id { get; set; } //remains hidden, not shown only used in edit
+    [Display(Name = Aiwe.LCZ.F.ApplicationUserEditViewModel.Id)]
+    public string Id { get; set; }
 
     public ApplicationUserEditViewModel() { }
 

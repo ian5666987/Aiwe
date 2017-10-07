@@ -1,44 +1,44 @@
 ﻿@model Aiwe.Models.IndexViewModel
 @{
-  ViewBag.Title = "Manage";
+  ViewBag.Title = Aibe.LCZ.W_AccountManagement;
 }
 
 <h2>@ViewBag.Title</h2>
 
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div>
-  <h4>Change your account settings</h4>
+  <h4>@Aibe.LCZ.NFM_ChangeYourAccountSettings</h4>
   <hr />
   <dl class="dl-horizontal">
-    <dt>Full Name</dt>
+    <dt>@Html.DisplayNameFor(x => x.FullName)</dt>
     <dd>@Model.FullName</dd>
-    <dt>Display Name</dt>
-    <dd>@Model.DisplayName &nbsp;[ @Html.ActionLink("Change", "ChangeDisplayName") ]</dd>
-    <dt>Password</dt>
+    <dt>@Html.DisplayNameFor(x => x.DisplayName)</dt>
+    <dd>@Model.DisplayName &nbsp;[ @Html.ActionLink(Aibe.LCZ.W_Change, "ChangeDisplayName") ]</dd>
+    <dt>@Html.DisplayNameFor(x => x.HasPassword)</dt>
     <dd>
       ****** &nbsp;[
       @if (Model.HasPassword) {
-        @Html.ActionLink("Change", "ChangePassword")
+        @Html.ActionLink(Aibe.LCZ.W_Change, "ChangePassword")
       } else {
-        @Html.ActionLink("Create", "SetPassword")
+        @Html.ActionLink(Aibe.LCZ.W_Create, "SetPassword")
       }
       ]
     </dd>
-    <dt>Working Role</dt>
+    <dt>@Html.DisplayNameFor(x => x.WorkingRole)</dt>
     <dd>@Model.WorkingRole</dd>
-    <dt>Admin Role</dt>
+    <dt>@Html.DisplayNameFor(x => x.AdminRole)</dt>
     <dd>@Model.AdminRole</dd>
-    <dt>Team</dt>
+    <dt>@Html.DisplayNameFor(x => x.Team)</dt>
     <dd>@Model.Team</dd>
-    <dt>Registration Date</dt>
+    <dt>@Html.DisplayNameFor(x => x.RegistrationDate)</dt>
     <dd>@Model.RegistrationDate</dd>
-    <dt>Last Login</dt>
+    <dt>@Html.DisplayNameFor(x => x.LastLogin)</dt>
     <dd>@Model.LastLogin</dd>
     @*<dt>External Logins:</dt>
-      <dd>
-          @Model.Logins.Count [
-          @Html.ActionLink("Manage", "ManageLogins") ]
-      </dd>*@
+  <dd>
+      @Model.Logins.Count [
+      @Html.ActionLink(Aiwe.DH.MvcManageControllerName, "ManageLogins") ]
+  </dd>*@
     @*
       Phone Numbers can used as a second factor of verification in a two-factor authentication system.
 
@@ -48,51 +48,51 @@
        Uncomment the following block after you have set up two-factor authentication
     *@
     @*
-      <dt>Phone Number:</dt>
-      <dd>
-          @(Model.PhoneNumber ?? "None")
-          @if (Model.PhoneNumber != null)
+  <dt>Phone Number:</dt>
+  <dd>
+      @(Model.PhoneNumber ?? "None")
+      @if (Model.PhoneNumber != null)
+      {
+          <br />
+          <text>[&nbsp;&nbsp;@Html.ActionLink(Aibe.LCZ.W_Change, "AddPhoneNumber")&nbsp;&nbsp;]</text>
+          using (Html.BeginForm("RemovePhoneNumber", Aiwe.DH.MvcManageControllerName, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
           {
-              <br />
-              <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
-              using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+              @Html.AntiForgeryToken()
+              <text>[<input type="submit" value="Remove" class="btn-link" />]</text>
+          }
+      }
+      else
+      {
+          <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
+      }
+  </dd>
+    *@
+    @*<dt>Two-Factor Authentication:</dt>
+  <dd>
+      <p>
+          There are no two-factor authentication providers configured. See <a href="http://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
+          for details on setting up this ASP.NET application to support two-factor authentication.
+      </p>
+      @if (Model.TwoFactor)
+          {
+              using (Html.BeginForm("DisableTwoFactorAuthentication", Aiwe.DH.MvcManageControllerName, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
               {
                   @Html.AntiForgeryToken()
-                  <text>[<input type="submit" value="Remove" class="btn-link" />]</text>
+                  <text>Enabled
+                  <input type="submit" value="Disable" class="btn btn-link" />
+                  </text>
               }
           }
           else
           {
-              <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
+              using (Html.BeginForm("EnableTwoFactorAuthentication", Aiwe.DH.MvcManageControllerName, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+              {
+                  @Html.AntiForgeryToken()
+                  <text>Disabled
+                  <input type="submit" value="Enable" class="btn btn-link" />
+                  </text>
+              }
           }
-      </dd>
-    *@
-    @*<dt>Two-Factor Authentication:</dt>
-      <dd>
-          <p>
-              There are no two-factor authentication providers configured. See <a href="http://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
-              for details on setting up this ASP.NET application to support two-factor authentication.
-          </p>
-          @if (Model.TwoFactor)
-              {
-                  using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                  {
-                      @Html.AntiForgeryToken()
-                      <text>Enabled
-                      <input type="submit" value="Disable" class="btn btn-link" />
-                      </text>
-                  }
-              }
-              else
-              {
-                  using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                  {
-                      @Html.AntiForgeryToken()
-                      <text>Disabled
-                      <input type="submit" value="Enable" class="btn btn-link" />
-                      </text>
-                  }
-              }
-      </dd>*@
+  </dd>*@
   </dl>
 </div>

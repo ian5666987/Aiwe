@@ -1,14 +1,14 @@
 ﻿@model System.Web.Mvc.HandleErrorInfo
 
 @{
-  ViewBag.Title = "Error";
+  ViewBag.Title = Aibe.LCZ.W_Error;
 }
 
 <h1 class="text-danger">@ViewBag.Title</h1>
-<h2 class="text-danger">There was an error occurred while we were processing your request</h2>
+<h2 class="text-danger">@Aibe.LCZ.NFE_GeneralErrorMessage</h2>
 @if (ViewBag.Error != null) {
   <p style="color:red;">@ViewBag.Error</p>
 }
-<p><a href="@Url.Action("Index", "Home")">&laquo; Back to Home</a></p>
+<p><a href="@Url.Action(Aibe.DH.IndexActionName, Aiwe.DH.MvcHomeControllerName)">&laquo; @Aibe.LCZ.W_BackToHome</a></p>
 
 

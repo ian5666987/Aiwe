@@ -2,17 +2,17 @@
 @using Aibe.Models;
 @model List<RoleViewModel>
 @{
-  ViewBag.Title = "Roles";
-  ViewBag.PageTitle = "Roles";
-  ViewBag.ActionName = "Index";
-  ViewBag.ControllerName = "Role";
+  ViewBag.Title = Aibe.LCZ.W_Roles;
+  ViewBag.PageTitle = Aibe.LCZ.W_Roles;
+  ViewBag.ActionName = Aibe.DH.IndexActionName;
+  ViewBag.ControllerName = Aiwe.DH.MvcRoleControllerName;
   ViewBag.FilterName = "Role"; //used for correct filter rendering in the common
   ViewBag.SenderName = "role";
   ViewBag.TablePartialViewName = "_Table";
   ViewBag.NavPartialViewName = "_AddBackToAdmin";
   NavDataModel navData = (NavDataModel)ViewBag.NavData;
   if (navData != null && navData.QueryCount > 0) {
-    navData.DataName = "Role"; //for giving name below
+    navData.DataName = Aibe.LCZ.W_Role; //for giving name below
   }
 }
 

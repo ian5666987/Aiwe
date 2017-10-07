@@ -1,16 +1,15 @@
 ﻿@using Aiwe.Models
 @model LoginViewModel
 @{
-  ViewBag.Title = "Log in";
+  ViewBag.Title = Aibe.LCZ.W_LogIn;
 }
 
 <h2>@ViewBag.Title</h2>
 <div class="row">
   <div class="col-md-12">
     <section id="loginForm">
-      @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" })) {
+      @using (Html.BeginForm(Aiwe.DH.LogInActionName, Aiwe.DH.MvcAccountControllerName, new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" })) {
         @Html.AntiForgeryToken()
-        @*<h4>Use a local account to log in</h4>*@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
@@ -37,24 +36,19 @@
         </div>
         <div class="form-group">
           <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Log in" class="btn btn-default" />
+            <input type="submit" value="@Aibe.LCZ.W_LogIn" class="btn btn-default" />
           </div>
         </div>
         @*<p>
-          @Html.ActionLink("Register as a new user", "Register")
-        </p>*@
+    @Html.ActionLink(@Aibe.LCZ.NFM_RegisterAsNewUser, "Register")
+  </p>*@
         @* Enable this once you have account confirmation enabled for password reset functionality
-          <p>
-              @Html.ActionLink("Forgot your password?", "ForgotPassword")
-          </p>*@
+  <p>
+      @Html.ActionLink(@Aibe.LCZ.NFQ_ForgotYourPassword, "ForgotPassword")
+  </p>*@
       }
     </section>
   </div>
-  @*<div class="col-md-4">
-      <section id="socialLoginForm">
-        @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
-      </section>
-    </div>*@
 </div>
 
 @section Scripts {

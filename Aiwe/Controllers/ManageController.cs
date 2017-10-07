@@ -50,15 +50,15 @@ namespace Aiwe.Controllers {
     // GET: /Manage/Index
     public async Task<ActionResult> Index(ManageMessageId? message) {
       ViewBag.StatusMessage =
-          message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-          : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
-          : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
-          : message == ManageMessageId.Error ? "An error has occurred."
-          : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
-          : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
-          : message == ManageMessageId.ChangeDisplayNameSuccess ? "Your display name has been changed."
-          : message == ManageMessageId.UserNotFound ? "User not found."
-          : message == ManageMessageId.UserNotFound ? "User claim not found."
+          message == ManageMessageId.ChangePasswordSuccess ? Aibe.LCZ.NFM_ChangePasswordSuccess
+          : message == ManageMessageId.SetPasswordSuccess ? Aibe.LCZ.NFM_SetPasswordSuccess
+          : message == ManageMessageId.SetTwoFactorSuccess ? Aibe.LCZ.NFM_SetTwoFactorSuccess
+          : message == ManageMessageId.Error ? Aibe.LCZ.NFE_GeneralError
+          : message == ManageMessageId.AddPhoneSuccess ? Aibe.LCZ.NFM_AddPhoneSuccess
+          : message == ManageMessageId.RemovePhoneSuccess ? Aibe.LCZ.NFM_RemovePhoneSuccess
+          : message == ManageMessageId.ChangeDisplayNameSuccess ? Aibe.LCZ.NFM_ChangeDisplayNameSuccess
+          : message == ManageMessageId.UserNotFound ? Aibe.LCZ.NFE_UserNotFound
+          : message == ManageMessageId.UserClaimNotFound ? Aibe.LCZ.NFE_UserClaimNotFound
           : "";
 
       var userId = User.Identity.GetUserId();
@@ -101,7 +101,7 @@ namespace Aiwe.Controllers {
           await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
         }
         UserHelper.SetUserMapPassword(user.UserName, model.NewPassword);
-        return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
+        return RedirectToAction(Aibe.DH.IndexActionName, new { Message = ManageMessageId.ChangePasswordSuccess });
       }
       AddErrors(result);
       return View(model);
@@ -123,16 +123,16 @@ namespace Aiwe.Controllers {
       
       var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
       if(user == null)
-        return RedirectToAction("Index", new { Message = ManageMessageId.UserNotFound }); //not found
+        return RedirectToAction(Aibe.DH.IndexActionName, new { Message = ManageMessageId.UserNotFound }); //not found
 
       var userIdentity = await user.GenerateUserIdentityAsync(UserManager);
       var claim = userIdentity.Claims
-        .FirstOrDefault(x => x.Type == "DisplayName" && x.Value == model.OldDisplayName);
+        .FirstOrDefault(x => x.Type == Aiwe.DH.UserDisplayName && x.Value == model.OldDisplayName);
       if (claim == null)
-        return RedirectToAction("Index", new { Message = ManageMessageId.UserClaimNotFound }); //claim not found
+        return RedirectToAction(Aibe.DH.IndexActionName, new { Message = ManageMessageId.UserClaimNotFound }); //claim not found
 
       userIdentity.RemoveClaim(claim);
-      userIdentity.AddClaim(new Claim("DisplayName", model.NewDisplayName));
+      userIdentity.AddClaim(new Claim(Aiwe.DH.UserDisplayName, model.NewDisplayName));
       AuthenticationManager.AuthenticationResponseGrant = new AuthenticationResponseGrant
         (new ClaimsPrincipal(userIdentity), new AuthenticationProperties { IsPersistent = true });
 
@@ -140,7 +140,7 @@ namespace Aiwe.Controllers {
       context.Users.AddOrUpdate(user);
       context.SaveChanges();
 
-      return RedirectToAction("Index", new { Message = ManageMessageId.ChangeDisplayNameSuccess });
+      return RedirectToAction(Aibe.DH.IndexActionName, new { Message = ManageMessageId.ChangeDisplayNameSuccess });
     }
 
     //
@@ -162,7 +162,7 @@ namespace Aiwe.Controllers {
             await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
           }
           UserHelper.SetUserMapPassword(user.UserName, model.NewPassword);
-          return RedirectToAction("Index", new { Message = ManageMessageId.SetPasswordSuccess });
+          return RedirectToAction(Aibe.DH.IndexActionName, new { Message = ManageMessageId.SetPasswordSuccess });
         }
         AddErrors(result);
       }

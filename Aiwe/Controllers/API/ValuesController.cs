@@ -65,11 +65,11 @@ namespace Aiwe.Controllers {
     public HttpResponseMessage Authenticate(string username, string password) {      
       string userNameNormal = Encoding.UTF8.GetString(Convert.FromBase64String(username));
       string passwordNormal = Encoding.UTF8.GetString(Convert.FromBase64String(password));
-      bool result = UserHelper.AuthenticateUser("Web Api", userNameNormal, passwordNormal);
+      bool result = UserHelper.AuthenticateUser(Aiwe.DH.WebApi, userNameNormal, passwordNormal);
       string message = string.Empty;
       bool companySpecificAuthentication = getFeinmetallMessage(userNameNormal, out message);
       if (!result || !companySpecificAuthentication)
-        return createErrorResponse(HttpStatusCode.NotAcceptable, "user cannot be authenticated");
+        return createErrorResponse(HttpStatusCode.NotAcceptable, Aibe.LCZ.NFE_UserCannotBeAuthenticated);
       return createAuthenticatedResponse(message);
     }
 
@@ -81,7 +81,7 @@ namespace Aiwe.Controllers {
       resultApi.Success = true;
       string jsonStr = JsonConvert.SerializeObject(resultApi); //must be assigned AFTER all value assignments are done
       HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
-      response.Content = new StringContent(jsonStr, Encoding.UTF8, "application/json");
+      response.Content = new StringContent(jsonStr, Encoding.UTF8, Aiwe.DH.JsonType);
       return response;
     }
 
@@ -101,7 +101,7 @@ namespace Aiwe.Controllers {
         return response;
       CheckedClientApiRequest checkedRequest = new CheckedClientApiRequest(request);
       if (!checkedRequest.IsSuccess) {
-        StringBuilder errorMsg = new StringBuilder("Not-well-formed request");        
+        StringBuilder errorMsg = new StringBuilder(Aiwe.LCZ.NFE_NotWellFormedRequest);        
         if (!string.IsNullOrWhiteSpace(checkedRequest.ErrorMessage))
           errorMsg.Append(string.Concat("\n", checkedRequest.ErrorMessage));
         return createErrorResponse(HttpStatusCode.BadRequest, errorMsg.ToString());
@@ -120,10 +120,10 @@ namespace Aiwe.Controllers {
       }
 
       if (string.IsNullOrWhiteSpace(sqlString))
-        return createErrorResponse(HttpStatusCode.BadRequest, "Query script checking fails");
+        return createErrorResponse(HttpStatusCode.BadRequest, Aiwe.LCZ.NFE_QueryScriptCheckingFails);
 
       if (pars == null) { //this is by default NOT null, only nullified when parameter creation fails
-        response = this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, new Exception("Query creation fails"));
+        response = this.Request.CreateErrorResponse(HttpStatusCode.BadRequest, new Exception(Aiwe.LCZ.NFE_QueryCreationFails));
         return response;
       }
 
@@ -150,7 +150,7 @@ namespace Aiwe.Controllers {
     private bool isFiltered(out HttpResponseMessage message) {
       message = null;
       object errorObject = null;
-      if (Request.Properties.TryGetValue("ValuesActionFilterError", out errorObject)) {
+      if (Request.Properties.TryGetValue(Aiwe.DH.ValuesActionFilterError, out errorObject)) {
         ValuesActionFilterResult error = (ValuesActionFilterResult)errorObject;
         message = createErrorResponse(resultToCodeDict[error], error.ToString().ToCamelBrokenString());
         return true;
@@ -161,10 +161,10 @@ namespace Aiwe.Controllers {
     private HttpResponseMessage createErrorResponse(HttpStatusCode code, string errorMsg) {
 #if DEBUG
       ApiRequestResult result = new ApiRequestResult();
-      result.Message = string.Concat(code.ToString().ToCamelBrokenString(), ", Additional Message: ", errorMsg);
+      result.Message = string.Concat(code.ToString().ToCamelBrokenString(), ", ", Aiwe.LCZ.W_AdditionalMessage, ": ", errorMsg);
       string jsonStr = JsonConvert.SerializeObject(result); //must be assigned AFTER all value assignments are done
       HttpResponseMessage errorResponse = this.Request.CreateResponse(HttpStatusCode.OK);
-      errorResponse.Content = new StringContent(jsonStr, Encoding.UTF8, "application/json");
+      errorResponse.Content = new StringContent(jsonStr, Encoding.UTF8, Aiwe.DH.JsonType);
 #else
       HttpResponseMessage errorResponse = this.Request.CreateErrorResponse(code, errorMsg);
       errorResponse.Content = new StringContent(errorMsg);
@@ -182,11 +182,13 @@ namespace Aiwe.Controllers {
 
         result.Success = val > 0;
         if (checkedRequest.RequestType == ApiRequestType.Create)
-          result.Message = "The new item is " + (val > 0 ? "successfully" : "not") + " created";
+          result.Message = result.Success ? Aibe.LCZ.NFM_NewItemIsCreated : Aibe.LCZ.NFM_NewItemIsNotCreated;
         else if (checkedRequest.RequestType == ApiRequestType.Update)
-          result.Message = "The item with [Id = " + checkedRequest.Id + "] is " + (val > 0 ? "successfully" : "not") + " updated";
-        else if(checkedRequest.RequestType == ApiRequestType.Delete)
-          result.Message = "The item with [Id = " + checkedRequest.Id + "] is " + (val > 0 ? "successfully" : "not") + " deleted";
+          result.Message = result.Success ? String.Format(Aibe.LCZ.M_ItemIsUpdated, checkedRequest.Id) :
+            String.Format(Aibe.LCZ.M_ItemIsNotUpdated, checkedRequest.Id);
+        else if (checkedRequest.RequestType == ApiRequestType.Delete)
+          result.Message = result.Success ? String.Format(Aibe.LCZ.M_ItemIsDeleted, checkedRequest.Id) :
+            String.Format(Aibe.LCZ.M_ItemIsNotDeleted, checkedRequest.Id);
 
         if (!result.Success)
           result.Message = HttpStatusCode.NotModified.ToString().ToCamelBrokenString();
@@ -201,7 +203,7 @@ namespace Aiwe.Controllers {
               //if it is NOT a picture link column, then skips this saving process of the attachment
               var fileName = Path.GetFileName(attachment.FileName);
               byte[] fileData = Convert.FromBase64String(attachment.Data);
-              var folderPath = System.Web.Hosting.HostingEnvironment.MapPath("~/Images/" + checkedRequest.TableName + "/" + 
+              var folderPath = System.Web.Hosting.HostingEnvironment.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + checkedRequest.TableName + "/" + 
                 (checkedRequest.RequestType == ApiRequestType.Create ? val : checkedRequest.Id)); //creates or edit always table specific and id specific, create uses the newly created Id
               Directory.CreateDirectory(folderPath);
               var path = Path.Combine(folderPath, fileName);
@@ -216,13 +218,13 @@ namespace Aiwe.Controllers {
 #else
         HttpResponseMessage response = this.Request.CreateResponse(val > 0 ? HttpStatusCode.OK : HttpStatusCode.NotModified);
 #endif
-        response.Content = new StringContent(jsonStr, Encoding.UTF8, "application/json");
+        response.Content = new StringContent(jsonStr, Encoding.UTF8, Aiwe.DH.JsonType);
         return response;
 
       } catch (Exception ex) {
         string exStr = ex.ToString();
         LogHelper.Error(checkedRequest?.UserName, string.Concat((int)HttpStatusCode.InternalServerError,
-          " ", HttpStatusCode.InternalServerError.ToString()), "Web Api", "Values",
+          " ", HttpStatusCode.InternalServerError.ToString()), Aiwe.DH.WebApi, Aiwe.DH.WebApiControllerName,
           checkedRequest?.TableName, checkedRequest.RequestType.ToString(), checkedRequest.CreateLogValue(3000),
           exStr);
         return createErrorResponse(HttpStatusCode.InternalServerError, exStr);
@@ -235,21 +237,21 @@ namespace Aiwe.Controllers {
         ApiRequestResult result = new ApiRequestResult(checkedRequest, table);
 
         if (!result.Success)
-          return createErrorResponse(HttpStatusCode.BadRequest, "Bad request on result making");
+          return createErrorResponse(HttpStatusCode.BadRequest, Aiwe.LCZ.NFE_BadRequestOnResultMaking);
 
         //if (result.Rows == null || result.Rows.Count <= 0)
         if ((result.Columns == null || result.Columns.Count <= 0) && (result.Rows == null || result.Rows.Count <= 0))
-          return createErrorResponse(HttpStatusCode.NotFound, "Data requested not found");
+          return createErrorResponse(HttpStatusCode.NotFound, Aiwe.LCZ.NFE_DataRequestedNotFound);
 
         string jsonStr = JsonConvert.SerializeObject(result);
 
         HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
-        response.Content = new StringContent(jsonStr, Encoding.UTF8, "application/json");
+        response.Content = new StringContent(jsonStr, Encoding.UTF8, Aiwe.DH.JsonType);
         return response;
       } catch (Exception ex) {
         string exStr = ex.ToString();
         LogHelper.Error(checkedRequest?.UserName, string.Concat((int)HttpStatusCode.InternalServerError,
-          " ", HttpStatusCode.InternalServerError.ToString()), "Web Api", "Values",
+          " ", HttpStatusCode.InternalServerError.ToString()), Aiwe.DH.WebApi, Aiwe.DH.WebApiControllerName,
           checkedRequest?.TableName, checkedRequest.RequestType.ToString(), checkedRequest.CreateLogValue(3000),
           exStr);
         return createErrorResponse(HttpStatusCode.BadRequest, exStr);

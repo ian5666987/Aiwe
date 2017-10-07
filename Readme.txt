@@ -1,3 +1,17 @@
+v0.7.0.0 alpha (7-Oct-2017 19:25)
+bugs fixed:
+- Coloring "now" not working. Fixed.
+- UserNotFound and UserClaimNotFound is not distinguished. Fixed.
+
+updates:
+- Aibe and Aiwe now support localization!
+- Aibe and Aiwe DataHolder expanded.
+- Aibe and Aiwe implement localization.
+- GetBooleanOptions() added.
+- Wrong error messages corrected.
+- Add default date, time, and date time format for Aibe.
+
+-----------------------------------------------------------------------------------------------
 v0.6.6.0 alpha (6-Oct-2017 00:17)
 bugs fixed:
 - Widths for ListColumns can be empty, not initialized correctly with three default values. Fixed.
