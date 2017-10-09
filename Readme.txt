@@ -1,3 +1,14 @@
+v0.7.1.0 alpha (9-Oct-2017 18:50)
+Open issues:
+- "Number" input does not have spinner in Microsoft Edge.
+
+bugs fixed:
+- Edit meta in live mode does not support deleting/clearing meta column value. Fixed.
+
+updates:
+- Column info now support "IsDataTime" to write DateTime in desired format in the Index page.
+
+-----------------------------------------------------------------------------------------------
 v0.7.0.0 alpha (7-Oct-2017 19:25)
 bugs fixed:
 - Coloring "now" not working. Fixed.

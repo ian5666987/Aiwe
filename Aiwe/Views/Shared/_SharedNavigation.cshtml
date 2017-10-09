@@ -3,26 +3,26 @@
   <div class="col-lg-2">
     <span onclick="submitFilterForm('1', '@ViewBag.SenderName')"
         class="btn btn-default btn-xs"
-        title="@Aibe.LCZ.W_FirstPage">
+        title="@Model.FirstPageMessage">
       @Aibe.LCZ.W_First
     </span>
     @if (Model.MaxPage > 100) {
       <span onclick="submitFilterForm('@Model.Prev100Page.ToString()', '@ViewBag.SenderName')"
           class="btn btn-default btn-xs"
-          title="@Aibe.LCZ.W_Previous100Pages">
+          title="@Model.Prev100PagesMessage">
         &#x25c0&#x25c0&#x25c0
       </span>
     }
     @if (Model.MaxPage > 10) {
       <span onclick="submitFilterForm('@Model.Prev10Page.ToString()', '@ViewBag.SenderName')"
           class="btn btn-default btn-xs"
-          title="@Aibe.LCZ.W_Previous10Pages">
+          title="@Model.Prev10PagesMessage">
         &#x25c0&#x25c0
       </span>
     }
     <span onclick="submitFilterForm('@Model.PrevPage.ToString()', '@ViewBag.SenderName')"
         class="btn btn-default btn-xs"
-        title="@Aibe.LCZ.W_PreviousPage">
+        title="@Model.PrevPageMessage">
       &#x25c0
     </span>
   </div>
@@ -34,26 +34,26 @@
   <div class="col-lg-2">
     <span onclick="submitFilterForm('@Model.NextPage.ToString()', '@ViewBag.SenderName')"
         class="btn btn-default btn-xs"
-        title="@Aibe.LCZ.W_NextPage">
+        title="@Model.NextPageMessage">
       &#x25b6
     </span>
     @if (Model.MaxPage > 10) {
       <span onclick="submitFilterForm('@Model.Next10Page.ToString()', '@ViewBag.SenderName')"
           class="btn btn-default btn-xs"
-          title="@Aibe.LCZ.W_Next10Pages">
+          title="@Model.Next10PagesMessage">
         &#x25b6&#x25b6
       </span>
     }
     @if (Model.MaxPage > 100) {
       <span onclick="submitFilterForm('@Model.Next100Page.ToString()', '@ViewBag.SenderName')"
          class="btn btn-default btn-xs"
-         title="@Aibe.LCZ.W_Next100Pages">
+         title="@Model.Next100PagesMessage">
         &#x25b6&#x25b6&#x25b6
       </span>
     }
     <span onclick="submitFilterForm('@Model.MaxPage.ToString()', '@ViewBag.SenderName')"
        class="btn btn-default btn-xs"
-       title="@Aibe.LCZ.W_LastPage">
+       title="@Model.LastPageMessage">
       @Aibe.LCZ.W_Last
     </span>
 </div>
