@@ -68,7 +68,7 @@
                   @scColumn.ColumnName.ToCamelBrokenString()
                 </th>
               }
-              @if (scTable.HasRow) { //only edit requires to show the rows
+              @if (!isCreate && scTable.HasRow) { //only edit requires to show the rows
                 foreach (var scRow in scTable.Rows) {
                   int scCid = scTable.HasCidColumn ? (int)scRow[Aibe.DH.Cid] : -1;
                   <tr>

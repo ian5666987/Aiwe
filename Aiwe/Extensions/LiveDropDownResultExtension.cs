@@ -3,13 +3,13 @@ using System.Text;
 
 namespace Aiwe.Extensions {
   public static class LiveDropDownResultExtension {
-    public static string BuildDropdownString(this LiveDropDownResult result) {
+    public static string GetHTML(this LiveDropDownResult result) {
       StringBuilder sb = new StringBuilder();
       sb.Append("<select class=\"form-control form-control-common-plus common-column-dropdown\" id=\"");
       sb.Append("common-column-dropdown-" + result.ColumnName);
       sb.Append("\" name=\"");
       sb.Append(result.ColumnName);
-      string prevValue = result.Arg == null || result.Arg == null || string.IsNullOrWhiteSpace(result.Arg.Value.ToString()) ?
+      string prevValue = result.Arg == null || string.IsNullOrWhiteSpace(result.Arg.Value.ToString()) ?
         string.Empty : result.Arg.Value.ToString();
       if (string.IsNullOrWhiteSpace(prevValue))
         sb.Append("\"><option selected=\"selected\"></option>\n");

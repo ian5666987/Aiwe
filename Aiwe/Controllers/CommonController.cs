@@ -193,7 +193,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       List<LiveDropDownResult> results = meta.GetLiveDropDownResults(
         changedColumnName, originalColumnValues, liveddColumnNames, liveddDataTypes, liveddItems);
       foreach (var result in results)
-        result.ViewString = result.BuildDropdownString();
+        result.ViewString = result.GetHTML();
       return Json(results, JsonRequestBehavior.AllowGet);
     }
 
