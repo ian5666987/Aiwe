@@ -1,14 +1,16 @@
-v0.7.2.0 alpha (10-Oct-2017 18:50)
-Open issues:
-- "Number" input does not have spinner in Microsoft Edge.
+v0.7.3.0 alpha (11-Oct-2017 18:46)
+bugs fixed:
+- dynamic ListColumn is loaded in the form load. Fixed.
 
+-----------------------------------------------------------------------------------------------
+v0.7.2.0 alpha (10-Oct-2017 18:50)
 bugs fixed:
 - Create action shows ScriptColumn result. Fixed.
 - MetaInfo ColoringList does not clear (mixed with AccessExclusion). Fixed.
 
 -----------------------------------------------------------------------------------------------
 v0.7.1.0 alpha (9-Oct-2017 18:50)
-Open issues:
+New Open issues:
 - "Number" input does not have spinner in Microsoft Edge.
 
 bugs fixed:

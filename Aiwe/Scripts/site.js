@@ -6,7 +6,7 @@ function isInArray(value, array) {
   return array.indexOf(value) > -1;
 }
 
-function processLiveDd(element, ldColNames, dataTypes) {
+function processLiveDd(element, ldColNames, dataTypes, applyListColumnLoad) {
   var id = element.id;
   var arr = [];
   var arrOriginals = [];
@@ -36,28 +36,30 @@ function processLiveDd(element, ldColNames, dataTypes) {
     }
   });
 
-  var inputValue = $('#common-column-dropdown-' + colName).val(); //straightforwards        
+  if (applyListColumnLoad) {
+    var inputValue = $('#common-column-dropdown-' + colName).val(); //straightforwards        
 
-  //now, the listColumn parts all the list columns affected by this must be found
-  $.ajax({
-    url: '../../../Common/GetLiveSubcolumns/' + tableName,
-    async: true,
-    data: {
-      tableName: tableName, changedColumnName: colName,
-      changedColumnValue: inputValue
-    },
-    traditional: true,
-    success: function (data) {
-      $.each(data, function (v, obj) {
-        if (obj.IsSuccessful) {
-          var datValId = 'common-subcolumn-datavalue-' + obj.Name;
-          var divId = 'common-subcolumn-div-' + obj.Name;
-          $('#' + datValId).html('<input type="hidden" name="' + obj.Name + '" id="common-subcolumn-content-' + obj.Name + '" value="' + obj.DataValue + '"/>');
-          $('#' + divId).html(obj.ViewString);
-        }
-      });
-    }
-  });
+    //now, the listColumn parts all the list columns affected by this must be found
+    $.ajax({
+      url: '../../../Common/GetLiveSubcolumns/' + tableName,
+      async: true,
+      data: {
+        tableName: tableName, changedColumnName: colName,
+        changedColumnValue: inputValue
+      },
+      traditional: true,
+      success: function (data) {
+        $.each(data, function (v, obj) {
+          if (obj.IsSuccessful) {
+            var datValId = 'common-subcolumn-datavalue-' + obj.Name;
+            var divId = 'common-subcolumn-div-' + obj.Name;
+            $('#' + datValId).html('<input type="hidden" name="' + obj.Name + '" id="common-subcolumn-content-' + obj.Name + '" value="' + obj.DataValue + '"/>');
+            $('#' + divId).html(obj.ViewString);
+          }
+        });
+      }
+    });
+  }
 }
 
 function submitFilterModalForm(submitter, ev, filteredType) {
@@ -192,7 +194,7 @@ $(document).ready(function () {
       ldColNames.push(elements[i].id.substr('live-dd-'.length));
       dataTypes.push(elements[i].attributes.getNamedItem('commondatatype').value);
     }
-    processLiveDd(this, ldColNames, dataTypes);
+    processLiveDd(this, ldColNames, dataTypes, true);
   });
 
   $('body').on('click', '.common-subcolumn-button', function (ev) {
@@ -298,7 +300,7 @@ $(document).ready(function () {
       dataTypes.push(elements[i].attributes.getNamedItem('commondatatype').value);
     }
     for (j = 0; j < elements.length; ++j) {
-      processLiveDd(elements[j], ldColNames, dataTypes);
+      processLiveDd(elements[j], ldColNames, dataTypes, false); //the first time does not apply listColumn loading
     }
   });
 });
