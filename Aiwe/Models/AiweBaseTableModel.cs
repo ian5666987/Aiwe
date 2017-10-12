@@ -34,8 +34,8 @@ namespace Aiwe.Models {
     }
 
     public virtual bool IsColumnIncludedInIndex(string columnName, IPrincipal user) {
-      if (AiweUserHelper.UserHasMainAdminRight(user)) //if user is in main admin rights, it is always true
-        return true;
+      //if (AiweUserHelper.UserHasMainAdminRight(user)) //if user is in main admin rights, it is always true
+      //  return true;
       return IsColumnIncluded(Meta.ColumnExclusions, columnName, user);
     }
   }

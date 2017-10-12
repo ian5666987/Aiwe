@@ -86,6 +86,12 @@ namespace Aiwe.ActionFilters {
         return;
       }
 
+      //Only developer is allowed to do anything on MetaItem page
+      if (tableName.EqualsIgnoreCase(Aibe.DH.MetaTableName) && !AiweUserHelper.UserIsDeveloper(user)) {
+        filterContext.Result = redirectTo("InsufficientAccessRightPage", -3);
+        return;
+      }
+
       if (AiweUserHelper.UserHasMainAdminRight(user)) //main admins are immune to exclusion
         return;
 

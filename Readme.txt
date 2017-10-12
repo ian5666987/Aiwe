@@ -1,3 +1,17 @@
+v0.8.0.0 alpha (12-Oct-2017 23:00)
+bugs fixed:
+- Crypto/Decrypto-serialize breaks when Settings folder does not exist. Fixed.
+
+updates:
+- MetaItem is now a Common Table! The rendering and processing are now a lot faster! 
+- However, MetaInfo automatic update is no longer supported. Use ApplyUpdate/ApplyAllUpdates to update the MetaInfos.
+- Exclusion in the Index View is now applied to Main Administrator and Developer too.
+- Right to execute action in MetaItem is limited to Developers.
+- TextFieldColumn limit is increased.
+- Aibe localization is enhanced.
+- Cryptography is further secured.
+
+-----------------------------------------------------------------------------------------------
 v0.7.3.0 alpha (11-Oct-2017 18:46)
 bugs fixed:
 - dynamic ListColumn is loaded in the form load. Fixed.

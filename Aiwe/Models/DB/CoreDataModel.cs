@@ -1,16 +1,14 @@
 namespace Aiwe.Models.DB {
+  using System;
   using System.Data.Entity;
+  using System.ComponentModel.DataAnnotations.Schema;
+  using System.Linq;
 
   public partial class CoreDataModel : DbContext {
     public CoreDataModel()
-        : base("name=" + Aibe.DH.DataDBConnectionStringName) {
+        : base("name=CoreDataModel") {
     }
 
-    public virtual DbSet<CoreAccessLog> CoreAccessLogs { get; set; }
-    public virtual DbSet<CoreActionLog> CoreActionLogs { get; set; }
-    public virtual DbSet<CoreErrorLog> CoreErrorLogs { get; set; }
-    public virtual DbSet<CoreUserMap> CoreUserMaps { get; set; }
-    public virtual DbSet<MetaItem> MetaItems { get; set; }
     public virtual DbSet<CFG_CUS_INF> CFG_CUS_INF { get; set; }
     public virtual DbSet<CFG_CUS_SUB> CFG_CUS_SUB { get; set; }
     public virtual DbSet<CFG_JOB_INT> CFG_JOB_INT { get; set; }
@@ -23,6 +21,10 @@ namespace Aiwe.Models.DB {
     public virtual DbSet<CFG_TEM_DRP> CFG_TEM_DRP { get; set; }
     public virtual DbSet<CFG_TEM_LST> CFG_TEM_LST { get; set; }
     public virtual DbSet<CFG_TRN_ACT> CFG_TRN_ACT { get; set; }
+    public virtual DbSet<CoreAccessLog> CoreAccessLogs { get; set; }
+    public virtual DbSet<CoreActionLog> CoreActionLogs { get; set; }
+    public virtual DbSet<CoreErrorLog> CoreErrorLogs { get; set; }
+    public virtual DbSet<CoreUserMap> CoreUserMaps { get; set; }
     public virtual DbSet<EML_EMAILINFO> EML_EMAILINFO { get; set; }
     public virtual DbSet<EML_TEMPLATE> EML_TEMPLATE { get; set; }
     public virtual DbSet<JOB_CAL_INF> JOB_CAL_INF { get; set; }
@@ -31,6 +33,7 @@ namespace Aiwe.Models.DB {
     public virtual DbSet<LOG_JOB_HST> LOG_JOB_HST { get; set; }
     public virtual DbSet<LOG_TRN_HST> LOG_TRN_HST { get; set; }
     public virtual DbSet<LOG_USR_ACT> LOG_USR_ACT { get; set; }
+    public virtual DbSet<MetaItem> MetaItems { get; set; }
     public virtual DbSet<ORD_CUS_CON> ORD_CUS_CON { get; set; }
     public virtual DbSet<ORD_CUS_PRD> ORD_CUS_PRD { get; set; }
     public virtual DbSet<ORD_CUS_REQ> ORD_CUS_REQ { get; set; }

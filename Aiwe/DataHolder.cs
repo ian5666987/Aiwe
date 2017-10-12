@@ -28,7 +28,7 @@ namespace Aiwe {
     public const string WebApiControllerName = "Values";
     public const string Id = "Id";
     public const string MvcCommonControllerName = "Common";
-    public const string MvcMetaControllerName = "Meta";
+    public const string MvcMetaControllerName = "MetaItem";
     public const string MvcHomeControllerName = "Home";
     public const string MvcTeamControllerName = "Team";
     public const string MvcUserControllerName = "User";

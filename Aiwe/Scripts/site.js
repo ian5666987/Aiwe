@@ -25,7 +25,7 @@ function processLiveDd(element, ldColNames, dataTypes, applyListColumnLoad) {
     url: '../../../Common/GetLiveDropDownItems/' + tableName,
     async: true,
     data: {
-      tableName: tableName, changedColumnName: colName, originalColumnValues: arrOriginals,
+      commonDataTableName: tableName, changedColumnName: colName, originalColumnValues: arrOriginals,
       liveddColumnNames: ldColNames, liveddDataTypes: dataTypes, liveddItems: arr
     },
     traditional: true,
@@ -44,7 +44,7 @@ function processLiveDd(element, ldColNames, dataTypes, applyListColumnLoad) {
       url: '../../../Common/GetLiveSubcolumns/' + tableName,
       async: true,
       data: {
-        tableName: tableName, changedColumnName: colName,
+        commonDataTableName: tableName, changedColumnName: colName,
         changedColumnValue: inputValue
       },
       traditional: true,
@@ -241,7 +241,7 @@ $(document).ready(function () {
       url: '../../../Common/GetSubcolumnItems/' + tableName,
       async: true,
       data: {
-        tableName: tableName, columnName: columnName,
+        commonDataTableName: tableName, columnName: columnName,
         dataValue: dataValue, lcType: lcType,
         deleteNo: deleteNo, addString: addString
       },
@@ -275,7 +275,7 @@ $(document).ready(function () {
       url: '../../../Common/UpdateSubcolumnItemsDescription/' + tableName,
       async: true,
       data: {
-        tableName: tableName, columnName: columnName,
+        commonDataTableName: tableName, columnName: columnName,
         rowNo: rowNo, columnNo: columnNo,
         dataValue: dataValue, inputValue: inputValue,
         lcType: lcType

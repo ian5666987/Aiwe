@@ -7,7 +7,7 @@
 }
 
 @using (Html.BeginForm(Aibe.DH.DeleteActionName, Aiwe.DH.MvcCommonControllerName, FormMethod.Post, new { id = "commonForm" })) {
-  <input type="hidden" name="tableName" value="@Model.TableName"/>
+  <input type="hidden" name="@Aibe.DH.TableNameParameterName" value="@Model.TableName"/>
   <input type="hidden" name="id" value="@Model.Cid" />
   <h2>@Model.TableDisplayName <small>(@ViewBag.Title)</small></h2>
   <h3 class="text-danger">@Aibe.LCZ.NFQ_DeleteRecord</h3>

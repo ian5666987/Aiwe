@@ -20,19 +20,19 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
   public class CommonController : Controller {
     [CommonActionFilter]
     //Get does not have filter
-    public ActionResult Index(string tableName, int? page) { //Where all common tables are returned as list
-      return View(getFilterIndexModel(tableName, page, null));
+    public ActionResult Index(string commonDataTableName, int? page) { //Where all common tables are returned as list
+      return View(getFilterIndexModel(commonDataTableName, page, null));
     }
 
     [HttpPost]
     [CommonActionFilter]
-    public ActionResult Index(string tableName, int? commonDataFilterPage, FormCollection collections) { //do not change the name commonDataFilterPage to page
-      return View(getFilterIndexModel(tableName, commonDataFilterPage, collections));
+    public ActionResult Index(string commonDataTableName, int? commonDataFilterPage, FormCollection collections) { //do not change the name commonDataFilterPage to page
+      return View(getFilterIndexModel(commonDataTableName, commonDataFilterPage, collections));
     }
 
-    private AiweFilterIndexModel getFilterIndexModel(string tableName, int? page, FormCollection collections) {
+    private AiweFilterIndexModel getFilterIndexModel(string commonDataTableName, int? page, FormCollection collections) {
       TempData.Clear();
-      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       FilterIndexModel model = new FilterIndexModel(meta, page, collections == null ? 
         null : AiweTranslationHelper.FormCollectionToDictionary(collections));
 
@@ -43,17 +43,17 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     }
 
     [CommonActionFilter]
-    public ActionResult Create(string tableName) {
-      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
+    public ActionResult Create(string commonDataTableName) {
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       AiweCreateEditModel model = new AiweCreateEditModel(meta, Aibe.DH.CreateActionName, null);
       return View(model);
     }
 
     [HttpPost]
     [CommonActionFilter]
-    public ActionResult Create(string tableName, FormCollection collections) {
+    public ActionResult Create(string commonDataTableName, FormCollection collections) {
       CheckerHelper checker = new AiweCheckerHelper();
-      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       DateTime now = DateTime.Now;
       Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
 
@@ -63,16 +63,16 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       List<string> checkExclusions = new List<string> { Aibe.DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
 
       //Check model state's validity
-      Dictionary<string, string> errorDict = checker.CheckModelValidity(Aiwe.DH.TableModelClassPrefix, tableName, meta.ArrangedDataColumns, 
+      Dictionary<string, string> errorDict = checker.CheckModelValidity(Aiwe.DH.TableModelClassPrefix, commonDataTableName, meta.ArrangedDataColumns, 
         dictCollections, ModelState.Keys.ToList(), meta, checkExclusions, AiweUserHelper.UserIsDeveloper(User), now, Aibe.DH.CreateActionName);
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid)
         return View(new AiweCreateEditModel(meta, Aibe.DH.CreateActionName, null));
 
       //Only if model state is correct that we could get valid key infos safely
-      var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(tableName, dictCollections, dictCollections.Keys, meta.ArrangedDataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.CreateActionName);
+      var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(commonDataTableName, dictCollections, dictCollections.Keys, meta.ArrangedDataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.CreateActionName);
       if (completeKeyInfo == null || completeKeyInfo.ValidKeys == null || !completeKeyInfo.ValidKeys.Any()) {
-        ViewBag.ErrorMessage = string.Format(Aibe.LCZ.E_InvalidOrEmptyParameter, tableName);
+        ViewBag.ErrorMessage = string.Format(Aibe.LCZ.E_InvalidOrEmptyParameter, commonDataTableName);
         return View(Aiwe.DH.ErrorViewName);
       }
 
@@ -81,25 +81,25 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       //TODO Beware of incomplete input, because the client does not fill everything
       // -> likely done in the meta table
 
-      BaseScriptModel scriptModel = LogicHelper.CreateInsertScriptModel(tableName, completeKeyInfo, dictCollections, now, meta);
+      BaseScriptModel scriptModel = LogicHelper.CreateInsertScriptModel(commonDataTableName, completeKeyInfo, dictCollections, now, meta);
       object generatedId = SQLServerHandler.ExecuteScalar(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
-      AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + tableName + "/" + generatedId?.ToString()));
-      return RedirectToAction(Aibe.DH.IndexActionName, new { tableName = tableName });
+      AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + commonDataTableName + "/" + generatedId?.ToString()));
+      return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 
     //Likely used by filter and create edit
     [CommonActionFilter]
-    public ActionResult Edit(string tableName, int id) {
-      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
-      Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(tableName, id);
+    public ActionResult Edit(string commonDataTableName, int id) {
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(commonDataTableName, id);
       AiweCreateEditModel model = new AiweCreateEditModel(meta, Aibe.DH.EditActionName, LogicHelper.ObjectDictionaryToStringDictionary(objectDictionary));
       return View(model);
     }
 
     [HttpPost]
     [CommonActionFilter]
-    public ActionResult Edit(string tableName, int cid, FormCollection collections) {
-      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
+    public ActionResult Edit(string commonDataTableName, int cid, FormCollection collections) {
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       //Again, so that it will replaced with the given collection, using capital "C" -> "Cid"
       ModelState.Remove("cid"); //This is unique because the field parameters here contain "cid". 
       DateTime now = DateTime.Now;
@@ -111,7 +111,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       List<string> checkExclusions = new List<string> { Aibe.DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
 
       //Check model state's validity
-      Dictionary<string, string> errorDict = new AiweCheckerHelper().CheckModelValidity(Aiwe.DH.TableModelClassPrefix, tableName, meta.ArrangedDataColumns, 
+      Dictionary<string, string> errorDict = new AiweCheckerHelper().CheckModelValidity(Aiwe.DH.TableModelClassPrefix, commonDataTableName, meta.ArrangedDataColumns, 
         dictCollections, ModelState.Keys.ToList(), meta, checkExclusions, AiweUserHelper.UserIsDeveloper(User), now, Aibe.DH.EditActionName);
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid) {
@@ -120,22 +120,22 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       }
 
       var filteredKeys = dictCollections.Keys.Where(x => !x.EqualsIgnoreCase(Aibe.DH.Cid)); //everything filled but the Cid
-      var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(tableName, dictCollections, filteredKeys, meta.ArrangedDataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.EditActionName);
+      var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(commonDataTableName, dictCollections, filteredKeys, meta.ArrangedDataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.EditActionName);
       if (completeKeyInfo == null || completeKeyInfo.ValidKeys == null || !completeKeyInfo.ValidKeys.Any()) {
-        ViewBag.ErrorMessage = string.Format(Aibe.LCZ.E_InvalidOrEmptyParameter, tableName);
+        ViewBag.ErrorMessage = string.Format(Aibe.LCZ.E_InvalidOrEmptyParameter, commonDataTableName);
         return View(Aiwe.DH.ErrorViewName);
       }
 
-      BaseScriptModel scriptModel = LogicHelper.CreateUpdateScriptModel(tableName, cid, completeKeyInfo, dictCollections, now);
+      BaseScriptModel scriptModel = LogicHelper.CreateUpdateScriptModel(commonDataTableName, cid, completeKeyInfo, dictCollections, now);
       SQLServerHandler.ExecuteScript(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
-      AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + tableName + "/" + cid));
-      return RedirectToAction(Aibe.DH.IndexActionName, new { tableName = tableName });
+      AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + commonDataTableName + "/" + cid));
+      return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 
     [CommonActionFilter]
-    public ActionResult Delete(string tableName, int id) { //Where all common tables details are returned and can be deleted
-      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
-      Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(tableName, id);
+    public ActionResult Delete(string commonDataTableName, int id) { //Where all common tables details are returned and can be deleted
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(commonDataTableName, id);
       AiweDetailsModel model = new AiweDetailsModel(meta, id, LogicHelper.ObjectDictionaryToStringDictionary(objectDictionary));
       return View(model);
     }
@@ -143,16 +143,16 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     [HttpPost]
     [CommonActionFilter]
     [ActionName(Aibe.DH.DeleteActionName)]
-    public ActionResult DeletePost(string tableName, int id) { //Where all common tables deletes are returned and can be deleted
-      LogicHelper.DeleteItem(tableName, id); //Currently do not return any error
-      return RedirectToAction(Aibe.DH.IndexActionName, new { tableName = tableName });
+    public ActionResult DeletePost(string commonDataTableName, int id) { //Where all common tables deletes are returned and can be deleted
+      LogicHelper.DeleteItem(commonDataTableName, id); //Currently do not return any error
+      return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 
     //Later add filter to check if a user has right to see this table
     [CommonActionFilter]
-    public ActionResult Details(string tableName, int id) { //there must be a number named cid (common Id)
-      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
-      Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(tableName, id);
+    public ActionResult Details(string commonDataTableName, int id) { //there must be a number named cid (common Id)
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(commonDataTableName, id);
       AiweDetailsModel model = new AiweDetailsModel(meta, id, LogicHelper.ObjectDictionaryToStringDictionary(objectDictionary));
       return View(model);
     }
@@ -160,12 +160,12 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     [CommonActionFilter]
     //Base code by: ZYS
     //Edited by: Ian
-    public ActionResult ExportToExcel(string tableName) {
+    public ActionResult ExportToExcel(string commonDataTableName) {
       try {
         DataTable tbl = (DataTable)TempData["DataTableForExcel"];
         string tempFolderPath = Server.MapPath("~/temp");
         Directory.CreateDirectory(tempFolderPath); //the checking if the directory exists is already inside.          
-        string excelFilePath = Path.Combine(tempFolderPath, tableName + "_Temp.xls");//temp file
+        string excelFilePath = Path.Combine(tempFolderPath, commonDataTableName + "_Temp.xls");//temp file
         string mimeType = "application/vnd.ms-excel";
         byte[] buff = null;
         buff = exportToExcelFile(tbl, excelFilePath);
@@ -176,7 +176,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       } catch (Exception ex) {
         string exStr = ex.ToString();
         LogHelper.Error(User.Identity.Name, null, Aiwe.DH.Mvc, Aiwe.DH.MvcCommonControllerName,
-          tableName, "ExportToExcel", null, exStr);
+          commonDataTableName, "ExportToExcel", null, exStr);
 #if DEBUG
         ViewBag.ErrorMessage = exStr;
 #endif
@@ -187,9 +187,9 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     #region live javascript use
     //Called when live dropdown is lifted up
     [CommonActionFilter]
-    public JsonResult GetLiveDropDownItems(string tableName, string changedColumnName, string[] originalColumnValues,
+    public JsonResult GetLiveDropDownItems(string commonDataTableName, string changedColumnName, string[] originalColumnValues,
       string[] liveddColumnNames, string[] liveddDataTypes, string[] liveddItems) {
-      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       List<LiveDropDownResult> results = meta.GetLiveDropDownResults(
         changedColumnName, originalColumnValues, liveddColumnNames, liveddDataTypes, liveddItems);
       foreach (var result in results)
@@ -199,8 +199,8 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
     //Called when live dropdown is lifted up
     [CommonActionFilter]
-    public JsonResult GetLiveSubcolumns(string tableName, string changedColumnName, string changedColumnValue) {
-      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
+    public JsonResult GetLiveSubcolumns(string commonDataTableName, string changedColumnName, string changedColumnValue) {
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       List<ListColumnResult> results = meta.GetLiveListColumnResults(changedColumnName, changedColumnValue);
       foreach (var result in results)
         result.ViewString = result.UsedListColumnInfo.GetHTML(result.DataValue);
@@ -209,8 +209,8 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
     //Called for add or delete, when a list-column button (add or delete) is pressed
     [CommonActionFilter]
-    public JsonResult GetSubcolumnItems(string tableName, string columnName, string dataValue, string lcType, int deleteNo, string addString) {
-      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
+    public JsonResult GetSubcolumnItems(string commonDataTableName, string columnName, string dataValue, string lcType, int deleteNo, string addString) {
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       ListColumnResult result = new ListColumnResult(null, dataValue); //no need to have columnName here, only dataValue is needed
       if(!result.AddOrDeleteDataValue(deleteNo, meta, columnName, addString, lcType))
         return Json(result, JsonRequestBehavior.AllowGet); //if not successful, no need to take time and built HTML string      
@@ -222,9 +222,9 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     //Called when list-column input is focused out (change the ListColumnItem description)
     //IMPORTANT: tableName parameter, though not used in the function, is necessary to have because of the CommonActionFilter. Do not remove
     [CommonActionFilter]
-    public JsonResult UpdateSubcolumnItemsDescription(string tableName, string columnName, int rowNo, int columnNo, string dataValue, string inputValue, string lcType) {
+    public JsonResult UpdateSubcolumnItemsDescription(string commonDataTableName, string columnName, int rowNo, int columnNo, string dataValue, string inputValue, string lcType) {
       ListColumnResult result = new ListColumnResult(null, dataValue);
-      MetaInfo meta = AiweTableHelper.GetMeta(tableName);
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       ListColumnInfo info = meta.GetListColumnInfo(columnName);
       result.UpdateDataValue(info, inputValue, rowNo, columnNo, lcType); //the result does not matter here, just return it anyway      
       return Json(result, JsonRequestBehavior.AllowGet); //Return the result, successful or not

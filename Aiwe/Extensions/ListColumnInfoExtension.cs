@@ -105,18 +105,18 @@ namespace Aiwe.Extensions {
                 }
                 sb.Append("</select>");
                 break;
-              case 'C':
-                sb.Append("<select");
+              case 'C': //Might be easier when NOT using Aibe.LCZ.GetLocalizedLcBooleanOptions(). Thus it is implemented so.
+                sb.Append("<select");                
                 insertCommonHTMLAttributes(sb, info.Name, count, subItem.SubItemType, columnNo, false);
                 sb.Append(">");
                 string def = subItem.Value?.ToLower()?.Trim();
                 string selectedStr = " selected=\"selected\"";
                 string addStr = string.IsNullOrWhiteSpace(def) ? selectedStr : string.Empty;
                 sb.Append(string.Concat("<option value=\"\"", addStr, "></option>"));
-                addStr = def.EqualsIgnoreCase(Aibe.DH.LcYes) ? selectedStr : string.Empty;
-                sb.Append(string.Concat("<option value=\"", Aibe.DH.LcYes, "\"", addStr, ">", Aibe.LCZ.W_LcYes, "</option>"));
-                addStr = def.EqualsIgnoreCase(Aibe.DH.LcNo) ? selectedStr : string.Empty;
-                sb.Append(string.Concat("<option value=\"", Aibe.DH.LcNo, "\"", addStr, ">", Aibe.LCZ.W_LcNo, "</option>"));
+                addStr = def.EqualsIgnoreCase(Aibe.LCZ.W_LcYes) ? selectedStr : string.Empty;
+                sb.Append(string.Concat("<option value=\"", Aibe.LCZ.W_LcYes, "\"", addStr, ">", Aibe.LCZ.W_LcYes, "</option>"));
+                addStr = def.EqualsIgnoreCase(Aibe.LCZ.W_LcNo) ? selectedStr : string.Empty;
+                sb.Append(string.Concat("<option value=\"", Aibe.LCZ.W_LcNo, "\"", addStr, ">", Aibe.LCZ.W_LcNo, "</option>"));
                 sb.Append("</select>");
                 break;
               default: break;

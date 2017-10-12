@@ -78,6 +78,12 @@ namespace Aiwe.ActionFilters {
         return;
       }
 
+      //only developers are allowed to access MetaItem table
+      if (request.TableName.EqualsIgnoreCase(Aibe.DH.MetaTableName) && !AiweUserHelper.UserIsDeveloper(user)) {
+        actionContext.Request.Properties.Add(new KeyValuePair<string, object>(errorName, ValuesActionFilterResult.InsufficientAccessRight));
+        return;
+      }
+
       if (AiweUserHelper.UserHasMainAdminRight(user)) //handles null too
         return; //no need to check further for such user
 
@@ -100,12 +106,14 @@ namespace Aiwe.ActionFilters {
         return;
 
       if (meta.Actions == null || meta.Actions.Count <= 0) {
-        actionContext.Request.Properties.Add(new KeyValuePair<string, object>(errorName, ValuesActionFilterResult.ActionNotFound));
+        actionContext.Request.Properties
+          .Add(new KeyValuePair<string, object>(errorName, ValuesActionFilterResult.ActionNotFound));
         return;
       }
 
       if (!meta.Actions.Any(x => x.Name.EqualsIgnoreCase(actionName))) { //action not found in the list
-        actionContext.Request.Properties.Add(new KeyValuePair<string, object>(errorName, ValuesActionFilterResult.ActionNotFound));
+        actionContext.Request.Properties
+          .Add(new KeyValuePair<string, object>(errorName, ValuesActionFilterResult.ActionNotFound));
       } else {
         ActionInfo actionInfo = meta.Actions.FirstOrDefault(x => x.Name.EqualsIgnoreCase(actionName));
         if (!actionInfo.IsAllowed(user, isWebApi: true)) //check if action is not allowed, this is the only part where it uses "isWebApi" option

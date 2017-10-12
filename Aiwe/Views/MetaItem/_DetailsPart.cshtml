@@ -1,6 +1,11 @@
 ﻿@model Aiwe.Models.DB.MetaItem
 
 <div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.Cid)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.Cid)</div>
+  <br />
+</div>
+<div class="row">
   <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.TableName)</b></div>
   <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.TableName)</div>
   <br />

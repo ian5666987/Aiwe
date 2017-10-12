@@ -17,7 +17,7 @@
 <br />
 
 <div class="row">
-  @using (Html.BeginForm("CryptoSerialize", (string)ViewBag.ControllerName, FormMethod.Post, new { id = "csForm" })) {
+  @using (Html.BeginForm(Aibe.DH.CryptoSerializeAction, (string)ViewBag.ControllerName, FormMethod.Post, new { id = "csForm" })) {
     @Html.AntiForgeryToken()
     <div class="form-group">
       <button class="btn btn-success col-md-2" style="margin-left:12px; margin-right:8px; margin-top:15px;" onclick="submitCSForm()">

@@ -17,7 +17,7 @@ namespace Aiwe {
       FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
       RouteConfig.RegisterRoutes(RouteTable.Routes);
       BundleConfig.RegisterBundles(BundleTable.Bundles);
-      CryptographyHelper.Init();
+      CryptographyHelper.Init(ASTrio.DH.PredefinedKeyName, ASTrio.DH.PredefinedExtension, ASTrio.DH.PredefinedPassword);
       LCZ.Init(); //For localization
 
 #if DEBUG

@@ -1,10 +1,16 @@
 namespace Aiwe.Models.DB {
+  using System;
+  using System.Collections.Generic;
   using System.ComponentModel.DataAnnotations;
   using System.ComponentModel.DataAnnotations.Schema;
+  using System.Data.Entity.Spatial;
 
   [Table("MetaItem")]
   public partial class MetaItem {
     [Key]
+    public int Cid { get; set; }
+
+    [Required]
     [StringLength(100)]
     public string TableName { get; set; }
 
@@ -28,7 +34,7 @@ namespace Aiwe.Models.DB {
     [StringLength(500)]
     public string DefaultTableActionList { get; set; }
 
-    [StringLength(500)]
+    [StringLength(4000)]
     public string TextFieldColumns { get; set; }
 
     [StringLength(1000)]

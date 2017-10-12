@@ -248,6 +248,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ASTrio.cs" />
     <Compile Include="Helpers\AiweDropDownHelper.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="Extensions\LiveDropDownResultExtension.cs" />
@@ -261,7 +262,7 @@
     <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\MetaController.cs" />
+    <Compile Include="Controllers\MetaItemController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\TeamController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -288,31 +289,6 @@
     <Compile Include="Helpers\AiweFileHelper.cs" />
     <Compile Include="Helpers\AiweViewHelper.cs" />
     <Compile Include="Models\AiweCreateEditModel.cs" />
-    <Compile Include="Models\MVC\AccountViewModels.cs" />
-    <Compile Include="Models\AiweBaseTableModel.cs" />
-    <Compile Include="Models\DB\CoreAccessLog.cs" />
-    <Compile Include="Models\DB\CoreActionLog.cs" />
-    <Compile Include="Models\DB\CoreErrorLog.cs" />
-    <Compile Include="Models\DB\CoreUserMap.cs" />
-    <Compile Include="Models\DB\MetaItem.cs" />
-    <Compile Include="Models\DB\Partials\PartialMetaItem.cs" />
-    <Compile Include="Models\AiweDetailsModel.cs" />
-    <Compile Include="Models\MVC\IdentityModels.cs" />
-    <Compile Include="Models\MVC\ManageViewModels.cs" />
-    <Compile Include="Models\ViewModels\ApplicationUserCreateViewModel.cs" />
-    <Compile Include="Models\ViewModels\ApplicationUserEditViewModel.cs" />
-    <Compile Include="Models\ViewModels\ApplicationUserViewModel.cs" />
-    <Compile Include="Models\ViewModels\RoleViewModel.cs" />
-    <Compile Include="Models\AiweFilterIndexModel.cs" />
-    <Compile Include="Models\Filters\ApplicationUserFilter.cs" />
-    <Compile Include="Models\Filters\TeamFilter.cs" />
-    <Compile Include="Extensions\ListColumnInfoExtension.cs" />
-    <Compile Include="Helpers\AiweUserHelper.cs" />
-    <Compile Include="Models\API\ApiRequestResult.cs" />
-    <Compile Include="Models\API\ApiRequestResultConverter.cs" />
-    <Compile Include="Models\API\ClientApiRequestAttachment.cs" />
-    <Compile Include="Models\API\ClientApiRequest.cs" />
-    <Compile Include="Models\API\CheckedClientApiRequest.cs" />
     <Compile Include="Models\DB\CFG_CUS_INF.cs" />
     <Compile Include="Models\DB\CFG_CUS_LOC.cs" />
     <Compile Include="Models\DB\CFG_CUS_SUB.cs" />
@@ -326,6 +302,11 @@
     <Compile Include="Models\DB\CFG_TEM_DRP.cs" />
     <Compile Include="Models\DB\CFG_TEM_LST.cs" />
     <Compile Include="Models\DB\CFG_TRN_ACT.cs" />
+    <Compile Include="Models\DB\CoreAccessLog.cs" />
+    <Compile Include="Models\DB\CoreActionLog.cs" />
+    <Compile Include="Models\DB\CoreDataModel.cs" />
+    <Compile Include="Models\DB\CoreErrorLog.cs" />
+    <Compile Include="Models\DB\CoreUserMap.cs" />
     <Compile Include="Models\DB\EML_EMAILINFO.cs" />
     <Compile Include="Models\DB\EML_TEMPLATE.cs" />
     <Compile Include="Models\DB\JOB_CAL_INF.cs" />
@@ -334,7 +315,7 @@
     <Compile Include="Models\DB\LOG_JOB_HST.cs" />
     <Compile Include="Models\DB\LOG_TRN_HST.cs" />
     <Compile Include="Models\DB\LOG_USR_ACT.cs" />
-    <Compile Include="Models\DB\CoreDataModel.cs" />
+    <Compile Include="Models\DB\MetaItem.cs" />
     <Compile Include="Models\DB\ORD_CUS_CON.cs" />
     <Compile Include="Models\DB\ORD_CUS_PRD.cs" />
     <Compile Include="Models\DB\ORD_CUS_REQ.cs" />
@@ -354,6 +335,26 @@
     <Compile Include="Models\DB\VServiceTest.cs" />
     <Compile Include="Models\DB\VTrainingLog.cs" />
     <Compile Include="Models\DB\VTrainingTest.cs" />
+    <Compile Include="Models\MVC\AccountViewModels.cs" />
+    <Compile Include="Models\AiweBaseTableModel.cs" />
+    <Compile Include="Models\DB\Partials\PartialMetaItem.cs" />
+    <Compile Include="Models\AiweDetailsModel.cs" />
+    <Compile Include="Models\MVC\IdentityModels.cs" />
+    <Compile Include="Models\MVC\ManageViewModels.cs" />
+    <Compile Include="Models\ViewModels\ApplicationUserCreateViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApplicationUserEditViewModel.cs" />
+    <Compile Include="Models\ViewModels\ApplicationUserViewModel.cs" />
+    <Compile Include="Models\ViewModels\RoleViewModel.cs" />
+    <Compile Include="Models\AiweFilterIndexModel.cs" />
+    <Compile Include="Models\Filters\ApplicationUserFilter.cs" />
+    <Compile Include="Models\Filters\TeamFilter.cs" />
+    <Compile Include="Extensions\ListColumnInfoExtension.cs" />
+    <Compile Include="Helpers\AiweUserHelper.cs" />
+    <Compile Include="Models\API\ApiRequestResult.cs" />
+    <Compile Include="Models\API\ApiRequestResultConverter.cs" />
+    <Compile Include="Models\API\ClientApiRequestAttachment.cs" />
+    <Compile Include="Models\API\ClientApiRequest.cs" />
+    <Compile Include="Models\API\CheckedClientApiRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="Startup.cs" />
@@ -482,17 +483,9 @@
     <Content Include="Views\Shared\InsufficientAccessRightAction.cshtml" />
     <Content Include="Views\Shared\ActionNotFound.cshtml" />
     <Content Include="Views\Manage\ChangeDisplayName.cshtml" />
-    <Content Include="Views\Meta\_CreateEditPart.cshtml" />
-    <Content Include="Views\Meta\_DetailsPart.cshtml" />
-    <Content Include="Views\Meta\_Filter.cshtml" />
-    <Content Include="Views\Meta\_Table.cshtml" />
-    <Content Include="Views\Meta\Create.cshtml" />
-    <Content Include="Views\Meta\Delete.cshtml" />
-    <Content Include="Views\Meta\Details.cshtml" />
-    <Content Include="Views\Meta\Edit.cshtml" />
-    <Content Include="Views\Meta\Index.cshtml" />
-    <Content Include="Views\Meta\CryptoSerialize.cshtml" />
-    <Content Include="Views\Meta\Success.cshtml" />
+    <Content Include="Views\MetaItem\_DetailsPart.cshtml" />
+    <Content Include="Views\MetaItem\CryptoSerialize.cshtml" />
+    <Content Include="Views\MetaItem\Success.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

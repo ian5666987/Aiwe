@@ -14,8 +14,8 @@ namespace Aiwe {
 
       routes.MapRoute(
         name: "CommonRoute",
-        url: Aiwe.DH.MvcCommonControllerName + "/{action}/{tablename}/{id}",
-        defaults: new { controller = Aiwe.DH.MvcCommonControllerName, tablename = "NotFound", action = Aibe.DH.IndexActionName, id = UrlParameter.Optional }
+        url: Aiwe.DH.MvcCommonControllerName + "/{action}/{commonDataTableName}/{id}",
+        defaults: new { controller = Aiwe.DH.MvcCommonControllerName, commonDataTableName = "NotFound", action = Aibe.DH.IndexActionName, id = UrlParameter.Optional }
       );
 
       routes.MapRoute(

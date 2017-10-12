@@ -195,43 +195,41 @@
       @Html.Partial(ViewBag.NavigationUsed == null ? "_SharedNavigation" : (string)ViewBag.NavigationUsed, Model.NavData)
       <br />
 
-              if (Model.Meta.HasCreateAction) {
-                if (Model.IsAllowedToCallAction(Aibe.DH.CreateActionName)){
-                  bool defaultCreateAction = Model.Meta.IsDefaultAction(Aibe.DH.CreateActionName);
-                  string createLink = defaultCreateAction ? "../../../../../../" + Aiwe.DH.MvcCommonControllerName + "/" + Aibe.DH.CreateActionName + "/" + Model.TableName :
-                    "../../../../../../" + Model.TableName + "/" + Aibe.DH.CreateActionName;
-        <div class="row">
-          <div class="col-md-3">
-            <a href="@createLink"
-                class="btn btn-success"
-                style="margin-top:5px;margin-right:5px;">
-              <span class="glyphicon glyphicon-plus"></span> @Aibe.LCZ.W_CreateNew
-            </a>
-          </div>
+    <div class="row">
+    @if (Model.Meta.HasCreateAction) {
+      if (Model.IsAllowedToCallAction(Aibe.DH.CreateActionName)) {
+        bool defaultCreateAction = Model.Meta.IsDefaultAction(Aibe.DH.CreateActionName);
+        string createLink = defaultCreateAction ? "../../../../../../" + Aiwe.DH.MvcCommonControllerName + "/" + Aibe.DH.CreateActionName + "/" + Model.TableName :
+        "../../../../../../" + Model.TableName + "/" + Aibe.DH.CreateActionName;
+        <div class="col-md-2">
+          <a href="@createLink"
+              class="btn btn-success btn-block"
+              style="margin-top:5px;margin-right:5px;">
+            <span class="glyphicon glyphicon-plus"></span> @Aibe.LCZ.W_CreateNew
+          </a>
         </div>
       }
     }
 
-    if (Model.Meta.HasTableAction) {
-      <div class="row">
-        @foreach (var tableAction in Model.Meta.TableActions) {          
-          if (Model.IsAllowedToCallTableAction(tableAction.Name)) {
-            <div class="col-md-2">
-              @if (Model.Meta.IsDefaultTableAction(tableAction.Name)) {
-                <a href="../../../../../@Aiwe.DH.MvcCommonControllerName/@tableAction.Name/@Model.TableName" class="btn btn-primary btn-block" style="margin-top:5px;margin-right:5px;">
-                  @tableAction.Name.ToCamelBrokenString()
-                </a>
-              } else {
-                <a href="../../../../../@Model.TableName/@tableAction.Name" class="btn btn-primary btn-block" style="margin-top:5px;margin-right:5px;">
-                  @tableAction.Name.ToCamelBrokenString()
-                </a>
-              }
-            </div>
-          }
+    @if (Model.Meta.HasTableAction) {
+      foreach (var tableAction in Model.Meta.TableActions) {
+        if (Model.IsAllowedToCallTableAction(tableAction.Name)) {
+          <div class="col-md-3">
+            @if (Model.Meta.IsDefaultTableAction(tableAction.Name)) {
+              <a href="../../../../../@Aiwe.DH.MvcCommonControllerName/@tableAction.Name/@Model.TableName" class="btn btn-primary btn-block" style="margin-top:5px;margin-right:5px;">
+                <span class="glyphicon glyphicon-align-justify"></span> @tableAction.Name.ToCamelBrokenString()
+              </a>
+            } else {
+              <a href="../../../../../@Model.TableName/@tableAction.Name" class="btn btn-primary btn-block" style="margin-top:5px;margin-right:5px;">
+                <span class="glyphicon glyphicon-align-justify"></span> @tableAction.Name.ToCamelBrokenString()
+              </a>
+            }
+          </div>
         }
-      </div>
-      <br />
+      }          
     }
+    </div>
+    <br />
   }
 }
 

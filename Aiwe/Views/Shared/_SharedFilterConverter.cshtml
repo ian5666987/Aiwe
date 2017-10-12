@@ -9,5 +9,4 @@
   case "ApplicationUser": @Html.Partial("_Filter", baseFilter == null ? new ApplicationUserFilter() : (ApplicationUserFilter)ViewBag.Filter) break;
   case "Team": @Html.Partial("_Filter", baseFilter == null ? new TeamFilter() : (TeamFilter)ViewBag.Filter) break;
   case "Role": @Html.Partial("_Filter", baseFilter == null ? new RoleFilter() : (RoleFilter)ViewBag.Filter) break;
-  case "Meta": @Html.Partial("_Filter", baseFilter == null ? new MetaFilter() : (MetaFilter)ViewBag.Filter) break;
 }
