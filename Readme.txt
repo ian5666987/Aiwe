@@ -1,3 +1,9 @@
+v0.8.1.0 alpha (13-Oct-2017 15:55)
+updates:
+- AiweCheckerHelper is reduced, CheckerHelper strengthened
+- Aibe uses reflections for BaseMetaItem instead of hardcoding
+
+-----------------------------------------------------------------------------------------------
 v0.8.0.1 alpha (13-Oct-2017 12:57)
 bugs fixed:
 - columnNamesExceptCid equals lambda expression should actually be NOT equals. Fixed.
