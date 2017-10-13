@@ -1,3 +1,11 @@
+v0.8.0.1 alpha (13-Oct-2017 12:57)
+bugs fixed:
+- columnNamesExceptCid equals lambda expression should actually be NOT equals. Fixed.
+
+updates:
+- Improved Aibe.dll
+
+-----------------------------------------------------------------------------------------------
 v0.8.0.0 alpha (12-Oct-2017 23:00)
 bugs fixed:
 - Crypto/Decrypto-serialize breaks when Settings folder does not exist. Fixed.

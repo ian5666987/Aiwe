@@ -409,7 +409,7 @@ namespace Aiwe.Models.API {
         List<SqlParameter> pars = new List<SqlParameter>();
         List<string> items = StringHelper.CreateSqlValueList(Value); //Value.Split(',').Select(x => x.Trim()).ToList(); //this is a wrong way to do it since SQL string may contain comma!
         int index = 0; //take from the item one by one
-        List<string> columnNamesExceptCid = columnNames.Where(x => x.EqualsIgnoreCase(Aibe.DH.Cid)).ToList(); //take the columnName except Cid
+        List<string> columnNamesExceptCid = columnNames.Where(x => !x.EqualsIgnoreCase(Aibe.DH.Cid)).ToList(); //take the columnName except Cid
         if (items.Count > columnNamesExceptCid.Count) //not possible to do this be it insert or update
           return null;
         DateTime refDtNow = DateTime.Now;
