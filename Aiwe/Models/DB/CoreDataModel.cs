@@ -45,6 +45,7 @@ namespace Aiwe.Models.DB {
     public virtual DbSet<TestTableCommonF> TestTableCommonFs { get; set; }
     public virtual DbSet<TestTableCommonG> TestTableCommonGs { get; set; }
     public virtual DbSet<TestTableCommonH> TestTableCommonHs { get; set; }
+    public virtual DbSet<TestTableCommonI> TestTableCommonIs { get; set; }
     public virtual DbSet<TestTableSpecificA> TestTableSpecificAs { get; set; }
     public virtual DbSet<TestTableSpecificB> TestTableSpecificBs { get; set; }
     public virtual DbSet<CFG_CUS_LOC> CFG_CUS_LOC { get; set; }

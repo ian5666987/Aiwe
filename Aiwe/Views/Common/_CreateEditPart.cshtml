@@ -30,12 +30,19 @@
     string controlClasses = "form-control form-control-common-plus";
     string dataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
 
-    if (!isColumnIncluded) { //skipped columns
+    if (!isColumnIncluded) { //skipped columns, include prefilled columns
       if (cn == Aibe.DH.Cid) { //must already be declared outside for edit otherwise must not be included. Either case, skips.
         continue; //TODO not sure if we are to retain the capital 'C' here and thus must use equal-equal signs...
       }
 
-      //all non-edited items must exist but is hidden       
+      //Now it supports prefilled columns
+      PrefilledColumnInfo pcInfo = Model.Meta.GetPrefilledColumn(cn);
+      if (pcInfo != null && isCreate) { //is create and is prefilled column, hides it and fill it, as long as it is create
+        <input type="hidden" name="@cn" value="@pcInfo.Value" />
+        continue;
+      }
+
+      //all non-edited items must exist but is hidden
       if (dataType.EqualsIgnoreCase(Aibe.DH.DateTimeDataType)) { //The only data type that is quite problematic to deal with is DateTime
         string dataValueRaw = Model.GetData(cn);
         DateTime? dataValueDt = string.IsNullOrWhiteSpace(dataValueRaw) ? null : new DateTime?(DateTime.Parse(dataValueRaw));
@@ -45,8 +52,8 @@
         <input type="hidden" name="@cn" class="@controlClasses" value="@dataDateValue" />
         <input type="hidden" name="@dataTimeName" class="@controlClasses" value="@dataTimeValue" />
         continue;
-      } 
-      
+      }
+
       //other data type is straight forward to deal with, just hide them
       string dataValue = Model.GetData(cn);
       <input type="hidden" name="@cn" value="@dataValue" />            

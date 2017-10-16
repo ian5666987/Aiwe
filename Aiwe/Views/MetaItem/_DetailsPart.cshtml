@@ -16,6 +16,16 @@
   <br />
 </div>
 <div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.TableSource)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.TableSource)</div>
+  <br />
+</div>
+<div class="row">
+  <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.PrefilledColumns)</b></div>
+  <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.PrefilledColumns)</div>
+  <br />
+</div>
+<div class="row">
   <div class="@ViewBag.LabelClasses"><b>@Html.LabelFor(model => model.ItemsPerPage)</b></div>
   <div class="@ViewBag.EditorClass">@Html.DisplayFor(model => model.ItemsPerPage)</div>
   <br />

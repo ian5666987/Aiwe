@@ -1,3 +1,10 @@
+v0.9.0.0 alpha (16-Oct-2017 15:35)
+updates:
+- Aibe now has TableSource and PrefilledColumns! Read the guideline for more details.
+- StringHelper is removed from Aibe.
+- Strong/Weak check options are added in the CheckModelValidity -> CheckerHelper
+
+-----------------------------------------------------------------------------------------------
 v0.8.1.0 alpha (13-Oct-2017 15:55)
 updates:
 - AiweCheckerHelper is reduced, CheckerHelper strengthened

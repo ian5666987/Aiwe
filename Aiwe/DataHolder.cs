@@ -43,6 +43,7 @@ namespace Aiwe {
     public const string ErrorLocalActionName = "ErrorLocal";
     public const string ErrorActionName = "Error";
     public const string ErrorViewName = "Error";
+    public const bool UseStrongCheck = true;
 
     //Table
     public const string TableModelClassPrefix = "Aiwe.Models.DB.";

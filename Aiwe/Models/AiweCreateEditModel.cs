@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using Aibe.Models;
+﻿using Aibe.Models;
 using Aibe.Models.Core;
 using Extension.String;
-using System.Linq;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Security.Principal;
 
 namespace Aiwe.Models {
@@ -22,7 +22,7 @@ namespace Aiwe.Models {
     public virtual bool IsColumnIncludedInCreateEdit(DataColumn column, IPrincipal user) {
       if (column.Unique || column.ColumnName.EqualsIgnoreCase(Aibe.DH.Cid)) //Cid and unique column always not included in the create and edit
         return false;
-      return IsColumnIncluded(Meta.CreateEditExclusions, column.ColumnName, user);
+      return IsColumnIncluded(Meta.CreateEditExclusions, column.ColumnName, user) && !Meta.IsPrefilledColumn(column.ColumnName);
     }
   }
 }

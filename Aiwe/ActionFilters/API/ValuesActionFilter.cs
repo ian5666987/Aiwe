@@ -26,7 +26,7 @@ namespace Aiwe.ActionFilters {
 
       string errorName = Aiwe.DH.ValuesActionFilterError;
 
-      if (!actionContext.ModelState.IsValid) { //could probably be used to force the existence of tableName
+      if (!actionContext.ModelState.IsValid) { //could probably be used to force the existence of table name
         actionContext.Request.Properties.Add(new KeyValuePair<string, object>(errorName, ValuesActionFilterResult.ModelStateInvalid));
         return;
       }

@@ -1,123 +1,131 @@
-namespace Aiwe.Models.DB {
-  using System;
-  using System.Collections.Generic;
-  using System.ComponentModel.DataAnnotations;
-  using System.ComponentModel.DataAnnotations.Schema;
-  using System.Data.Entity.Spatial;
+namespace Aiwe.Models.DB
+{
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Data.Entity.Spatial;
 
-  [Table("MetaItem")]
-  public partial class MetaItem {
-    [Key]
-    public int Cid { get; set; }
+    [Table("MetaItem")]
+    public partial class MetaItem
+    {
+        [Key]
+        public int Cid { get; set; }
 
-    [Required]
-    [StringLength(100)]
-    public string TableName { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string TableName { get; set; }
 
-    [StringLength(100)]
-    public string DisplayName { get; set; }
+        [StringLength(100)]
+        public string DisplayName { get; set; }
 
-    public short? ItemsPerPage { get; set; }
+        [StringLength(100)]
+        public string TableSource { get; set; }
 
-    [StringLength(500)]
-    public string OrderBy { get; set; }
+        [StringLength(4000)]
+        public string PrefilledColumns { get; set; }
 
-    [StringLength(2000)]
-    public string ActionList { get; set; }
+        public short? ItemsPerPage { get; set; }
 
-    [StringLength(500)]
-    public string DefaultActionList { get; set; }
+        [StringLength(500)]
+        public string OrderBy { get; set; }
 
-    [StringLength(500)]
-    public string TableActionList { get; set; }
+        [StringLength(2000)]
+        public string ActionList { get; set; }
 
-    [StringLength(500)]
-    public string DefaultTableActionList { get; set; }
+        [StringLength(500)]
+        public string DefaultActionList { get; set; }
 
-    [StringLength(4000)]
-    public string TextFieldColumns { get; set; }
+        [StringLength(500)]
+        public string TableActionList { get; set; }
 
-    [StringLength(1000)]
-    public string PictureColumns { get; set; }
+        [StringLength(500)]
+        public string DefaultTableActionList { get; set; }
 
-    [StringLength(1000)]
-    public string IndexShownPictureColumns { get; set; }
+        [StringLength(4000)]
+        public string TextFieldColumns { get; set; }
 
-    [StringLength(500)]
-    public string RequiredColumns { get; set; }
+        [StringLength(1000)]
+        public string PictureColumns { get; set; }
 
-    [StringLength(2000)]
-    public string NumberLimitColumns { get; set; }
+        [StringLength(1000)]
+        public string IndexShownPictureColumns { get; set; }
 
-    [StringLength(2000)]
-    public string RegexCheckedColumns { get; set; }
+        [StringLength(500)]
+        public string RequiredColumns { get; set; }
 
-    [StringLength(2000)]
-    public string RegexCheckedColumnExamples { get; set; }
+        [StringLength(2000)]
+        public string NumberLimitColumns { get; set; }
 
-    [StringLength(500)]
-    public string UserRelatedFilters { get; set; }
+        [StringLength(2000)]
+        public string RegexCheckedColumns { get; set; }
 
-    public bool? DisableFilter { get; set; }
+        [StringLength(2000)]
+        public string RegexCheckedColumnExamples { get; set; }
 
-    [StringLength(2000)]
-    public string ColumnExclusionList { get; set; }
+        [StringLength(500)]
+        public string UserRelatedFilters { get; set; }
 
-    [StringLength(2000)]
-    public string FilterExclusionList { get; set; }
+        public bool? DisableFilter { get; set; }
 
-    [StringLength(2000)]
-    public string DetailsExclusionList { get; set; }
+        [StringLength(2000)]
+        public string ColumnExclusionList { get; set; }
 
-    [StringLength(2000)]
-    public string CreateEditExclusionList { get; set; }
+        [StringLength(2000)]
+        public string FilterExclusionList { get; set; }
 
-    [StringLength(2000)]
-    public string AccessExclusionList { get; set; }
+        [StringLength(2000)]
+        public string DetailsExclusionList { get; set; }
 
-    [StringLength(4000)]
-    public string ColoringList { get; set; }
+        [StringLength(2000)]
+        public string CreateEditExclusionList { get; set; }
 
-    [StringLength(4000)]
-    public string FilterDropDownLists { get; set; }
+        [StringLength(2000)]
+        public string AccessExclusionList { get; set; }
 
-    [StringLength(4000)]
-    public string CreateEditDropDownLists { get; set; }
+        [StringLength(4000)]
+        public string ColoringList { get; set; }
 
-    [StringLength(1000)]
-    public string PrefixesOfColumns { get; set; }
+        [StringLength(4000)]
+        public string FilterDropDownLists { get; set; }
 
-    [StringLength(1000)]
-    public string PostfixesOfColumns { get; set; }
+        [StringLength(4000)]
+        public string CreateEditDropDownLists { get; set; }
 
-    [StringLength(1000)]
-    public string ListColumns { get; set; }
+        [StringLength(1000)]
+        public string PrefixesOfColumns { get; set; }
 
-    [StringLength(1000)]
-    public string TimeStampColumns { get; set; }
+        [StringLength(1000)]
+        public string PostfixesOfColumns { get; set; }
 
-    [StringLength(500)]
-    public string HistoryTable { get; set; }
+        [StringLength(1000)]
+        public string ListColumns { get; set; }
 
-    [StringLength(2000)]
-    public string HistoryTrigger { get; set; }
+        [StringLength(1000)]
+        public string TimeStampColumns { get; set; }
 
-    [StringLength(1000)]
-    public string AutoGeneratedColumns { get; set; }
+        [StringLength(500)]
+        public string HistoryTable { get; set; }
 
-    [StringLength(1000)]
-    public string ColumnSequence { get; set; }
+        [StringLength(2000)]
+        public string HistoryTrigger { get; set; }
 
-    [StringLength(1000)]
-    public string ColumnAliases { get; set; }
+        [StringLength(1000)]
+        public string AutoGeneratedColumns { get; set; }
 
-    [StringLength(1000)]
-    public string EditShowOnlyColumns { get; set; }
+        [StringLength(1000)]
+        public string ColumnSequence { get; set; }
 
-    [StringLength(4000)]
-    public string ScriptConstructorColumns { get; set; }
+        [StringLength(1000)]
+        public string ColumnAliases { get; set; }
 
-    [StringLength(4000)]
-    public string ScriptColumns { get; set; }
-  }
+        [StringLength(1000)]
+        public string EditShowOnlyColumns { get; set; }
+
+        [StringLength(4000)]
+        public string ScriptConstructorColumns { get; set; }
+
+        [StringLength(4000)]
+        public string ScriptColumns { get; set; }
+    }
 }

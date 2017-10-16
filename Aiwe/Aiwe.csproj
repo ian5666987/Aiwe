@@ -327,6 +327,7 @@
     <Compile Include="Models\DB\TestTableCommonF.cs" />
     <Compile Include="Models\DB\TestTableCommonG.cs" />
     <Compile Include="Models\DB\TestTableCommonH.cs" />
+    <Compile Include="Models\DB\TestTableCommonI.cs" />
     <Compile Include="Models\DB\TestTableSpecificA.cs" />
     <Compile Include="Models\DB\TestTableSpecificB.cs" />
     <Compile Include="Models\DB\VServiceInfo.cs" />

@@ -6,7 +6,7 @@ namespace Aiwe.Models.API {
     public string UserName { get; private set; }
     public string Password { get; private set; }
     public string RequestType { get; private set; }
-    public string TableName { get; private set; }
+    public string TableName { get; private set; } //The request should probably still use table name because it is used to get MetaInfo
     public string ColumnNames { get; private set; } //TODO currently is vulnerable to SQL injection attacks... but leave it for for now...
     public string FilterDesc { get; private set; }
     public string OrderByDesc { get; private set; }

@@ -1,6 +1,6 @@
-﻿using Aibe.Helpers;
-using Aibe.Models.Core;
+﻿using Aibe.Models.Core;
 using Extension.Database.SqlServer;
+using Extension.String;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -18,7 +18,7 @@ namespace Aiwe.Helpers {
         //Get user info here!
         List<DataColumn> userColumns = new List<DataColumn>();
         string userQueryScript = "SELECT TOP 1 * FROM [" + Aibe.DH.UserTableName + "] WHERE [" + Aibe.DH.UserNameColumnName + "] = " +
-          StringHelper.ProcessAsSqlStringValue(user.Identity.Name);
+          (string.IsNullOrWhiteSpace(user.Identity.Name) ? "''" : user.Identity.Name.ProcessAsSqlStringValue());
         DataTable userDataTable = SQLServerHandler.GetDataTable(Aibe.DH.UserDBConnectionString, userQueryScript);
 
         foreach (DataColumn column in userDataTable.Columns)
