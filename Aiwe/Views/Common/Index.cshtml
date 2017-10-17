@@ -1,4 +1,5 @@
-﻿@using Aibe.Models;
+﻿@using Aibe.Helpers;
+@using Aibe.Models;
 @using Aibe.Models.Core;
 @using Aiwe.Models;
 @using Extension.String;
@@ -128,8 +129,7 @@
                 <td>
                   <i>[@Aibe.LCZ.NFM_SeeOnDetails]</i>
                 </td>
-              }
-              else if (columnInfo.IsIndexShowImage) {
+              } else if (columnInfo.IsIndexShowImage) {
                 PictureColumnInfo pcInfo = Model.Meta.GetPictureColumnInfo(columnInfo.Name);
                 string imgSizeStr = pcInfo.IndexIsStretched ? "width:" + pcInfo.IndexWidth + "px;height:" + pcInfo.IndexHeight + "px" :
                   pcInfo.IndexHeightComesFirst ? "height:" + pcInfo.IndexHeight + "px" : "width:" + pcInfo.IndexWidth + "px";
@@ -148,14 +148,14 @@
                   @Html.Raw(Model.GetListColumnDetailsHTML(columnInfo.Name, dataValue))
                 </td>
               } else {
-                //List<ColoringItem> colorItems = columnInfo.CreateColorItems(id);
+                string printedVal = DateTimeHelper.ProcessPossibleDateTimeString(val, columnInfo.IsDateTime, Aiwe.DH.IndexDateTimeFormat);
                 if (columnInfo.Colorings == null) {
-                  <td>@val</td>
+                  <td>@printedVal</td>
                 } else if (columnInfo.Colorings.Any(x => x.CheckConditionMet(columnInfo.DataType, val, id))) {
                   ColoringInfo colorItem = columnInfo.Colorings.FirstOrDefault(x => x.CheckConditionMet(columnInfo.DataType, val, id));
-                  <td style="background-color:@colorItem.Color">@val</td>
+                  <td style="background-color:@colorItem.Color">@printedVal</td>
                 } else {
-                  <td>@val</td>
+                  <td>@printedVal</td>
                 }                
               }
             }

@@ -1,4 +1,5 @@
 ﻿@using Aiwe.Models;
+@using Aibe.Helpers;
 @using Aibe.Models;
 @using Aibe.Models.Core;
 @using System.Data;
@@ -48,9 +49,9 @@
                           <img src="~/@Aibe.DH.DefaultImageFolderName/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
                         } else { //the RefTableName must exists if it is to be used
                           <img src="~/@Aibe.DH.DefaultImageFolderName/@scTable.ScInfo.RefTableName/@scCid/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
-                        }                         
+                        }
                       } else { //if not a picture link column, just print as it is but if it is picture link column... then it is going to be different
-                        @scData
+                        @DateTimeHelper.ProcessPossibleDateTimeString(scData, scTable.IsDateTimeColumn(scColumnName), Aiwe.DH.ScTableDateTimeFormat)
                       }
                     </td>
                   }
@@ -73,7 +74,7 @@
           string dataValue = data.Value ?? string.Empty;
           @Html.Raw(Model.GetListColumnDetailsHTML(data.Key, dataValue));
         } else {
-          <div class="@ViewBag.EditorClass">@data.Value</div>
+          <div class="@ViewBag.EditorClass">@DateTimeHelper.ProcessPossibleDateTimeString(data.Value, Model.Meta.IsDateTimeColumn(data.Key), Aiwe.DH.DetailsDateTimeFormat)</div>
         }
 
       </div>

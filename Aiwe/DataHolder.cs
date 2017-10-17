@@ -44,6 +44,9 @@ namespace Aiwe {
     public const string ErrorActionName = "Error";
     public const string ErrorViewName = "Error";
     public const bool UseStrongCheck = true;
+    public const string IndexDateTimeFormat = Aibe.DH.DefaultDateTimeFormat;
+    public const string DetailsDateTimeFormat = Aibe.DH.DefaultDateTimeFormat;
+    public const string ScTableDateTimeFormat = Aibe.DH.DefaultDateTimeFormat;
 
     //Table
     public const string TableModelClassPrefix = "Aiwe.Models.DB.";
