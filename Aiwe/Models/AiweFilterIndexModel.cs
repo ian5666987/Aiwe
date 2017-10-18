@@ -17,7 +17,8 @@ namespace Aiwe.Models {
 
     //: this (meta, userInput, model.Data, model.NavData) 
     //AiweFilterIndexModel does not have dictionaryString since eachColumn will have its own "dictionaryString"
-    public AiweFilterIndexModel (MetaInfo meta, IPrincipal userInput, FilterIndexModel model) : base(meta, null){
+    public AiweFilterIndexModel (MetaInfo meta, IPrincipal userInput, FilterIndexModel model, 
+      Dictionary<string, string> stringDictionary) : base(meta, stringDictionary){
       FiModel = model;
       user = userInput;
       Table = model.Data;
@@ -32,7 +33,8 @@ namespace Aiwe.Models {
         columns.Add(column);
       var arrangedDataColumns = meta.GetColumnSequenceFor(columns);
       ColumnInfos = arrangedDataColumns.Select(x => meta.CreateColumnInfo(
-          x, IsColumnIncludedInIndex(x.ColumnName, user), IsColumnIncludedInFilter(x.ColumnName, user)
+          x, IsColumnIncludedInIndex(x.ColumnName, user), IsColumnIncludedInFilter(x.ColumnName, user),
+          IsColumnForcelyIncludedInFilter(x.ColumnName, user)
         )).ToList();
       FilterColumns = ColumnInfos.Where(x => x.IsFilterIncluded)
         .Select(x => x.Column).ToList();
@@ -74,11 +76,16 @@ namespace Aiwe.Models {
     public NavDataModel NavData { get; set; }
 
     public bool IsColumnIncludedInFilter(string columnName, IPrincipal user, bool isWebApi = false) {
-      if (Meta.IsScriptColumn(columnName)) //script column always excluded from the filter
-        return false;
       if (AiweUserHelper.UserHasMainAdminRight(user)) //if user is in main admin rights, it is always true
         return true;
       return IsColumnIncluded(Meta.FilterExclusions, columnName, user);
+    }
+
+    public bool IsColumnForcelyIncludedInFilter(string columnName, IPrincipal user) {
+      InclusionInfo inInfo = Meta.GetForcedFilterColumn(columnName);
+      if (inInfo == null) //not specified, means it is not forced
+        return false;
+      return inInfo.Roles == null || !inInfo.Roles.Any() || inInfo.Roles.Any(x => user.IsInRole(x));
     }
 
     public bool IsActionAllowed(string actionName, IPrincipal user, bool isWebApi = false) {

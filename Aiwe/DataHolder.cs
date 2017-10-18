@@ -44,6 +44,7 @@ namespace Aiwe {
     public const string ErrorActionName = "Error";
     public const string ErrorViewName = "Error";
     public const bool UseStrongCheck = true;
+    public const bool IsTagChecked = true; //Web must actually check the tags
     public const string IndexDateTimeFormat = Aibe.DH.DefaultDateTimeFormat;
     public const string DetailsDateTimeFormat = Aibe.DH.DefaultDateTimeFormat;
     public const string ScTableDateTimeFormat = Aibe.DH.DefaultDateTimeFormat;

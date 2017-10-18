@@ -39,7 +39,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       //Get index info
       AiweQueryHelper.HandleUserRelatedScripting(model.QueryScript, User, meta.UserRelatedFilters);
       model.CompleteModelAndData();
-      return new AiweFilterIndexModel(meta, User, model);
+      return new AiweFilterIndexModel(meta, User, model, model.StringDictionary);
     }
 
     [CommonActionFilter]
@@ -49,6 +49,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       return View(model);
     }
 
+    [ValidateInput(false)]
     [HttpPost]
     [CommonActionFilter]
     public ActionResult Create(string commonDataTableName, FormCollection collections) {
@@ -63,7 +64,8 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
       //Check model state's validity
       Dictionary<string, string> errorDict = new AiweCheckerHelper().CheckModelValidity(Aiwe.DH.TableModelClassPrefix, meta.TableSource, meta.ArrangedDataColumns, 
-        dictCollections, ModelState.Keys.ToList(), meta, checkExclusions, AiweUserHelper.UserIsDeveloper(User), now, Aibe.DH.CreateActionName, strongCheck: Aiwe.DH.UseStrongCheck);
+        dictCollections, ModelState.Keys.ToList(), meta, checkExclusions, AiweUserHelper.UserIsDeveloper(User), now, Aibe.DH.CreateActionName, strongCheck: Aiwe.DH.UseStrongCheck, 
+        isTagChecked: Aiwe.DH.IsTagChecked);
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid)
         return View(new AiweCreateEditModel(meta, Aibe.DH.CreateActionName, null));
@@ -95,6 +97,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       return View(model);
     }
 
+    [ValidateInput(false)]
     [HttpPost]
     [CommonActionFilter]
     public ActionResult Edit(string commonDataTableName, int cid, FormCollection collections) {
@@ -111,7 +114,8 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
       //Check model state's validity
       Dictionary<string, string> errorDict = new AiweCheckerHelper().CheckModelValidity(Aiwe.DH.TableModelClassPrefix, meta.TableSource, meta.ArrangedDataColumns, 
-        dictCollections, ModelState.Keys.ToList(), meta, checkExclusions, AiweUserHelper.UserIsDeveloper(User), now, Aibe.DH.EditActionName, strongCheck: Aiwe.DH.UseStrongCheck);
+        dictCollections, ModelState.Keys.ToList(), meta, checkExclusions, AiweUserHelper.UserIsDeveloper(User), now, Aibe.DH.EditActionName, strongCheck: Aiwe.DH.UseStrongCheck,
+        isTagChecked: Aiwe.DH.IsTagChecked);
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid) {
         AiweCreateEditModel model = new AiweCreateEditModel(meta, Aibe.DH.EditActionName, dictCollections);

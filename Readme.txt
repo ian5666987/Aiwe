@@ -1,3 +1,19 @@
+v0.9.2.0 alpha (18-Oct-2017 13:40)
+bugs fixed:
+- non-dangerous elements <reg> and <ex> are not allowed. Fixed.
+- Filter elements are missing after filtering. Fixed.
+
+updates:
+- ForcedFilterColumns is now available! Read the guideline for more details.
+- IMetaItem is given Visual Studio's summary for IntelliSense to display.
+
+-----------------------------------------------------------------------------------------------
+v0.9.1.0 alpha (17-Oct-2017 11:15)
+updates:
+- Add various DateTime formats on Aibe and Aiwe
+- Updates on MetaItem row entry
+
+-----------------------------------------------------------------------------------------------
 v0.9.0.0 alpha (16-Oct-2017 15:35)
 updates:
 - Aibe now has TableSource and PrefilledColumns! Read the guideline for more details.
