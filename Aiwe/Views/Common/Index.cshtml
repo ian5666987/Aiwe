@@ -148,7 +148,8 @@
                   @Html.Raw(Model.GetListColumnDetailsHTML(columnInfo.Name, dataValue))
                 </td>
               } else {
-                string printedVal = DateTimeHelper.ProcessPossibleDateTimeString(val, columnInfo.IsDateTime, Aiwe.DH.IndexDateTimeFormat);
+                string dateTimeFormat = Model.Meta.GetCustomDateTimeFormatFor(columnInfo.Name, Aibe.DH.IndexPageName);
+                string printedVal = DateTimeHelper.ProcessPossibleDateTimeString(val, columnInfo.IsDateTime, dateTimeFormat ?? Aiwe.DH.IndexDateTimeFormat);
                 if (columnInfo.Colorings == null) {
                   <td>@printedVal</td>
                 } else if (columnInfo.Colorings.Any(x => x.CheckConditionMet(columnInfo.DataType, val, id))) {

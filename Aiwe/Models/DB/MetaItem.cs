@@ -128,5 +128,8 @@ namespace Aiwe.Models.DB {
 
     [StringLength(4000)]
     public string ScriptColumns { get; set; }
+
+    [StringLength(2000)]
+    public string CustomDateTimeFormatColumns { get; set; }
   }
 }

@@ -58,8 +58,15 @@
     <Reference Include="Extension.Database.SqlServer">
       <HintPath>..\..\..\..\VS2015\Desktop\DLL\Extension\Database.SqlServer\bin\Release\Extension.Database.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Extension.Models">
+      <HintPath>..\..\..\..\VS2015\Desktop\DLL\Extension\Models\bin\Release\Extension.Models.dll</HintPath>
+    </Reference>
     <Reference Include="Extension.String">
       <HintPath>..\..\..\..\VS2015\Desktop\DLL\Extension\String\bin\Release\Extension.String.dll</HintPath>
+    </Reference>
+    <Reference Include="Extension.Values, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\VS2015\Desktop\DLL\Extension\Values\bin\Release\Extension.Values.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.0.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.0.6\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>

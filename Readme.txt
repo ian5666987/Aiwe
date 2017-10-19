@@ -1,3 +1,8 @@
+v0.10.0.0 alpha (19-Oct-2017 21:05)
+updates:
+- CustomDateTimeColumns is now available! Read the guideline for more details.
+
+-----------------------------------------------------------------------------------------------
 v0.9.2.0 alpha (18-Oct-2017 13:40)
 bugs fixed:
 - non-dangerous elements <reg> and <ex> are not allowed. Fixed.

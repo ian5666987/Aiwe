@@ -231,3 +231,5 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Extractor.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csprojResolveAssemblyReference.cache
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Checker.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Checker.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Models.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Models.pdb
