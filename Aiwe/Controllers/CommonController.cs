@@ -6,6 +6,7 @@ using System.Data;
 using System.IO;
 using System.Runtime.InteropServices;
 using Extension.Database.SqlServer;
+using Extension.Models;
 using Extension.String;
 using Aibe.Helpers;
 using Aibe.Models;
@@ -132,6 +133,10 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       BaseScriptModel scriptModel = LogicHelper.CreateUpdateScriptModel(meta.TableSource, cid, completeKeyInfo, dictCollections, now);
       SQLServerHandler.ExecuteScript(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
       AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + commonDataTableName + "/" + cid));
+      if (meta.HasValidHistoryTable) { //only applied when editing
+        var scripts = meta.CreateHistorySQLScripts();
+        SQLServerHandler.ExecuteBaseScripts(Aibe.DH.DataDBConnectionString, scripts); //Does not need to check this for now, for simplification
+      }
       return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 

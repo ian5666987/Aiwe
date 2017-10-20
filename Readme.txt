@@ -1,3 +1,9 @@
+v0.11.0.0 alpha (20-Oct-2017 18:30)
+updates:
+- HistoryTable and HistoryTrigger are now implemented! Read the guideline for more details.
+- HistoryTable column string length is extended from 500 to 2000
+
+-----------------------------------------------------------------------------------------------
 v0.10.0.0 alpha (19-Oct-2017 21:05)
 updates:
 - CustomDateTimeColumns is now available! Read the guideline for more details.
