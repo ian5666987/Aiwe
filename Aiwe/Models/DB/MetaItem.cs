@@ -105,7 +105,7 @@ namespace Aiwe.Models.DB {
     [StringLength(1000)]
     public string TimeStampColumns { get; set; }
 
-    [StringLength(500)]
+    [StringLength(2000)]
     public string HistoryTable { get; set; }
 
     [StringLength(2000)]
