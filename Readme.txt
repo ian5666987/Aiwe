@@ -1,4 +1,4 @@
-v0.12.0.0 alpha (24-Oct-2017 ??:??)
+v0.12.0.0 alpha (24-Oct-2017 13:13)
 updates:
 - Default Table Actions now implement ExportToCsv and ExportAllToCsv!
 - ExportToExcel method is commented as it may not be implemented in a computer without Microsoft Excel installed.
