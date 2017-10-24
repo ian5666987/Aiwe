@@ -1,11 +1,10 @@
-﻿using System.Linq;
-using Extension.String;
-using Aibe.Models;
+﻿using Aibe.Models;
 using Aibe.Models.Core;
-using Aiwe.Helpers;
 using Aiwe.Extensions;
-using System.Security.Principal;
+using Extension.String;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Principal;
 
 namespace Aiwe.Models {
   public class AiweBaseTableModel : BaseTableModel {
@@ -37,6 +36,16 @@ namespace Aiwe.Models {
       //if (AiweUserHelper.UserHasMainAdminRight(user)) //if user is in main admin rights, it is always true
       //  return true;
       return IsColumnIncluded(Meta.ColumnExclusions, columnName, user);
+    }
+
+    public virtual bool IsColumnIncludedInCsv(string columnName, IPrincipal user) {
+      return IsColumnIncluded(Meta.CsvExclusions, columnName, user);
+    }
+
+    public virtual List<string> GetExcludedColumnsInCsv(List<string> columnNames, IPrincipal user) {
+      return columnNames
+        .Where(x => !IsColumnIncludedInCsv(x, user))
+        .ToList();
     }
   }
 }

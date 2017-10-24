@@ -104,6 +104,15 @@ function submitFilterModalForm(submitter, ev, filteredType) {
   }
   if (submitter.id == filteredType + '-filter-use-button')
     document.getElementById('filterForm').submit();
+  else if (submitter.id == filteredType + '-filter-csv-button') {
+    $('#' + filteredType + '-table-action-name').val('DefaultTableAction-ExportToCSV');
+    document.getElementById('filterForm').submit();
+    $('#' + filteredType + '-table-action-name').val('');
+  } else if (submitter.id == filteredType + '-filter-csv-all-button') {
+    $('#' + filteredType + '-table-action-name').val('DefaultTableAction-ExportAllToCSV');
+    document.getElementById('filterForm').submit();
+    $('#' + filteredType + '-table-action-name').val('');
+  }
 }
 
 function submitFilterForm(pageNo, filteredType) {

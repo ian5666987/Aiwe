@@ -13,7 +13,7 @@
   //initialize variables
   ViewBag.Title = Aibe.LCZ.W_Index;
   ViewBag.SenderName = Model.TableName.ToLower(); //for javascript use
-  TempData["DataTableForExcel"] = Model.Table;
+  //TempData["DataTableForExcel"] = Model.Table; //Not used anymore
 }
 
 <!--The header-->
@@ -202,7 +202,7 @@
         bool defaultCreateAction = Model.Meta.IsDefaultAction(Aibe.DH.CreateActionName);
         string createLink = defaultCreateAction ? "../../../../../../" + Aiwe.DH.MvcCommonControllerName + "/" + Aibe.DH.CreateActionName + "/" + Model.TableName :
         "../../../../../../" + Model.TableName + "/" + Aibe.DH.CreateActionName;
-        <div class="col-md-2">
+        <div class="col-md-3">
           <a href="@createLink"
               class="btn btn-success btn-block"
               style="margin-top:5px;margin-right:5px;">
@@ -217,9 +217,26 @@
         if (Model.IsAllowedToCallTableAction(tableAction.Name)) {
           <div class="col-md-3">
             @if (Model.Meta.IsDefaultTableAction(tableAction.Name)) {
-              <a href="../../../../../@Aiwe.DH.MvcCommonControllerName/@tableAction.Name/@Model.TableName" class="btn btn-primary btn-block" style="margin-top:5px;margin-right:5px;">
-                <span class="glyphicon glyphicon-align-justify"></span> @tableAction.Name.ToCamelBrokenString()
-              </a>
+              //Two very special actions require to have its own way to represent
+              if (tableAction.Name.EqualsIgnoreCase(Aibe.DH.ExportToCSVTableActionName)) {
+                <button type="button" class="btn btn-primary btn-block"
+                        style="margin-top:5px;margin-right:5px;"
+                        id="@ViewBag.SenderName-filter-csv-button"
+                        onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
+                  <span class="glyphicon glyphicon-align-justify"></span> @Aibe.LCZ.W_ExportToCSV
+                </button>
+              } else if (tableAction.Name.EqualsIgnoreCase(Aibe.DH.ExportAllToCSVTableActionName)) {
+                <button type="button" class="btn btn-primary btn-block"
+                        style="margin-top:5px;margin-right:5px;"
+                        id="@ViewBag.SenderName-filter-csv-all-button"
+                        onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
+                  <span class="glyphicon glyphicon-align-justify"></span> @Aibe.LCZ.W_ExportAllToCSV
+                </button>
+              } else {
+                <a href="../../../../../@Aiwe.DH.MvcCommonControllerName/@tableAction.Name/@Model.TableName" class="btn btn-primary btn-block" style="margin-top:5px;margin-right:5px;">
+                  <span class="glyphicon glyphicon-align-justify"></span> @tableAction.Name.ToCamelBrokenString()
+                </a>
+              }
             } else {
               <a href="../../../../../@Model.TableName/@tableAction.Name" class="btn btn-primary btn-block" style="margin-top:5px;margin-right:5px;">
                 <span class="glyphicon glyphicon-align-justify"></span> @tableAction.Name.ToCamelBrokenString()

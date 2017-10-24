@@ -18,7 +18,7 @@ namespace Aiwe.Helpers {
         //Get user info here!
         List<DataColumn> userColumns = new List<DataColumn>();
         string userQueryScript = "SELECT TOP 1 * FROM [" + Aibe.DH.UserTableName + "] WHERE [" + Aibe.DH.UserNameColumnName + "] = " +
-          (string.IsNullOrWhiteSpace(user.Identity.Name) ? "''" : user.Identity.Name.ProcessAsSqlStringValue());
+          (string.IsNullOrWhiteSpace(user.Identity.Name) ? "''" : user.Identity.Name.AsSqlStringValue());
         DataTable userDataTable = SQLServerHandler.GetDataTable(Aibe.DH.UserDBConnectionString, userQueryScript);
 
         foreach (DataColumn column in userDataTable.Columns)

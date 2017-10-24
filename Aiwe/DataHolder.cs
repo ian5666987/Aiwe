@@ -48,6 +48,7 @@ namespace Aiwe {
     public const string IndexDateTimeFormat = Aibe.DH.DefaultDateTimeFormat;
     public const string DetailsDateTimeFormat = Aibe.DH.DefaultDateTimeFormat;
     public const string ScTableDateTimeFormat = Aibe.DH.DefaultDateTimeFormat;
+    public const string CsvDateTimeFormat = Aibe.DH.DefaultDateTimeFormat;
 
     //Table
     public const string TableModelClassPrefix = "Aiwe.Models.DB.";

@@ -15,6 +15,7 @@
   <input type="hidden" name="@(Aibe.DH.BaseFilterAppendixName + "Msg")" id="@ViewBag.SenderName-filter-msg" class="uncounted-filter-item" />
   <input type="hidden" name="@(Aibe.DH.BaseFilterAppendixName + "UserName")" id="@ViewBag.SenderName-username" class="uncounted-filter-item" />
   <input type="hidden" name="@(Aibe.DH.BaseFilterAppendixName + "Type")" id="@ViewBag.SenderName-type" class="uncounted-filter-item" />
+  <input type="hidden" name="@(Aibe.DH.BaseFilterAppendixName + "TableActionName")" id="@ViewBag.SenderName-table-action-name" class="uncounted-filter-item" />
 
   @foreach (var column in Model.FilterColumns) {
     string dataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);

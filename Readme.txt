@@ -1,3 +1,11 @@
+v0.12.0.0 alpha (24-Oct-2017 ??:??)
+updates:
+- Default Table Actions now implement ExportToCsv and ExportAllToCsv!
+- ExportToExcel method is commented as it may not be implemented in a computer without Microsoft Excel installed.
+- CustomDateTimeFormatColumns has one additional PageName: csv.
+- CsvExclusionlist column is added.
+
+-----------------------------------------------------------------------------------------------
 v0.11.0.0 alpha (20-Oct-2017 18:30)
 updates:
 - HistoryTable and HistoryTrigger are now implemented! Read the guideline for more details.

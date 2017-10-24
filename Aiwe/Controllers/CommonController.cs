@@ -1,37 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using System.Data;
-using System.IO;
-using System.Runtime.InteropServices;
-using Extension.Database.SqlServer;
-using Extension.Models;
-using Extension.String;
-using Aibe.Helpers;
+﻿using Aibe.Helpers;
 using Aibe.Models;
 using Aibe.Models.Core;
 using Aiwe.ActionFilters;
 using Aiwe.Extensions;
 using Aiwe.Models;
 using Aiwe.Helpers;
-using Excel = Microsoft.Office.Interop.Excel;
+using Extension.Database.SqlServer;
+using Extension.Models;
+using Extension.String;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Web.Mvc;
 
 namespace Aiwe.Controllers { //TODO check if this is already correct
   public class CommonController : Controller {
     [CommonActionFilter]
     //Get does not have filter
     public ActionResult Index(string commonDataTableName, int? page) { //Where all common tables are returned as list
-      return View(getFilterIndexModel(commonDataTableName, page, null));
+      return View(getFilterIndexModel(commonDataTableName, page, null, loadAllData: false));
     }
 
     [HttpPost]
     [CommonActionFilter]
     public ActionResult Index(string commonDataTableName, int? commonDataFilterPage, FormCollection collections) { //do not change the name commonDataFilterPage to page
-      return View(getFilterIndexModel(commonDataTableName, commonDataFilterPage, collections));
+      if(collections.AllKeys.Any(x => x.EqualsIgnoreCase(Aibe.DH.FilterTableActionNameInput))) {
+        string tableActionInput = collections[Aibe.DH.FilterTableActionNameInput];
+        if (!string.IsNullOrWhiteSpace(tableActionInput)) {
+          string prefix = Aibe.DH.DefaultTableActionPrefix + "-";
+          if (tableActionInput.EqualsIgnoreCase(prefix + Aibe.DH.ExportToCSVTableActionName))
+            return exportToCSV(commonDataTableName, commonDataFilterPage, collections);
+          else if (tableActionInput.EqualsIgnoreCase(prefix + Aibe.DH.ExportAllToCSVTableActionName))
+            return exportAllToCSV(commonDataTableName, commonDataFilterPage, collections);          
+        }
+      }
+      return View(getFilterIndexModel(commonDataTableName, commonDataFilterPage, collections, loadAllData: false));
     }
 
-    private AiweFilterIndexModel getFilterIndexModel(string commonDataTableName, int? page, FormCollection collections) {
+    private AiweFilterIndexModel getFilterIndexModel(string commonDataTableName, int? page, FormCollection collections, bool loadAllData) {
       TempData.Clear();
       MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       FilterIndexModel model = new FilterIndexModel(meta, page, collections == null ? 
@@ -39,7 +47,7 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
       //Get index info
       AiweQueryHelper.HandleUserRelatedScripting(model.QueryScript, User, meta.UserRelatedFilters);
-      model.CompleteModelAndData();
+      model.CompleteModelAndData(loadAllData);
       return new AiweFilterIndexModel(meta, User, model, model.StringDictionary);
     }
 
@@ -85,7 +93,8 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
       BaseScriptModel scriptModel = LogicHelper.CreateInsertScriptModel(meta.TableSource, completeKeyInfo, dictCollections, now, meta);
       object generatedId = SQLServerHandler.ExecuteScalar(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
-      AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + commonDataTableName + "/" + generatedId?.ToString()));
+      bool saveAttachmentResult = AiweFileHelper.SaveAttachments(Request, 
+        Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + commonDataTableName + "/" + generatedId?.ToString()));
       return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 
@@ -132,10 +141,12 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
       BaseScriptModel scriptModel = LogicHelper.CreateUpdateScriptModel(meta.TableSource, cid, completeKeyInfo, dictCollections, now);
       SQLServerHandler.ExecuteScript(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
-      AiweFileHelper.SaveAttachments(Request, Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + commonDataTableName + "/" + cid));
+      bool saveAttachmentResult = AiweFileHelper.SaveAttachments(Request,
+        Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + commonDataTableName + "/" + cid)); //there is no need for checking this too, because all errors are returned
       if (meta.HasValidHistoryTable) { //only applied when editing
-        var scripts = meta.CreateHistorySQLScripts();
-        SQLServerHandler.ExecuteBaseScripts(Aibe.DH.DataDBConnectionString, scripts); //Does not need to check this for now, for simplification
+        var historyScripts = meta.CreateHistorySQLScripts();
+        if (historyScripts != null && historyScripts.Any())
+          SQLServerHandler.ExecuteBaseScripts(Aibe.DH.DataDBConnectionString, historyScripts); //Does not need to check this for now, for simplification
       }
       return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
@@ -166,26 +177,37 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       return View(model);
     }
 
-    [CommonActionFilter]
-    //Base code by: ZYS
-    //Edited by: Ian
-    public ActionResult ExportToExcel(string commonDataTableName) {
+    private ActionResult commonExportToCSV(string tableName, string fileDownloadName, AiweFilterIndexModel model) {
+      List<string> excludedColumns = model.GetExcludedColumnsInCsv(model.Meta.RawDataColumnNames, User);
+      string csvString = model.FiModel.GenerateCSVString(excludedColumns, Aiwe.DH.CsvDateTimeFormat);
+      byte[] buff = Encoding.ASCII.GetBytes(csvString);
+      string mimeType = "text/csv";
+      return File(buff, mimeType, fileDownloadName);
+    }
+
+    private ActionResult exportToCSV (string commonDataTableName, int? commonDataFilterPage, FormCollection collections) {
       try {
-        DataTable tbl = (DataTable)TempData["DataTableForExcel"];
-        string tempFolderPath = Server.MapPath("~/temp");
-        Directory.CreateDirectory(tempFolderPath); //the checking if the directory exists is already inside.          
-        string excelFilePath = Path.Combine(tempFolderPath, commonDataTableName + "_Temp.xls");//temp file
-        string mimeType = "application/vnd.ms-excel";
-        byte[] buff = null;
-        buff = exportToExcelFile(tbl, excelFilePath);
-        if (System.IO.File.Exists(excelFilePath))
-          System.IO.File.Delete(excelFilePath);
-        TempData["DataTableForExcel"] = tbl; //to ensure multiple calls do not generate error
-        return File(buff, mimeType);
+        return commonExportToCSV(commonDataTableName, commonDataTableName + ".csv",
+          getFilterIndexModel(commonDataTableName, commonDataFilterPage, collections, loadAllData: false));
       } catch (Exception ex) {
         string exStr = ex.ToString();
         LogHelper.Error(User.Identity.Name, null, Aiwe.DH.Mvc, Aiwe.DH.MvcCommonControllerName,
-          commonDataTableName, "ExportToExcel", null, exStr);
+          commonDataTableName, "ExportToCSV", null, exStr);
+#if DEBUG
+        ViewBag.ErrorMessage = exStr;
+#endif
+        return View(Aiwe.DH.ErrorViewName);
+      }
+    }
+
+    private ActionResult exportAllToCSV(string commonDataTableName, int? commonDataFilterPage, FormCollection collections) {
+      try { 
+      return commonExportToCSV(commonDataTableName, commonDataTableName + "_All.csv",
+        getFilterIndexModel(commonDataTableName, commonDataFilterPage, collections, loadAllData: true));
+      } catch (Exception ex) {
+        string exStr = ex.ToString();
+        LogHelper.Error(User.Identity.Name, null, Aiwe.DH.Mvc, Aiwe.DH.MvcCommonControllerName,
+          commonDataTableName, "ExportAllToCSV", null, exStr);
 #if DEBUG
         ViewBag.ErrorMessage = exStr;
 #endif
@@ -239,57 +261,86 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
       return Json(result, JsonRequestBehavior.AllowGet); //Return the result, successful or not
     }
     #endregion
-
-    #region private methods
-    //Base code by: ZYS
-    //Edited by: Ian
-    private byte[] exportToExcelFile(DataTable tbl, string excelFilePath) {
-      if (tbl == null) {
-        return null;
-      }
-      if (System.IO.File.Exists(excelFilePath))
-        System.IO.File.Delete(excelFilePath);
-      try {
-        // load excel, and create a new workbook
-        var excelApp = new Excel.Application();
-        excelApp.Workbooks.Add();
-
-        // single worksheet
-        Excel._Worksheet workSheet = excelApp.ActiveSheet;
-        workSheet.Name = "ExportData";
-
-        // column headings
-        for (var i = 0; i < tbl.Columns.Count; i++)
-          workSheet.Cells[1, i + 1] = tbl.Columns[i].ColumnName;
-
-        // rows
-        for (var i = 0; i < tbl.Rows.Count; i++)
-          // to do: format datetime values before printing
-          for (var j = 0; j < tbl.Columns.Count; j++)
-            workSheet.Cells[i + 2, j + 1] = tbl.Rows[i][j];
-
-        workSheet.SaveAs(excelFilePath);
-        excelApp.Quit();
-        Marshal.ReleaseComObject(workSheet); //Both the worksheet and the excelApp
-        Marshal.ReleaseComObject(excelApp); //must be released, otherwise the excel application accummulates
-                        
-        System.Threading.Thread.Sleep(new TimeSpan(0, 0, 1));//must sleep for a while
-
-        byte[] buff = null;
-        FileStream fs = new FileStream(excelFilePath,
-                                       FileMode.Open,
-                                       FileAccess.Read);
-        BinaryReader br = new BinaryReader(fs);
-        long numBytes = new FileInfo(excelFilePath).Length;
-        buff = br.ReadBytes((int)numBytes);
-        br.Close();
-        br.Dispose();
-
-        return buff;
-      } catch { //error log is handled by the action
-        throw;
-      }
-    }
-    #endregion
   }
 }
+
+//using System.IO;
+//using System.Runtime.InteropServices;
+//using Excel = Microsoft.Office.Interop.Excel;
+//
+//    [CommonActionFilter]
+//    //Base code by: ZYS
+//    //Edited by: Ian
+//    public ActionResult ExportToExcel(string commonDataTableName) {
+//      try {
+//        DataTable tbl = (DataTable)TempData["DataTableForExcel"];
+//        string tempFolderPath = Server.MapPath("~/temp");
+//        Directory.CreateDirectory(tempFolderPath); //the checking if the directory exists is already inside.
+//        string excelFilePath = Path.Combine(tempFolderPath, commonDataTableName + "_Temp.xls");//temp file
+//        string mimeType = "application/vnd.ms-excel";
+//        byte[] buff = null;
+//        buff = exportToExcelFile(tbl, excelFilePath);
+//        if (System.IO.File.Exists(excelFilePath))
+//          System.IO.File.Delete(excelFilePath);
+//        TempData["DataTableForExcel"] = tbl; //to ensure multiple calls do not generate error
+//        return File(buff, mimeType);
+//      } catch (Exception ex) {
+//        string exStr = ex.ToString();
+//        LogHelper.Error(User.Identity.Name, null, Aiwe.DH.Mvc, Aiwe.DH.MvcCommonControllerName,
+//          commonDataTableName, "ExportToExcel", null, exStr);
+//#if DEBUG
+//        ViewBag.ErrorMessage = exStr;
+//#endif
+//        return View(Aiwe.DH.ErrorViewName);
+//      }
+//    }
+
+////Base code by: ZYS
+////Edited by: Ian
+//private byte[] exportToExcelFile(DataTable tbl, string excelFilePath) {
+//  if (tbl == null) {
+//    return null;
+//  }
+//  if (System.IO.File.Exists(excelFilePath))
+//    System.IO.File.Delete(excelFilePath);
+//  try {
+//    // load excel, and create a new workbook
+//    var excelApp = new Excel.Application();
+//    excelApp.Workbooks.Add();
+
+//    // single worksheet
+//    Excel._Worksheet workSheet = excelApp.ActiveSheet;
+//    workSheet.Name = "ExportData";
+
+//    // column headings
+//    for (var i = 0; i < tbl.Columns.Count; i++)
+//      workSheet.Cells[1, i + 1] = tbl.Columns[i].ColumnName;
+
+//    // rows
+//    for (var i = 0; i < tbl.Rows.Count; i++)
+//      // to do: format datetime values before printing
+//      for (var j = 0; j < tbl.Columns.Count; j++)
+//        workSheet.Cells[i + 2, j + 1] = tbl.Rows[i][j];
+
+//    workSheet.SaveAs(excelFilePath);
+//    excelApp.Quit();
+//    Marshal.ReleaseComObject(workSheet); //Both the worksheet and the excelApp
+//    Marshal.ReleaseComObject(excelApp); //must be released, otherwise the excel application accummulates
+
+//    System.Threading.Thread.Sleep(new TimeSpan(0, 0, 1));//must sleep for a while
+
+//    byte[] buff = null;
+//    FileStream fs = new FileStream(excelFilePath,
+//                                   FileMode.Open,
+//                                   FileAccess.Read);
+//    BinaryReader br = new BinaryReader(fs);
+//    long numBytes = new FileInfo(excelFilePath).Length;
+//    buff = br.ReadBytes((int)numBytes);
+//    br.Close();
+//    br.Dispose();
+
+//    return buff;
+//  } catch { //error log is handled by the action
+//    throw;
+//  }
+//}

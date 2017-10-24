@@ -82,6 +82,9 @@ namespace Aiwe.Models.DB {
     public string CreateEditExclusionList { get; set; }
 
     [StringLength(2000)]
+    public string CsvExclusionList { get; set; }
+
+    [StringLength(2000)]
     public string AccessExclusionList { get; set; }
 
     [StringLength(4000)]
