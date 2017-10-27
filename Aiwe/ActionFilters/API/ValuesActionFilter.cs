@@ -1,17 +1,17 @@
 ﻿using Aibe.Helpers;
+using Aibe.Models;
+using Aibe.Models.Core;
+using Aiwe.Extensions;
+using Aiwe.Helpers;
+using Aiwe.Models;
+using Aiwe.Models.API;
+using Aiwe.Models.DB;
+using Extension.Cryptography;
+using Extension.String;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http.Filters;
 using System.Web.Http.Controllers;
-using Aiwe.Models;
-using Aiwe.Models.API;
-using Aiwe.Models.DB;
-using Aiwe.Extensions;
-using Extension.Cryptography;
-using Extension.String;
-using Aibe.Models;
-using Aibe.Models.Core;
-using Aiwe.Helpers;
 
 namespace Aiwe.ActionFilters {
   public class ValuesActionFilterAttribute : ActionFilterAttribute {
@@ -68,7 +68,7 @@ namespace Aiwe.ActionFilters {
 
       //only if userMap is available the user is considered available
       ApplicationUser user = string.IsNullOrWhiteSpace(request.UserName) || userMap == null ? null :
-        context.Users.FirstOrDefault(x => x.UserName.ToLower().Trim() == request.UserName.ToLower().Trim());
+        context.Users.FirstOrDefault(x => x.UserName.EqualsIgnoreCase(request.UserName));
 
       if (!AiweUserHelper.UserIsDeveloper(user))
         LogHelper.Action(user.UserName, Aiwe.DH.WebApi, Aiwe.DH.WebApiControllerName, request.TableName, request.RequestType, request.CreateLogValue(3000)); //TODO as of now 3000 is hardcoded

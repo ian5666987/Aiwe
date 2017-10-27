@@ -134,5 +134,11 @@ namespace Aiwe.Models.DB {
 
     [StringLength(2000)]
     public string CustomDateTimeFormatColumns { get; set; }
+
+    [StringLength(4000)]
+    public string EmailMakerTriggers { get; set; }
+
+    [StringLength(4000)]
+    public string EmailMakers { get; set; }
   }
 }

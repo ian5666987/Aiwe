@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aiwe", "Aiwe\Aiwe.csproj", "{10302083-2165-49AE-9753-EF4DB2965456}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiweEmailSender", "ConsoleEmailSender\AiweEmailSender.csproj", "{A6D61A52-3992-42CF-8C06-FDF30992848C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{10302083-2165-49AE-9753-EF4DB2965456}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10302083-2165-49AE-9753-EF4DB2965456}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10302083-2165-49AE-9753-EF4DB2965456}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6D61A52-3992-42CF-8C06-FDF30992848C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6D61A52-3992-42CF-8C06-FDF30992848C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6D61A52-3992-42CF-8C06-FDF30992848C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6D61A52-3992-42CF-8C06-FDF30992848C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

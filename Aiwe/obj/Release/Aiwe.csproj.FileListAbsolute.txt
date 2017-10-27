@@ -225,3 +225,11 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.csproj.GenerateResource.Cache
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.csprojResolveAssemblyReference.cache
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Models.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Values.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Extractor.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Checker.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Models.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Values.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Extractor.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Checker.pdb

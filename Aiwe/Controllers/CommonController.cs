@@ -15,7 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 
-namespace Aiwe.Controllers { //TODO check if this is already correct
+namespace Aiwe.Controllers {
   public class CommonController : Controller {
     [CommonActionFilter]
     //Get does not have filter
@@ -88,13 +88,12 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
 
       //TODO Beware of duplicate record because the client clicks more than once
       // -> If identical record is found, display other page to ask the client to confirm
-      //TODO Beware of incomplete input, because the client does not fill everything
-      // -> likely done in the meta table
-
       BaseScriptModel scriptModel = LogicHelper.CreateInsertScriptModel(meta.TableSource, completeKeyInfo, dictCollections, now, meta);
       object generatedId = SQLServerHandler.ExecuteScalar(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
       bool saveAttachmentResult = AiweFileHelper.SaveAttachments(Request, 
-        Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + commonDataTableName + "/" + generatedId?.ToString()));
+        Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + commonDataTableName + "/" + generatedId.ToString()));
+      meta.HandleEmailEvents(Aibe.DH.CreateActionName, int.Parse(generatedId.ToString()), null, //create has no originalRow
+        AiweUserHelper.GetUserParameters(User, Aibe.DH.EmailMakerUserPrefix));
       return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 
@@ -139,15 +138,14 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
         return View(Aiwe.DH.ErrorViewName);
       }
 
+      DataRow originalRow = meta.GetFullRowSource(cid);
       BaseScriptModel scriptModel = LogicHelper.CreateUpdateScriptModel(meta.TableSource, cid, completeKeyInfo, dictCollections, now);
       SQLServerHandler.ExecuteScript(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
       bool saveAttachmentResult = AiweFileHelper.SaveAttachments(Request,
         Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + commonDataTableName + "/" + cid)); //there is no need for checking this too, because all errors are returned
-      if (meta.HasValidHistoryTable) { //only applied when editing
-        var historyScripts = meta.CreateHistorySQLScripts();
-        if (historyScripts != null && historyScripts.Any())
-          SQLServerHandler.ExecuteBaseScripts(Aibe.DH.DataDBConnectionString, historyScripts); //Does not need to check this for now, for simplification
-      }
+      meta.HandleEmailEvents(Aibe.DH.EditActionName, cid, originalRow, 
+        AiweUserHelper.GetUserParameters(User, Aibe.DH.EmailMakerUserPrefix));
+      meta.HandleHistoryEvents(); //only applied when editing
       return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 
@@ -164,6 +162,8 @@ namespace Aiwe.Controllers { //TODO check if this is already correct
     [ActionName(Aibe.DH.DeleteActionName)]
     public ActionResult DeletePost(string commonDataTableName, int id) { //Where all common tables deletes are returned and can be deleted
       MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      meta.HandleEmailEvents(Aibe.DH.DeleteActionName, id, null, //delete must not have original row
+        AiweUserHelper.GetUserParameters(User, Aibe.DH.EmailMakerUserPrefix)); //email events must be handled before the deletion
       LogicHelper.DeleteItem(meta.TableSource, id); //Currently do not return any error
       return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }

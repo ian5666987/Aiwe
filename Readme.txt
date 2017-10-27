@@ -1,3 +1,14 @@
+v0.13.0.0 alpha (27-Oct-2017 15:40)
+updates:
+- EmailMakerTriggers and EmailMakers columns are now available! Read the guideline for more details.
+- IMPORTANT: Set MultipleActiveResultSets=False in the connection string! Otherwise, the Email Maker feature will not work!
+- CoreEmailInfo and CoreEmailTemplate are added to the database to support EmailMakerTriggers and EmailMakers.
+- AiweEmailSender project is created! Significantly improved and integrated from the originally named EmailSender.
+- EmailHelper and BaseEmailInfo are added in Aibe! They can be used as base function and model for sending email.
+- AiweEmailHelper and AiweEmailInfo are provided in the AiweEmailSender project! They are provided to show the typical way of using EmailHelper and BaseEmailInfo for further development. Read the examples and comments in the classes themselves for more details!
+- A number of tabs are added in the guideline: "Email Tables", "Table Name VS Table Source", "TC-SQLS", "Development Ideas".
+
+-----------------------------------------------------------------------------------------------
 v0.12.0.0 alpha (24-Oct-2017 13:13)
 updates:
 - Default Table Actions now implement ExportToCsv and ExportAllToCsv!
@@ -10,6 +21,7 @@ v0.11.0.0 alpha (20-Oct-2017 18:30)
 updates:
 - HistoryTable and HistoryTrigger are now implemented! Read the guideline for more details.
 - HistoryTable column string length is extended from 500 to 2000
+- IMPORTANT: Set MultipleActiveResultSets=False in the connection string! Otherwise, the History feature will not work!
 
 -----------------------------------------------------------------------------------------------
 v0.10.0.0 alpha (19-Oct-2017 21:05)
