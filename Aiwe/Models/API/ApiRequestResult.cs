@@ -26,11 +26,18 @@ namespace Aiwe.Models.API {
             Columns.Add(cInfo);
           }
 
-          List<string> pictureLinkColumns = new List<string>();
+          List<string> attachmentColumns = new List<string>();
           if(checkedRequest != null && checkedRequest.Meta != null)
-            pictureLinkColumns = new List<string>(Columns
+            attachmentColumns = new List<string>(Columns
               .Where(x => checkedRequest.Meta.IsPictureColumn(x.ColumnName))
               .Select(x => x.ColumnName));
+          List<string> nonPictureAttachmentColumns = new List<string>();
+          if (checkedRequest != null && checkedRequest.Meta != null)
+            nonPictureAttachmentColumns = new List<string>(Columns
+              .Where(x => checkedRequest.Meta.IsNonPictureAttachmentColumn(x.ColumnName))
+              .Select(x => x.ColumnName));
+          if (nonPictureAttachmentColumns.Count > 0)
+            attachmentColumns.AddRange(nonPictureAttachmentColumns);
 
           index = 0;
           foreach (DataRow row in table.Rows) {
@@ -40,13 +47,13 @@ namespace Aiwe.Models.API {
               RowColumnNames = Columns.Select(x => x.ColumnName).ToList(),
             };
             object cid = row[Aibe.DH.Cid];
-            foreach (var pictureLinkColumn in pictureLinkColumns) { //if there is any picture link columns returned
-              string fileName = row[pictureLinkColumn].ToString();
+            foreach (var attachmentColumn in attachmentColumns) { //if there is any picture link columns returned
+              string fileName = row[attachmentColumn].ToString();
               if (!string.IsNullOrWhiteSpace(fileName)) { //and if it refers to something, try to read first
                 try {
                   var folderPath = fileName.Contains("/") || fileName.Contains("\\") ? //if the fileName is "complex", for display, just take from whatever it is meant to be
-                    System.Web.Hosting.HostingEnvironment.MapPath("~/" + Aibe.DH.DefaultImageFolderName) :
-                    System.Web.Hosting.HostingEnvironment.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + checkedRequest.TableName + "/" + 
+                    System.Web.Hosting.HostingEnvironment.MapPath("~/" + Aibe.DH.DefaultAttachmentFolderName) :
+                    System.Web.Hosting.HostingEnvironment.MapPath("~/" + Aibe.DH.DefaultAttachmentFolderName + "/" + checkedRequest.TableName + "/" + 
                       (checkedRequest.RequestType == ApiRequestType.SelectMany || checkedRequest.RequestType == ApiRequestType.Create ?  
                       cid?.ToString() : checkedRequest.Id.ToString())); //only if fileName is simple tableName and id are added in the loading path
                   Directory.CreateDirectory(folderPath);
@@ -55,7 +62,7 @@ namespace Aiwe.Models.API {
                   byte[] fileData = File.ReadAllBytes(path);
                   string fileDataString = Convert.ToBase64String(fileData);
                   ClientApiRequestAttachment attachment = new ClientApiRequestAttachment(
-                    pictureLinkColumn, fileName, fileType, fileDataString);
+                    attachmentColumn, fileName, fileType, fileDataString);
                   if (rInfo.Attachments == null)
                     rInfo.Attachments = new List<ClientApiRequestAttachment>();
                   rInfo.Attachments.Add(attachment);

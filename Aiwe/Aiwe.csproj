@@ -312,10 +312,10 @@
     <Compile Include="Models\DB\CoreAccessLog.cs" />
     <Compile Include="Models\DB\CoreActionLog.cs" />
     <Compile Include="Models\DB\CoreDataModel.cs" />
+    <Compile Include="Models\DB\CoreEmailInfo.cs" />
+    <Compile Include="Models\DB\CoreEmailTemplate.cs" />
     <Compile Include="Models\DB\CoreErrorLog.cs" />
     <Compile Include="Models\DB\CoreUserMap.cs" />
-    <Compile Include="Models\DB\EML_EMAILINFO.cs" />
-    <Compile Include="Models\DB\EML_TEMPLATE.cs" />
     <Compile Include="Models\DB\JOB_CAL_INF.cs" />
     <Compile Include="Models\DB\JOB_ORD_INF.cs" />
     <Compile Include="Models\DB\JOB_TRN_INF.cs" />
@@ -335,6 +335,8 @@
     <Compile Include="Models\DB\TestTableCommonG.cs" />
     <Compile Include="Models\DB\TestTableCommonH.cs" />
     <Compile Include="Models\DB\TestTableCommonI.cs" />
+    <Compile Include="Models\DB\TestTableCommonJ.cs" />
+    <Compile Include="Models\DB\TestTableCommonJ_History.cs" />
     <Compile Include="Models\DB\TestTableSpecificA.cs" />
     <Compile Include="Models\DB\TestTableSpecificB.cs" />
     <Compile Include="Models\DB\VServiceInfo.cs" />
@@ -494,6 +496,8 @@
     <Content Include="Views\MetaItem\_DetailsPart.cshtml" />
     <Content Include="Views\MetaItem\CryptoSerialize.cshtml" />
     <Content Include="Views\MetaItem\Success.cshtml" />
+    <Content Include="Views\Common\DownloadAttachments.cshtml" />
+    <Content Include="Views\Common\_DownloadAttachmentsPart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

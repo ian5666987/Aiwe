@@ -34,6 +34,7 @@ namespace Aiwe {
 
     //Descriptions
     public static string D_DoNotBother = "DO NOT BOTHER the 'No file chosen' phrase. If you see a picture, it means THERE IS a picture linked to the data.";
+    public static string D_DoNotBotherAttachment = "DO NOT BOTHER the 'No file chosen' phrase. Check if the attachment name is correct.";
 
     //Final localization, cannot be further derived from
     public class F {

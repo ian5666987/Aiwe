@@ -25,7 +25,9 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\EntityFramework.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\EntityFramework.SqlServer.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Cryptography.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.SqlServer.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Models.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.String.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Values.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.AI.Agent.Intercept.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.AI.DependencyCollector.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.AI.PerfCounterCollector.dll
@@ -69,6 +71,8 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\System.Web.WebPages.Deployment.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\System.Web.WebPages.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\System.Web.WebPages.Razor.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\WebGrease.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Extractor.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Checker.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\EnvDTE.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.VisualStudio.Shell.Interop.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.VisualStudio.Shell.Interop.8.0.dll
@@ -110,7 +114,9 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Aibe.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Aibe.dll.config
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Cryptography.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.SqlServer.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Models.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.String.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Values.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.AI.DependencyCollector.xml
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.AI.ServerTelemetryChannel.xml
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.AI.Web.xml
@@ -142,6 +148,8 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.Owin.Security.OAuth.xml
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.Owin.Security.Google.xml
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.Owin.Security.Twitter.xml
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Extractor.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Checker.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.VisualStudio.Shell.Immutable.11.0.xml
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.VisualStudio.Shell.Immutable.10.0.xml
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.VisualStudio.Shell.Immutable.14.0.xml
@@ -225,11 +233,3 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.csproj.GenerateResource.Cache
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.csprojResolveAssemblyReference.cache
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Models.dll
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Values.dll
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Extractor.dll
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Checker.dll
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Models.pdb
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Values.pdb
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Extractor.pdb
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Checker.pdb

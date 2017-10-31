@@ -133,6 +133,28 @@ function readURL(columnName, input) {
   }
 }
 
+function readURLAttachment(columnName, input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    var fullPath = document.getElementById('attachment-' + columnName).value;
+    if (fullPath) {
+      var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
+      var filename = fullPath.substring(startIndex);
+      if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+        filename = filename.substring(1);
+      }
+      $('#attachmentdisplay-' + columnName).text(filename);
+      //alert(filename);
+    }
+
+    //reader.onload = function (e) {
+    //}
+
+    //reader.readAsDataURL(input.files[0]);
+  }
+}
+
 //http://stackoverflow.com/questions/857618/javascript-how-to-extract-filename-from-a-file-input-control
 $(document).ready(function () {
   $('.common-input-picture').change(function () {
@@ -162,6 +184,33 @@ $(document).ready(function () {
     readURL(strId, this);
   })
 
+  $('.common-input-attachment').change(function () {
+    var val = $(this).val();
+    var filename = val.split(/(\\|\/)/g).pop();
+    var id = $(this).attr('id');
+    var strId = id.substr('attachment-'.length);
+    var prevFileName = $('#common-string-attachment-' + strId).val();
+    var fromPrevious = false;
+
+    if (!filename && prevFileName) { //the filename is empty but there is something else before, just assign that something else
+      $('#attachmentinfotext-' + strId).show();
+      filename = prevFileName;
+      fromPrevious = true;
+    }
+
+    $('#common-string-attachment-' + strId).val(filename);
+    if (filename) {
+      $('#attachmentdisplay-' + strId).show();
+      $('#attachmentremove-' + strId).show();
+      if (!fromPrevious)
+        $('#attachmentinfotext-' + strId).hide();
+    } else {
+      $('#attachmentdisplay-' + strId).hide();
+      $('#attachmentremove-' + strId).hide();
+    }
+    readURLAttachment(strId, this);
+  })
+
   $('.common-remove-picture').click(function () {
     var id = $(this).attr('id');
     var strId = id.substr('pictureremove-'.length);
@@ -171,6 +220,17 @@ $(document).ready(function () {
     $('#pictureinfotext-' + strId).hide();
     $('#picturedisplay-' + strId).hide();
     $('#pictureremove-' + strId).hide(); //the remove button must be hidden too
+  });
+
+  $('.common-remove-attachment').click(function () {
+    var id = $(this).attr('id');
+    var strId = id.substr('attachmentremove-'.length);
+    $('#attachmentdisplay-' + strId).text(''); //text removed
+    $('#attachment-' + strId).val('');
+    $('#common-string-attachment-' + strId).val(''); //the filename emptied
+    $('#attachmentinfotext-' + strId).hide();
+    $('#attachmentdisplay-' + strId).hide();
+    $('#attachmentremove-' + strId).hide(); //the remove button must be hidden too
   });
 
 

@@ -228,8 +228,8 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\zh-CHS\Microsoft.ReportViewer.WinForms.resour
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\zh-CHT\Microsoft.ReportViewer.WinForms.resources.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\zh-HANS\Microsoft.ReportViewer.WinForms.resources.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\zh-HANT\Microsoft.ReportViewer.WinForms.resources.dll
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csprojResolveAssemblyReference.cache
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.Migrations.InitialCreate.resources
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csproj.GenerateResource.Cache
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csprojResolveAssemblyReference.cache

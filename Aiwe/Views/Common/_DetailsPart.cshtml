@@ -46,9 +46,9 @@
                         string scLink = scData.ToString();
                         if (scLink.Contains("/") || scLink.Contains("\\") || !scTable.HasCidColumn || 
                           string.IsNullOrWhiteSpace(scTable.ScInfo.RefTableName)) { //longer relative path
-                          <img src="~/@Aibe.DH.DefaultImageFolderName/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
+                          <img src="~/@Aibe.DH.DefaultAttachmentFolderName/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
                         } else { //the RefTableName must exists if it is to be used
-                          <img src="~/@Aibe.DH.DefaultImageFolderName/@scTable.ScInfo.RefTableName/@scCid/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
+                          <img src="~/@Aibe.DH.DefaultAttachmentFolderName/@scTable.ScInfo.RefTableName/@scCid/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
                         }
                       } else { //if not a picture link column, just print as it is but if it is picture link column... then it is going to be different
                         @DateTimeHelper.ProcessPossibleDateTimeString(scData, scTable.IsDateTimeColumn(scColumnName), Aiwe.DH.ScTableDateTimeFormat)
@@ -64,11 +64,11 @@
           string imgSizeStr = pcInfo.IsStretched ? "width:" + pcInfo.Width + "px;height:" + pcInfo.Height + "px" :
             pcInfo.HeightComesFirst ? "height:" + pcInfo.Height + "px" : "width:" + pcInfo.Width + "px";
           if (string.IsNullOrWhiteSpace(data.Value)) {
-            <i>[no picture]</i>
+            <i>[@Aibe.LCZ.W_NoPicture]</i>
           } else if (data.Value.Contains("/") || data.Value.Contains("\\")) { //longer relative path
-            <img src="~/@Aibe.DH.DefaultImageFolderName/@data.Value" style="@imgSizeStr" title="@data.Value" />
+            <img src="~/@Aibe.DH.DefaultAttachmentFolderName/@data.Value" style="@imgSizeStr" title="@data.Value" />
           } else {
-            <img src="~/@Aibe.DH.DefaultImageFolderName/@Model.TableName/@Model.Cid/@data.Value" style="@imgSizeStr" title="@data.Value" />
+            <img src="~/@Aibe.DH.DefaultAttachmentFolderName/@Model.TableName/@Model.Cid/@data.Value" style="@imgSizeStr" title="@data.Value" />
           }
         } else if (Model.Meta.IsListColumn(data.Key)) {
           string dataValue = data.Value ?? string.Empty;

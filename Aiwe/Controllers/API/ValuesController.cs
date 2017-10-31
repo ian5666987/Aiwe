@@ -203,7 +203,7 @@ namespace Aiwe.Controllers {
               //if it is NOT a picture link column, then skips this saving process of the attachment
               var fileName = Path.GetFileName(attachment.FileName);
               byte[] fileData = Convert.FromBase64String(attachment.Data);
-              var folderPath = System.Web.Hosting.HostingEnvironment.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + checkedRequest.TableName + "/" + 
+              var folderPath = System.Web.Hosting.HostingEnvironment.MapPath("~/" + Aibe.DH.DefaultAttachmentFolderName + "/" + checkedRequest.TableName + "/" + 
                 (checkedRequest.RequestType == ApiRequestType.Create ? val : checkedRequest.Id)); //creates or edit always table specific and id specific, create uses the newly created Id
               Directory.CreateDirectory(folderPath);
               var path = Path.Combine(folderPath, fileName);

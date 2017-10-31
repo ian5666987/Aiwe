@@ -1,0 +1,37 @@
+﻿@using Aiwe.Models;
+
+@model AiweDetailsModel
+
+@{
+  ViewBag.LabelClasses = "col-md-2";
+  ViewBag.EditorClass = "col-md-10";
+}
+
+@if (Model.SequencedItems == null) {
+  <h4 style="color:red">@Aibe.LCZ.NFE_NoRecordFound</h4>
+} else {
+  if (Model.SequencedItems.Count <= 0) {
+    <h4 style="color:red">@string.Format(Aibe.LCZ.E_NoRecordFoundInTableForCid, Model.TableDisplayName, Model.Cid)</h4>
+  } else {
+    foreach (var data in Model.SequencedItems) {
+      if (!Model.Meta.IsDownloadColumn(data.Key)) {
+        continue;
+      }
+      if(!Model.Meta.IsPictureColumn(data.Key) && !Model.Meta.IsNonPictureAttachmentColumn(data.Key)) {
+        continue;
+      }
+      <div class="row">
+        <div class="@ViewBag.LabelClasses"><b>@Model.Meta.GetColumnDisplayName(data.Key)</b></div>
+          
+        @if (string.IsNullOrWhiteSpace(data.Value)) {
+          <i>[@Aibe.LCZ.W_NoAttachment]</i>
+        } else if (data.Value.Contains("/") || data.Value.Contains("\\")) { //longer relative path
+          <a href="~/@Aibe.DH.DefaultAttachmentFolderName/@data.Value" download="@System.IO.Path.GetFileName(data.Value)">@data.Value</a>
+        } else {
+          <a href="~/@Aibe.DH.DefaultAttachmentFolderName/@Model.TableName/@Model.Cid/@data.Value" download="@System.IO.Path.GetFileName(data.Value)">@data.Value</a>
+        }
+
+      </div>
+    }
+  }
+}

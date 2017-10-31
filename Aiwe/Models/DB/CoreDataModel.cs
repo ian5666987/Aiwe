@@ -23,17 +23,16 @@ namespace Aiwe.Models.DB {
     public virtual DbSet<CFG_TRN_ACT> CFG_TRN_ACT { get; set; }
     public virtual DbSet<CoreAccessLog> CoreAccessLogs { get; set; }
     public virtual DbSet<CoreActionLog> CoreActionLogs { get; set; }
+    public virtual DbSet<CoreEmailInfo> CoreEmailInfoes { get; set; }
+    public virtual DbSet<CoreEmailTemplate> CoreEmailTemplates { get; set; }
     public virtual DbSet<CoreErrorLog> CoreErrorLogs { get; set; }
     public virtual DbSet<CoreUserMap> CoreUserMaps { get; set; }
-    public virtual DbSet<EML_EMAILINFO> EML_EMAILINFO { get; set; }
-    public virtual DbSet<EML_TEMPLATE> EML_TEMPLATE { get; set; }
     public virtual DbSet<JOB_CAL_INF> JOB_CAL_INF { get; set; }
     public virtual DbSet<JOB_ORD_INF> JOB_ORD_INF { get; set; }
     public virtual DbSet<JOB_TRN_INF> JOB_TRN_INF { get; set; }
     public virtual DbSet<LOG_JOB_HST> LOG_JOB_HST { get; set; }
     public virtual DbSet<LOG_TRN_HST> LOG_TRN_HST { get; set; }
     public virtual DbSet<LOG_USR_ACT> LOG_USR_ACT { get; set; }
-    public virtual DbSet<MetaItem> MetaItems { get; set; }
     public virtual DbSet<ORD_CUS_CON> ORD_CUS_CON { get; set; }
     public virtual DbSet<ORD_CUS_PRD> ORD_CUS_PRD { get; set; }
     public virtual DbSet<ORD_CUS_REQ> ORD_CUS_REQ { get; set; }
@@ -46,9 +45,12 @@ namespace Aiwe.Models.DB {
     public virtual DbSet<TestTableCommonG> TestTableCommonGs { get; set; }
     public virtual DbSet<TestTableCommonH> TestTableCommonHs { get; set; }
     public virtual DbSet<TestTableCommonI> TestTableCommonIs { get; set; }
+    public virtual DbSet<TestTableCommonJ> TestTableCommonJs { get; set; }
+    public virtual DbSet<TestTableCommonJ_History> TestTableCommonJ_History { get; set; }
     public virtual DbSet<TestTableSpecificA> TestTableSpecificAs { get; set; }
     public virtual DbSet<TestTableSpecificB> TestTableSpecificBs { get; set; }
     public virtual DbSet<CFG_CUS_LOC> CFG_CUS_LOC { get; set; }
+    public virtual DbSet<MetaItem> MetaItems { get; set; }
     public virtual DbSet<VServiceInfo> VServiceInfoes { get; set; }
     public virtual DbSet<VServiceLog> VServiceLogs { get; set; }
     public virtual DbSet<VServiceTeam> VServiceTeams { get; set; }

@@ -1,0 +1,22 @@
+﻿@using Aiwe.Models;
+
+@model AiweDetailsModel
+
+@{
+  ViewBag.Title = Aibe.LCZ.W_DownloadAttachments;
+}
+
+<h2>@Model.TableDisplayName <small>(@ViewBag.Title)</small></h2>
+<br />
+
+@Html.Partial("_DownloadAttachmentsPart")
+<div class="row">
+  <div class="form-group">
+    <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@Aibe.DH.IndexActionName/@Model.TableName"
+       class="btn btn-primary col-md-2"
+       style="margin-left:12px; margin-top:15px;">
+      <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> @Aibe.LCZ.W_BackToList</font></span>
+    </a>
+  </div>
+  <br />
+</div>

@@ -1,3 +1,10 @@
+v0.14.0.0 beta (31-Oct-2017 13:47)
+updates:
+- NonPictureAttachmentColumns and DownloadColumns are now available! Read the guideline for more details.
+- Default Row Actions now implement DownloadAttachments!
+- IMPORTANT: Default attachment folder called "Attachments" add now implemented. The images per table are no longer stored in the "Images" folder but in the "Attachments" folder. "Images" folder is used to store image for the website (example: company's icon).
+
+-----------------------------------------------------------------------------------------------
 v0.13.0.0 alpha (27-Oct-2017 15:40)
 updates:
 - EmailMakerTriggers and EmailMakers columns are now available! Read the guideline for more details.

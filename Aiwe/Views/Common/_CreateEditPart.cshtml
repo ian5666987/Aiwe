@@ -24,6 +24,7 @@
     bool isDropDown = Model.Meta.IsCreateEditDropDownColumn(cn);
     bool isTextField = Model.Meta.IsTextField(cn);
     bool isPictureColumn = Model.Meta.IsPictureColumn(cn);
+    bool isNonPictureAttachmentColumn = Model.Meta.IsNonPictureAttachmentColumn(cn);
     bool isListColumn = Model.Meta.IsListColumn(cn);
 
     string hiddenAttrIfReadOnly = isReadOnly ? "hidden=\"hidden\"" : string.Empty;
@@ -88,9 +89,9 @@
                           string scLink = scData.ToString();
                           if (scLink.Contains("/") || scLink.Contains("\\") || !scTable.HasCidColumn ||
                             string.IsNullOrWhiteSpace(scTable.ScInfo.RefTableName)) { //longer relative path
-                            <img src="~/@Aibe.DH.DefaultImageFolderName/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
+                            <img src="~/@Aibe.DH.DefaultAttachmentFolderName/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
                           } else { //the RefTableName must exists if it is to be used
-                            <img src="~/@Aibe.DH.DefaultImageFolderName/@scTable.ScInfo.RefTableName/@scCid/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
+                            <img src="~/@Aibe.DH.DefaultAttachmentFolderName/@scTable.ScInfo.RefTableName/@scCid/@scLink" width="@scTable.ScInfo.GetPictureWidthFor(scColumnName)" title="@scData" />
                           }
                         } else { //if not a picture link column, just print as it is but if it is picture link column... then it is going to be different
                           @DateTimeHelper.ProcessPossibleDateTimeString(scData, scTable.IsDateTimeColumn(scColumnName), Aiwe.DH.ScTableDateTimeFormat)
@@ -159,9 +160,9 @@
               @if (!string.IsNullOrWhiteSpace(columnValue)) { //try to load the image
                 string cid = Model.GetData(Aibe.DH.Cid);
                 if (columnValue.Contains("/") || columnValue.Contains("\\")) { //longer relative (folder-contain) path
-                  <img src="../../../@Aibe.DH.DefaultImageFolderName/@columnValue" style="@imgSizeStr" id="picturedisplay-@cn" />
+                  <img src="../../../@Aibe.DH.DefaultAttachmentFolderName/@columnValue" style="@imgSizeStr" id="picturedisplay-@cn" />
                 } else {
-                  <img src="../../../@Aibe.DH.DefaultImageFolderName/@Model.TableName/@cid/@columnValue" style="@imgSizeStr" id="picturedisplay-@cn" />
+                  <img src="../../../@Aibe.DH.DefaultAttachmentFolderName/@Model.TableName/@cid/@columnValue" style="@imgSizeStr" id="picturedisplay-@cn" />
                 }
                 <button class="common-remove-picture" type="button" id="pictureremove-@cn" @hiddenAttrIfReadOnly>@Aibe.LCZ.W_Remove</button>
               } else {
@@ -185,6 +186,39 @@
               <input class="@controlClasses"
                       type="hidden" name="@cn" value="@columnValue"
                       id="common-string-picture-@cn" />
+            </div>
+          } else if (isNonPictureAttachmentColumn) {
+            AttachmentInfo attInfo = Model.Meta.GetNonPictureAttachmentColumn(cn);
+            string formats = attInfo.Formats == null || attInfo.Formats.Count <= 0 ? "*" : string.Join(",", attInfo.Formats);
+            string attColumnName = cn + Aibe.DH.CreateEditNonPictureAttachmentAppendixName;
+            string attColumnValue = Model.GetData(attColumnName);
+            string columnValue = Model.GetData(cn, false);
+            <div style="margin-top:7px">
+              @if (!string.IsNullOrWhiteSpace(columnValue)) { //try to load the attachment
+                if (string.IsNullOrWhiteSpace(dataValue)) {
+                  <i><span id="attachmentdisplay-@cn">[@Aibe.LCZ.W_NoAttachment]</span></i>
+                } else {
+                  <span id="attachmentdisplay-@cn">@dataValue</span>
+                }
+                <button class="common-remove-attachment" type="button" id="attachmentremove-@cn" @hiddenAttrIfReadOnly>@Aibe.LCZ.W_Remove</button>
+              } else {
+                <button class="common-remove-attachment" type="button" id="attachmentremove-@cn" hidden="hidden">@Aibe.LCZ.W_Remove</button>
+              }
+              @if (!isReadOnly) {
+                <input type="file" name="@attColumnName" accept="@formats" class="common-input-attachment" id="attachment-@cn" />
+                if (!string.IsNullOrWhiteSpace(columnValue) && !isCreate) {
+                <span class="text-danger" id="attachmentinfotext-@cn"> 
+                  @Aiwe.LCZ.D_DoNotBotherAttachment
+                </span>
+                } else {
+                <span class="text-danger" id="attachmentinfotext-@cn" hidden="hidden">
+                  @Aiwe.LCZ.D_DoNotBotherAttachment
+                </span>
+                }
+              }
+              <input class="@controlClasses"
+                      type="hidden" name="@cn" value="@columnValue"
+                      id="common-string-attachment-@cn" />
             </div>
           } else if (isListColumn) {
             string lcType = Model.Meta.GetListColumnType(cn);

@@ -6,49 +6,55 @@ namespace Aiwe.Models.DB
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class EML_EMAILINFO
+    [Table("CoreEmailInfo")]
+    public partial class CoreEmailInfo
     {
         [Key]
         public int Cid { get; set; }
 
-        [StringLength(50)]
+        [StringLength(200)]
         public string TemplateName { get; set; }
 
+        [StringLength(2000)]
+        public string EmailFrom { get; set; }
+
+        [StringLength(2000)]
+        public string EmailTo { get; set; }
+
+        [StringLength(500)]
+        public string EmailSubject { get; set; }
+
+        [StringLength(2000)]
+        public string EmailCc { get; set; }
+
+        [StringLength(2000)]
+        public string EmailBcc { get; set; }
+
+        [StringLength(4000)]
+        public string EmailBody { get; set; }
+
+        [StringLength(4000)]
+        public string EmailParameters { get; set; }
+
+        [Column(TypeName = "datetime2")]
         public DateTime? CreatedOn { get; set; }
 
-        public int? SendStatus { get; set; }
+        public bool? IsSent { get; set; }
 
         public DateTime? SendDateTime { get; set; }
 
         public int? SendCount { get; set; }
 
-        [StringLength(50)]
-        public string EmailFrom { get; set; }
-
-        [StringLength(500)]
-        public string EmailTo { get; set; }
-
-        [StringLength(500)]
-        public string EmailCc { get; set; }
-
-        [StringLength(200)]
-        public string EmailSubject { get; set; }
-
         [StringLength(4000)]
-        public string EmailBody { get; set; }
-
-        [StringLength(200)]
-        public string AttachedFilesPath { get; set; }
+        public string AttachmentFilePaths { get; set; }
 
         public int? JobNo { get; set; }
 
         [StringLength(10)]
         public string JobStatus { get; set; }
 
+        [Column(TypeName = "datetime2")]
         public DateTime? ScheduleDateTime { get; set; }
-
-        [StringLength(1000)]
-        public string ParamValues { get; set; }
 
         public int? Send1DaysBefore { get; set; }
 

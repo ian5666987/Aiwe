@@ -91,7 +91,7 @@ namespace Aiwe.Controllers {
       BaseScriptModel scriptModel = LogicHelper.CreateInsertScriptModel(meta.TableSource, completeKeyInfo, dictCollections, now, meta);
       object generatedId = SQLServerHandler.ExecuteScalar(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
       bool saveAttachmentResult = AiweFileHelper.SaveAttachments(Request, 
-        Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + commonDataTableName + "/" + generatedId.ToString()));
+        Server.MapPath("~/" + Aibe.DH.DefaultAttachmentFolderName + "/" + commonDataTableName + "/" + generatedId.ToString()));
       meta.HandleEmailEvents(Aibe.DH.CreateActionName, int.Parse(generatedId.ToString()), null, //create has no originalRow
         AiweUserHelper.GetUserParameters(User, Aibe.DH.EmailMakerUserPrefix));
       return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
@@ -142,7 +142,7 @@ namespace Aiwe.Controllers {
       BaseScriptModel scriptModel = LogicHelper.CreateUpdateScriptModel(meta.TableSource, cid, completeKeyInfo, dictCollections, now);
       SQLServerHandler.ExecuteScript(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
       bool saveAttachmentResult = AiweFileHelper.SaveAttachments(Request,
-        Server.MapPath("~/" + Aibe.DH.DefaultImageFolderName + "/" + commonDataTableName + "/" + cid)); //there is no need for checking this too, because all errors are returned
+        Server.MapPath("~/" + Aibe.DH.DefaultAttachmentFolderName + "/" + commonDataTableName + "/" + cid)); //there is no need for checking this too, because all errors are returned
       meta.HandleEmailEvents(Aibe.DH.EditActionName, cid, originalRow, 
         AiweUserHelper.GetUserParameters(User, Aibe.DH.EmailMakerUserPrefix));
       meta.HandleHistoryEvents(); //only applied when editing
@@ -171,6 +171,15 @@ namespace Aiwe.Controllers {
     //Later add filter to check if a user has right to see this table
     [CommonActionFilter]
     public ActionResult Details(string commonDataTableName, int id) { //there must be a number named cid (common Id)
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(meta.TableSource, id);
+      AiweDetailsModel model = new AiweDetailsModel(meta, id, LogicHelper.ObjectDictionaryToStringDictionary(objectDictionary));
+      return View(model);
+    }
+
+    //Simply returning a view which consists of list of attachments. The view should have some mechanism to download
+    [CommonActionFilter]
+    public ActionResult DownloadAttachments(string commonDataTableName, int id) { //there must be a number named cid (common Id)
       MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(meta.TableSource, id);
       AiweDetailsModel model = new AiweDetailsModel(meta, id, LogicHelper.ObjectDictionaryToStringDictionary(objectDictionary));
