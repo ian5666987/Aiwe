@@ -1,4 +1,4 @@
-v0.14.0.0 beta (31-Oct-2017 13:47)
+v0.14.0.0 beta (31-Oct-2017 14:00)
 updates:
 - NonPictureAttachmentColumns and DownloadColumns are now available! Read the guideline for more details.
 - Default Row Actions now implement DownloadAttachments!
