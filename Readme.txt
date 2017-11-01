@@ -1,3 +1,11 @@
+v0.14.0.1 beta (1-Nov-2017 11:40)
+updates:
+- Guidelines for coloring updated
+
+bugs fixed:
+- Index view coloring condition changed from x.CheckConditionMet() to {sameColumnName} && x.CheckConditionMet()
+
+-----------------------------------------------------------------------------------------------
 v0.14.0.0 beta (31-Oct-2017 14:00)
 updates:
 - NonPictureAttachmentColumns and DownloadColumns are now available! Read the guideline for more details.
