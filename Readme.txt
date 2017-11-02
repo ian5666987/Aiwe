@@ -1,9 +1,11 @@
+v0.14.1.1 beta (2-Nov-2017 09:27)
+bugs fixed:
+- OrderBy using SQL-Script has additional order by Cid attached. Fixed.
+
+-----------------------------------------------------------------------------------------------
 v0.14.1.0 beta (2-Nov-2017 09:27)
 updates:
-- Guidelines for coloring updated
-
-bugs fixed:
-- Index view coloring condition changed from x.CheckConditionMet() to {sameColumnName} && x.CheckConditionMet()
+- Allow OrderBy column to order by SQL-Script
 
 -----------------------------------------------------------------------------------------------
 v0.14.0.1 beta (1-Nov-2017 11:40)
