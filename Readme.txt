@@ -1,9 +1,9 @@
-v0.14.1.1 beta (2-Nov-2017 09:27)
+v0.14.1.1 beta (2-Nov-2017 10:00)
 bugs fixed:
 - OrderBy using SQL-Script has additional order by Cid attached. Fixed.
 
 -----------------------------------------------------------------------------------------------
-v0.14.1.0 beta (2-Nov-2017 09:27)
+v0.14.1.0 beta (1-Nov-2017 17:00)
 updates:
 - Allow OrderBy column to order by SQL-Script
 
