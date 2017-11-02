@@ -1,3 +1,8 @@
+v0.14.2.0 beta (2-Nov-2017 17:00)
+updates:
+- The history function automatically puts prefix "OriginalTableName\OriginalCid\" before transferring the value to the history table for columns under PictureColumns or NonPictureAttachmentColumns
+
+-----------------------------------------------------------------------------------------------
 v0.14.1.1 beta (2-Nov-2017 10:00)
 bugs fixed:
 - OrderBy using SQL-Script has additional order by Cid attached. Fixed.
