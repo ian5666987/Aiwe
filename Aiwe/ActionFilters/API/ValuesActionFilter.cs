@@ -68,7 +68,7 @@ namespace Aiwe.ActionFilters {
 
       //only if userMap is available the user is considered available
       ApplicationUser user = string.IsNullOrWhiteSpace(request.UserName) || userMap == null ? null :
-        context.Users.FirstOrDefault(x => x.UserName.EqualsIgnoreCase(request.UserName));
+        context.Users.FirstOrDefault(x => x.UserName.ToLower().Trim() == request.UserName.ToLower().Trim());
 
       if (!AiweUserHelper.UserIsDeveloper(user))
         LogHelper.Action(user.UserName, Aiwe.DH.WebApi, Aiwe.DH.WebApiControllerName, request.TableName, request.RequestType, request.CreateLogValue(3000)); //TODO as of now 3000 is hardcoded

@@ -227,8 +227,8 @@ namespace Aiwe.Controllers {
     #region live javascript use
     //Called when live dropdown is lifted up
     [CommonActionFilter]
-    public JsonResult GetLiveDropDownItems(string commonDataTableName, string changedColumnName, string[] originalColumnValues,
-      string[] liveddColumnNames, string[] liveddDataTypes, string[] liveddItems) {
+    public JsonResult GetLiveDropDownItems(string commonDataTableName, string changedColumnName, 
+      string[] originalColumnValues, string[] liveddColumnNames, string[] liveddDataTypes, string[] liveddItems) {
       MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       List<LiveDropDownResult> results = meta.GetLiveDropDownResults(
         changedColumnName, originalColumnValues, liveddColumnNames, liveddDataTypes, liveddItems);

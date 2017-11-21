@@ -17,7 +17,7 @@
   @foreach (DataColumn column in Model.Meta.ArrangedDataColumns) {
     string cn = column.ColumnName;
     bool isScriptColumn = Model.Meta.IsScriptColumn(cn);
-    bool isReadOnly = (!isCreate && Model.Meta.IsEditShowOnly(cn)) || isScriptColumn; //TODO fornow, script column is always read only
+    bool isReadOnly = (!isCreate && Model.Meta.IsEditShowOnly(cn)) || isScriptColumn; //TODO for now, script column is always read only
     bool isColumnIncluded = Model.IsColumnIncludedInCreateEdit(column, User);
 
     //ordered by precedence
