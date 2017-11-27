@@ -92,8 +92,10 @@ namespace Aiwe.Controllers {
       object generatedId = SQLServerHandler.ExecuteScalar(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
       bool saveAttachmentResult = AiweFileHelper.SaveAttachments(Request, 
         Server.MapPath("~/" + Aibe.DH.DefaultAttachmentFolderName + "/" + commonDataTableName + "/" + generatedId.ToString()));
-      meta.HandleEmailEvents(Aibe.DH.CreateActionName, int.Parse(generatedId.ToString()), null, //create has no originalRow
+      int cid = int.Parse(generatedId.ToString());
+      meta.HandleEmailEvents(Aibe.DH.CreateActionName, cid, null, //create has no originalRow
         AiweUserHelper.GetUserParameters(User, Aibe.DH.EmailMakerUserPrefix));
+      meta.HandleHistoryEvents(Aibe.DH.CreateActionName, cid, null); //create has no originalRow
       return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 
@@ -145,7 +147,7 @@ namespace Aiwe.Controllers {
         Server.MapPath("~/" + Aibe.DH.DefaultAttachmentFolderName + "/" + commonDataTableName + "/" + cid)); //there is no need for checking this too, because all errors are returned
       meta.HandleEmailEvents(Aibe.DH.EditActionName, cid, originalRow, 
         AiweUserHelper.GetUserParameters(User, Aibe.DH.EmailMakerUserPrefix));
-      meta.HandleHistoryEvents(); //only applied when editing
+      meta.HandleHistoryEvents(Aibe.DH.EditActionName, cid, originalRow);
       return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 
@@ -164,6 +166,7 @@ namespace Aiwe.Controllers {
       MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       meta.HandleEmailEvents(Aibe.DH.DeleteActionName, id, null, //delete must not have original row
         AiweUserHelper.GetUserParameters(User, Aibe.DH.EmailMakerUserPrefix)); //email events must be handled before the deletion
+      meta.HandleHistoryEvents(Aibe.DH.DeleteActionName, id, null); //delete must not have original row
       LogicHelper.DeleteItem(meta.TableSource, id); //Currently do not return any error
       return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }

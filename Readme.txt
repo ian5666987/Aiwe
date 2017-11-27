@@ -1,3 +1,11 @@
+v0.14.3.0 beta (27-Nov-2017 14:15)
+updates:
+- The history function supports multiple triggers
+- The history function supports more row actions: create, edit, delete
+- The history function supports non-deleting history logging
+- The history function supports history logging for non-changing value in edit row action
+
+-----------------------------------------------------------------------------------------------
 v0.14.2.1 beta (21-Nov-2017 11:00)
 bugs fixed:
 - ValueActionFilter uses EqualsIgnoreCase for getting ApplicationUser causes crash. Fixed.
