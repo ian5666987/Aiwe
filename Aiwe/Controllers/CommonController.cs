@@ -90,9 +90,9 @@ namespace Aiwe.Controllers {
       // -> If identical record is found, display other page to ask the client to confirm
       BaseScriptModel scriptModel = LogicHelper.CreateInsertScriptModel(meta.TableSource, completeKeyInfo, dictCollections, now, meta);
       object generatedId = SQLServerHandler.ExecuteScalar(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
-      bool saveAttachmentResult = AiweFileHelper.SaveAttachments(Request, 
-        Server.MapPath("~/" + Aibe.DH.DefaultAttachmentFolderName + "/" + commonDataTableName + "/" + generatedId.ToString()));
       int cid = int.Parse(generatedId.ToString());
+      bool saveAttachmentResult = AiweFileHelper.SaveAttachments(Request, 
+        Server.MapPath("~/" + Aibe.DH.DefaultAttachmentFolderName + "/" + commonDataTableName + "/" + cid.ToString()));
       meta.HandleEmailEvents(Aibe.DH.CreateActionName, cid, null, //create has no originalRow
         AiweUserHelper.GetUserParameters(User, Aibe.DH.EmailMakerUserPrefix));
       meta.HandleHistoryEvents(Aibe.DH.CreateActionName, cid, null); //create has no originalRow
@@ -165,7 +165,7 @@ namespace Aiwe.Controllers {
     public ActionResult DeletePost(string commonDataTableName, int id) { //Where all common tables deletes are returned and can be deleted
       MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       meta.HandleEmailEvents(Aibe.DH.DeleteActionName, id, null, //delete must not have original row
-        AiweUserHelper.GetUserParameters(User, Aibe.DH.EmailMakerUserPrefix)); //email events must be handled before the deletion
+        AiweUserHelper.GetUserParameters(User, Aibe.DH.EmailMakerUserPrefix)); //email and history events must be handled before the deletion
       meta.HandleHistoryEvents(Aibe.DH.DeleteActionName, id, null); //delete must not have original row
       LogicHelper.DeleteItem(meta.TableSource, id); //Currently do not return any error
       return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });

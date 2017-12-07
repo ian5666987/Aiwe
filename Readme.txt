@@ -1,9 +1,15 @@
+v0.14.3.1 beta (7-Dec-2017 13:40)
+bugs fixed:
+- Multiple form submissions on non-Aiwe-based form when run on Microsoft-Edge. Fixed.
+
+-----------------------------------------------------------------------------------------------
 v0.14.3.0 beta (27-Nov-2017 14:15)
 updates:
 - The history function supports multiple triggers
 - The history function supports more row actions: create, edit, delete
 - The history function supports non-deleting history logging
 - The history function supports history logging for non-changing value in edit row action
+- The history transfer only applied to the currently processed item (current cid)
 
 -----------------------------------------------------------------------------------------------
 v0.14.2.1 beta (21-Nov-2017 11:00)

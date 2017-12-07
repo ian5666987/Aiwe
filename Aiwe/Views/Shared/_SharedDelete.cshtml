@@ -11,7 +11,7 @@
   @using (Html.BeginForm(Aibe.DH.DeleteActionName, (string)ViewBag.ControllerName, FormMethod.Post, new { id = "deleteForm" })) {
     @Html.AntiForgeryToken()
     <div class="form-group">
-      <button class="btn btn-danger col-md-1" style="margin-left:12px; margin-right:8px; margin-top:15px;" onclick="submitDeleteForm()">
+      <button class="btn btn-danger col-md-1" style="margin-left:12px; margin-right:8px; margin-top:15px;"> @*onclick="submitDeleteForm()"*@
         <span class="glyphicon glyphicon-remove"><font style="font-family:verdana;"> @Aibe.LCZ.W_Delete</font></span>
       </button>
       <a href="@Url.Action(Aibe.DH.IndexActionName, (string)ViewBag.ControllerName)"
@@ -24,8 +24,8 @@
   <br />
 </div>
 
-<script>
+@*<script>
   function submitDeleteForm() {
     document.getElementById('deleteForm').submit();
   }
-</script>
+</script>*@
