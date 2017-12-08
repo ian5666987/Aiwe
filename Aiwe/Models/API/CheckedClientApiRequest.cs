@@ -284,7 +284,12 @@ namespace Aiwe.Models.API {
       return components;
     }
 
-    static List<string> allowedOrderByNonColumnNameComponents = new List<string> { ",", Aibe.DH.AscOrderWord, Aibe.DH.DescOrderWord };
+    static List<string> allowedOrderByNonColumnNameComponents = new List<string> {
+      ",", "(", ")", //base things are allowed
+      "+", "-", "*", "/", "%", //basic maths are allowed
+      Aibe.DH.AscOrderWord, Aibe.DH.DescOrderWord
+    };
+
     private bool checkOrderByDesc(string desc, out string errorMsg) {
       errorMsg = string.Empty;
       try {
@@ -365,7 +370,7 @@ namespace Aiwe.Models.API {
               errorMsg = string.Concat(Aibe.LCZ.W_Desc, ": ", desc, "\n", Aibe.LCZ.W_Action, ": ",
                 Aiwe.LCZ.W_FilterCheck, "\n", Aibe.LCZ.W_Error, ": ", Aibe.LCZ.NFE_BadComparison, "\n", Aibe.LCZ.W_Item, ": ",
                 prevComponent, component, nextComponent);
-              return false; //must be allowed items, otherwise harmful!
+              return false; //must not be allowed items, otherwise harmful!
             }
           } else { //all other classes
             var parts = component.Split(',');
@@ -515,25 +520,37 @@ namespace Aiwe.Models.API {
         return null;
 
       StringBuilder sb = new StringBuilder("INSERT INTO ");
-      sb.Append(string.Concat("[", TableSource, "] VALUES("));
+      StringBuilder backSb = new StringBuilder(" VALUES (");
+      sb.Append(string.Concat("[", TableSource, "] "));
 
       List<string> usedColumnNames = new List<string>();
       pars = createParsFromValues(Meta, true, out usedColumnNames);
       if (pars == null)
         return null;
+      bool hasColumn = usedColumnNames != null && usedColumnNames.Any();
 
       int index = 0;
       foreach (var par in pars) {
-        if (index > 0)
-          sb.Append(", ");
-        string columnName = usedColumnNames[index];
-        sb.Append(string.Concat("@par", index));
+        if (index > 0) {
+          if (hasColumn)
+            sb.Append(", ");
+          backSb.Append(", ");
+        }
+        if (hasColumn) {
+          string columnName = usedColumnNames[index];
+          if (index == 0)
+            sb.Append("(");
+          sb.Append(string.Concat("[", columnName, "]"));
+        }
+        backSb.Append(string.Concat("@par", index));
         ++index;
       }
 
-      sb.Append(")");
+      if (hasColumn)
+        sb.Append(")");
+      backSb.Append(")");
 
-      return sb.ToString();
+      return string.Concat(sb.ToString(), backSb.ToString());
     }
 
     public string CreateQueryStringSingle() {

@@ -1,3 +1,9 @@
+v0.14.4.0 beta (8-Dec-2017 17:12)
+updates:
+- More flexible CheckedClientApiRequest.CreateInsertIntoString. It now can insert data with limited column inputs and does not necessarily use the database table's order. This is to be made compatible with WebClientDemo v1.0.0.0.
+- More symbols are allowed for OrderBy clause requested by web clients.
+
+-----------------------------------------------------------------------------------------------
 v0.14.3.1 beta (7-Dec-2017 13:40)
 bugs fixed:
 - Multiple form submissions on non-Aiwe-based form when run on Microsoft-Edge. Fixed.
