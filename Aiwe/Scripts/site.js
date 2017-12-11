@@ -276,32 +276,35 @@ $(document).ready(function () {
     //Take all info from the ListColumnExtension
     var columnName = $(this).attr('commoncolumnname');
     var isAdd = $(this).attr('commonbuttontype') == "add"; //to determine if it is add or delete
-    var deleteNo = isAdd ? 0 : parseInt($(this).attr('commondeleteno'));
+    var isCopy = $(this).attr('commonbuttontype') == "copy"; //to determine if it is a copy
+    var itemNo = isAdd ? 0 : parseInt($(this).attr('commonitemno'));
 
     //get all basic variables needed to load the HTML later
     var lcType = $('#common-subcolumn-span-' + columnName).text(); //type of List Column
     var dataValue = $('#common-subcolumn-content-' + columnName).val(); //content of the column
 
     //get all adds:
-    var allAdds = document.getElementsByClassName('common-subcolumn-input-add-' + columnName);
     var addString = '';
-    for (i = 0; i < allAdds.length; ++i) {
-      if (i > 0)
-        addString += '|';
-      var subItemType = allAdds[i].attributes.getNamedItem('commonsubitemtype').value; //there are four possible subItemType here
-      var subItemVal = allAdds[i].value;
-      switch (subItemType) {
-        case 'L':
-        case 'V': addString += subItemVal; break;
-        case 'O':
-          if (subItemVal.toString().indexOf('|') !== -1) {
-            addString += subItemVal;
-          } else {
-            addString += subItemVal + '|' + subItemVal;
-          }
-          break;
-        case 'C': addString += subItemVal + '|Yes,No'; break;
-        default:
+    if (isAdd) { //copy or delete will cancel the add
+      var allAdds = document.getElementsByClassName('common-subcolumn-input-add-' + columnName);
+      for (i = 0; i < allAdds.length; ++i) {
+        if (i > 0)
+          addString += '|';
+        var subItemType = allAdds[i].attributes.getNamedItem('commonsubitemtype').value; //there are four possible subItemType here
+        var subItemVal = allAdds[i].value;
+        switch (subItemType) {
+          case 'L':
+          case 'V': addString += subItemVal; break;
+          case 'O':
+            if (subItemVal.toString().indexOf('|') !== -1) {
+              addString += subItemVal;
+            } else {
+              addString += subItemVal + '|' + subItemVal;
+            }
+            break;
+          case 'C': addString += subItemVal + '|Yes,No'; break;
+          default:
+        }
       }
     }
 
@@ -312,7 +315,7 @@ $(document).ready(function () {
       data: {
         commonDataTableName: tableName, columnName: columnName,
         dataValue: dataValue, lcType: lcType,
-        deleteNo: deleteNo, addString: addString
+        itemNo: itemNo, addString: addString, isCopy: isCopy
       },
       traditional: true,
       success: function (data) {

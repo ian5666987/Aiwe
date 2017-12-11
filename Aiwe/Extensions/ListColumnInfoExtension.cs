@@ -132,9 +132,16 @@ namespace Aiwe.Extensions {
           sb.Append(" class=\"common-subcolumn-button\"");
           sb.Append(" commonbuttontype=\"delete\"");
           sb.Append(" id=\"common-subcolumn-button-delete-" + info.Name + "-" + count + "\"");
-          sb.Append(" commondeleteno=\"" + count + "\"");
+          sb.Append(" commonitemno=\"" + count + "\"");
           sb.Append(" commoncolumnname=\"" + info.Name + "\"");
           sb.Append(">" + Aibe.LCZ.W_Delete + "</button>");
+          sb.Append("<button");
+          sb.Append(" class=\"common-subcolumn-button\"");
+          sb.Append(" commonbuttontype=\"copy\"");
+          sb.Append(" id=\"common-subcolumn-button-copy-" + info.Name + "-" + count + "\"");
+          sb.Append(" commonitemno=\"" + count + "\"");
+          sb.Append(" commoncolumnname=\"" + info.Name + "\"");
+          sb.Append(">" + Aibe.LCZ.W_Copy + "</button>");
           sb.Append("</td>");
         }
 

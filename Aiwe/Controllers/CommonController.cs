@@ -252,10 +252,10 @@ namespace Aiwe.Controllers {
 
     //Called for add or delete, when a list-column button (add or delete) is pressed
     [CommonActionFilter]
-    public JsonResult GetSubcolumnItems(string commonDataTableName, string columnName, string dataValue, string lcType, int deleteNo, string addString) {
+    public JsonResult GetSubcolumnItems(string commonDataTableName, string columnName, string dataValue, string lcType, int itemNo, string addString, bool isCopy) {
       MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       ListColumnResult result = new ListColumnResult(null, dataValue); //no need to have columnName here, only dataValue is needed
-      if(!result.AddOrDeleteDataValue(deleteNo, meta, columnName, addString, lcType))
+      if(!result.AddCopyOrDeleteDataValue(itemNo, meta, columnName, addString, lcType, isCopy))
         return Json(result, JsonRequestBehavior.AllowGet); //if not successful, no need to take time and built HTML string      
       ListColumnInfo info = meta.GetListColumnInfo(columnName); //Need to get the info from the columnName
       result.ViewString = info.GetHTML(result.DataValue); //if successful, do not forget to recreate the HTML string before return
