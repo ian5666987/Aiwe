@@ -1,3 +1,8 @@
+v0.14.5.1 beta (12-Dec-2017 11:51)
+bugs fixed:
+- Handle historical script does not check triggered Table == null condition, only Table.Rows == null and Table.Rows.Count <= 0.
+
+-----------------------------------------------------------------------------------------------
 v0.14.5.0 beta (11-Dec-2017 13:10)
 updates:
 - Copy action is added for the ListColumn field
