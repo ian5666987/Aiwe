@@ -1,5 +1,4 @@
-﻿using Aibe.Models;
-using Aibe.Models.Core;
+﻿using Aibe.Models.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;

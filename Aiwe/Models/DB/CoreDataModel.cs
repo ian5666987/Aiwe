@@ -40,6 +40,7 @@ namespace Aiwe.Models.DB {
     public virtual DbSet<TestTableCommonB> TestTableCommonBs { get; set; }
     public virtual DbSet<TestTableCommonC> TestTableCommonCs { get; set; }
     public virtual DbSet<TestTableCommonD> TestTableCommonDs { get; set; }
+    public virtual DbSet<TestTableCommonD_History> TestTableCommonD_History { get; set; }
     public virtual DbSet<TestTableCommonE> TestTableCommonEs { get; set; }
     public virtual DbSet<TestTableCommonF> TestTableCommonFs { get; set; }
     public virtual DbSet<TestTableCommonG> TestTableCommonGs { get; set; }

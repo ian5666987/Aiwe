@@ -330,6 +330,7 @@
     <Compile Include="Models\DB\TestTableCommonB.cs" />
     <Compile Include="Models\DB\TestTableCommonC.cs" />
     <Compile Include="Models\DB\TestTableCommonD.cs" />
+    <Compile Include="Models\DB\TestTableCommonD_History.cs" />
     <Compile Include="Models\DB\TestTableCommonE.cs" />
     <Compile Include="Models\DB\TestTableCommonF.cs" />
     <Compile Include="Models\DB\TestTableCommonG.cs" />
