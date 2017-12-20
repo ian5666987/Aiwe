@@ -1,3 +1,8 @@
+v0.14.6.1 beta (20-Dec-2017 15:46)
+bugs fixed:
+- _DetailsPart.cshtml for MetaItem has HistoryTrigger instead of HistoryTriggers. Fixed.
+
+-----------------------------------------------------------------------------------------------
 v0.14.6.0 beta (19-Dec-2017 16:17)
 updates:
 - IMPORTANT: HistoryTrigger column in the MetaItem is renamed to HistoryTriggers.
