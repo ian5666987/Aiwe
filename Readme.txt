@@ -1,3 +1,8 @@
+v0.14.6.2 beta (21-Dec-2017 13:24)
+bugs fixed:
+- RegexCheckedColumns and RegexCheckedColumnExamples are always Valid. Fixed.
+
+-----------------------------------------------------------------------------------------------
 v0.14.6.1 beta (20-Dec-2017 15:46)
 bugs fixed:
 - _DetailsPart.cshtml for MetaItem has HistoryTrigger instead of HistoryTriggers. Fixed.
