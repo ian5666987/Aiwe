@@ -1,3 +1,8 @@
+v0.14.6.3 beta (21-Dec-2017 15:10)
+updates:
+- Additional TrueFalse and BvTrueFalse sets in Aibe.DataHolder.
+
+-----------------------------------------------------------------------------------------------
 v0.14.6.2 beta (21-Dec-2017 13:24)
 bugs fixed:
 - RegexCheckedColumns and RegexCheckedColumnExamples are always Valid. Fixed.
