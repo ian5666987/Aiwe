@@ -1,3 +1,8 @@
+v0.14.7.0 beta (27-Dec-2017 17:45)
+updates:
+- Shuffling some of the list of constants to Aibe.DataHolder.
+
+-----------------------------------------------------------------------------------------------
 v0.14.6.3 beta (21-Dec-2017 15:10)
 updates:
 - Additional TrueFalse and BvTrueFalse sets in Aibe.DataHolder.
