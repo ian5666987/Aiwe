@@ -1,4 +1,9 @@
-v0.14.7.0 beta (27-Dec-2017 17:45)
+v0.14.8.0 beta (27-Dec-2017 16:30)
+updates:
+- Improvement on compatibility with AibeEditor (AibeSyntaxChecker is renamed to AibeEditor).
+
+-----------------------------------------------------------------------------------------------
+v0.14.7.0 beta (26-Dec-2017 17:45)
 updates:
 - Shuffling some of the list of constants to Aibe.DataHolder.
 
