@@ -151,9 +151,15 @@
                 string printedVal = DateTimeHelper.ProcessPossibleDateTimeString(val, columnInfo.IsDateTime, dateTimeFormat ?? Aiwe.DH.IndexDateTimeFormat);
                 if (columnInfo.Colorings == null) {
                   <td>@printedVal</td>
-                } else if (columnInfo.Colorings.Any(x => x.ColumnName.EqualsIgnoreCase(columnInfo.Name) && x.CheckConditionMet(columnInfo.DataType, val, id))) {
-                  ColoringInfo colorItem = columnInfo.Colorings.FirstOrDefault(x => x.ColumnName.EqualsIgnoreCase(columnInfo.Name) && x.CheckConditionMet(columnInfo.DataType, val, id));
-                  <td style="background-color:@colorItem.Color">@printedVal</td>
+                } else if (columnInfo.Colorings.Any(x => x.ColumnName.EqualsIgnoreCase(columnInfo.Name))) {
+                  ColoringInfo colorItem = columnInfo.Colorings.FirstOrDefault(x => x.ColumnName.EqualsIgnoreCase(columnInfo.Name));
+                  object usedVal = colorItem.ConditionColumnIsDifferentColumn ? row[colorItem.ConditionColumnName] : val;
+                  bool isConditionMet = colorItem.CheckConditionMet(columnInfo.DataType, usedVal, id);
+                  if (isConditionMet) {
+                    <td style="background-color:@colorItem.Color">@printedVal</td>
+                  } else {
+                    <td>@printedVal</td>
+                  }
                 } else {
                   <td>@printedVal</td>
                 }                

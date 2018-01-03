@@ -1,3 +1,12 @@
+v0.14.9.0 beta (03-Jan-2018 14:58)
+updates:
+- Add ConditionColumnName in coloring.
+- Further improvement on compatibility with AibeEditor.
+
+bugs fixed:
+- Spaced consecutive XML tags cannot be parsed by Extension.String. Fixed.
+
+-----------------------------------------------------------------------------------------------
 v0.14.8.0 beta (27-Dec-2017 16:30)
 updates:
 - Improvement on compatibility with AibeEditor (AibeSyntaxChecker is renamed to AibeEditor).
