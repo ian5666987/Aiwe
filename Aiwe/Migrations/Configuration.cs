@@ -39,9 +39,9 @@ namespace Aiwe.Migrations {
         new IdentityRole { Name = "User" }
       );
 
-      bool adminExist = context.Users.Any(t => t.UserName == Aiwe.DH.MainAdminName);
-      bool devExist = context.Users.Any(t => t.UserName == Aibe.DH.DevName);
-      bool sharedDevExist = context.Users.Any(t => t.UserName == Aiwe.DH.SharedDevName);
+      bool adminExist = context.Users.Any(t => t.Email == Aiwe.DH.MainAdminEmail);
+      bool devExist = context.Users.Any(t => t.Email == Aibe.DH.DevEmail);
+      bool sharedDevExist = context.Users.Any(t => t.Email == Aiwe.DH.SharedDevEmail);
       if (!adminExist || !devExist || !sharedDevExist) {
         var userStore = new UserStore<ApplicationUser>(context);
         var userManager = new UserManager<ApplicationUser>(userStore);
@@ -49,9 +49,9 @@ namespace Aiwe.Migrations {
         if (!devExist) {
           ApplicationUser ian = new ApplicationUser {
             FullName = Aibe.DH.DevFullName,
-            UserName = Aibe.DH.DevName,
+            UserName = Aibe.DH.DevEmail, //unfortunately, since signing in is using email, this is set as email
             DisplayName = Aibe.DH.DevDisplayName,
-            Email = Aibe.DH.DevName,
+            Email = Aibe.DH.DevEmail,
             EmailConfirmed = true,
             LockoutEnabled = false,
             Team = Aiwe.LCZ.W_HomeTeam,
@@ -67,9 +67,9 @@ namespace Aiwe.Migrations {
         if (!adminExist) {
           ApplicationUser admin = new ApplicationUser {
             FullName = Aibe.DH.MainAdminFullName,
-            UserName = Aiwe.DH.MainAdminName,
+            UserName = Aiwe.DH.MainAdminEmail,
             DisplayName = Aibe.DH.MainAdminDisplayName,
-            Email = Aiwe.DH.MainAdminName,
+            Email = Aiwe.DH.MainAdminEmail,
             EmailConfirmed = true,
             LockoutEnabled = false,
             Team = Aiwe.LCZ.W_HomeTeam,
@@ -85,9 +85,9 @@ namespace Aiwe.Migrations {
         if (!sharedDevExist) {
           ApplicationUser developer = new ApplicationUser {
             FullName = Aiwe.DH.SharedDevFullName,
-            UserName = Aiwe.DH.SharedDevName,
+            UserName = Aiwe.DH.SharedDevEmail,
             DisplayName = Aibe.DH.DevDisplayName,
-            Email = Aiwe.DH.SharedDevName,
+            Email = Aiwe.DH.SharedDevEmail,
             EmailConfirmed = true,
             LockoutEnabled = false,
             Team = Aiwe.LCZ.W_HomeTeam,

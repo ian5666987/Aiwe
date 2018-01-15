@@ -10,6 +10,11 @@ namespace Aiwe.Helpers {
     public static IQueryable<ApplicationUser> ApplyUserFilter(IQueryable<ApplicationUser> unfiltered, ApplicationUserFilter filter) {
       IQueryable<ApplicationUser> filtered = unfiltered;
 
+      if (!string.IsNullOrWhiteSpace(filter.UserName))
+        filtered = filtered
+          .Where(x => x.UserName != null &&
+            x.UserName.ToLower().Contains(filter.UserName.ToLower()));
+
       if (!string.IsNullOrWhiteSpace(filter.FullName))
         filtered = filtered
           .Where(x => x.FullName != null &&

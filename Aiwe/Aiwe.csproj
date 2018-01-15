@@ -260,7 +260,6 @@
     <Compile Include="Localization.cs" />
     <Compile Include="Extensions\LiveDropDownResultExtension.cs" />
     <Compile Include="Helpers\AiweCheckerHelper.cs" />
-    <Compile Include="Helpers\AiweQueryHelper.cs" />
     <Compile Include="Helpers\AiweTranslationHelper.cs" />
     <Compile Include="Helpers\AiweTableHelper.cs" />
     <Compile Include="Controllers\AccountController.cs" />

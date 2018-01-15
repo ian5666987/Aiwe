@@ -70,7 +70,7 @@ namespace Aiwe.Controllers {
       //var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
       var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
 
-      if (!Aiwe.DH.DeveloperNames.Any(x => x.EqualsIgnoreCase(model.Email)))
+      if (!Aiwe.DH.DeveloperEmails.Any(x => x.EqualsIgnoreCase(model.Email)))
         LogHelper.Access(model.Email, Aibe.LCZ.W_LogIn, result.ToString());
 
       switch (result) {

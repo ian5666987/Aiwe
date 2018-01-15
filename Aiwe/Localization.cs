@@ -39,6 +39,7 @@ namespace Aiwe {
     //Final localization, cannot be further derived from
     public class F {
       public class ApplicationUserFilter {
+        public const string UserName = "User Name";
         public const string FullName = "Full Name";
         public const string DisplayName = "Display Name";
         public const string Email = "Email";

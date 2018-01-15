@@ -1,3 +1,11 @@
+v0.14.10.0 beta (15-Jan-2018 18:45)
+updates:
+- Move UserTableName and RoleTableName to Aiwe.
+- Add user name, email, and password localization.
+- Distinguish between name and emails for developers and admins.
+- Remove AiweQueryHelper from Aiwe, changed to QueryHelper.
+
+-----------------------------------------------------------------------------------------------
 v0.14.9.0 beta (03-Jan-2018 14:58)
 updates:
 - Add ConditionColumnName in coloring.

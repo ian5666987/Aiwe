@@ -86,6 +86,7 @@ namespace Aiwe.Controllers {
     }
 
     //Company specific message
+    //TODO needs to be removed for real Aiwe!
     private bool getFeinmetallMessage(string username, out string message) {
       message = string.Empty;
       ApplicationUser user = context.Users.ToList().FirstOrDefault(x => x.UserName.EqualsIgnoreCaseTrim(username));

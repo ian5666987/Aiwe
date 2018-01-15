@@ -26,7 +26,7 @@ namespace Aiwe.Controllers {
     [HttpPost]
     [CommonActionFilter]
     public ActionResult Index(string commonDataTableName, int? commonDataFilterPage, FormCollection collections) { //do not change the name commonDataFilterPage to page
-      if(collections.AllKeys.Any(x => x.EqualsIgnoreCase(Aibe.DH.FilterTableActionNameInput))) {
+      if (collections.AllKeys.Any(x => x.EqualsIgnoreCase(Aibe.DH.FilterTableActionNameInput))) {
         string tableActionInput = collections[Aibe.DH.FilterTableActionNameInput];
         if (!string.IsNullOrWhiteSpace(tableActionInput)) {
           string prefix = Aibe.DH.DefaultTableActionPrefix + "-";
@@ -46,7 +46,8 @@ namespace Aiwe.Controllers {
         null : AiweTranslationHelper.FormCollectionToDictionary(collections));
 
       //Get index info
-      AiweQueryHelper.HandleUserRelatedScripting(model.QueryScript, User, meta.UserRelatedFilters);
+      QueryHelper.HandleUserRelatedScripting(model.QueryScript, Aiwe.DH.UserTableName, User?.Identity?.Name, AiweUserHelper.UserHasMainAdminRight(User),
+        User == null || User.Identity == null ? false : User.Identity.IsAuthenticated, meta.UserRelatedFilters); //TODO not tested yet, but seems to be OK
       model.CompleteModelAndData(loadAllData);
       return new AiweFilterIndexModel(meta, User, model, model.StringDictionary);
     }
@@ -204,7 +205,7 @@ namespace Aiwe.Controllers {
       } catch (Exception ex) {
         string exStr = ex.ToString();
         LogHelper.Error(User.Identity.Name, null, Aiwe.DH.Mvc, Aiwe.DH.MvcCommonControllerName,
-          commonDataTableName, "ExportToCSV", null, exStr);
+          commonDataTableName, Aibe.DH.ExportToCSVTableActionName, null, exStr);
 #if DEBUG
         ViewBag.ErrorMessage = exStr;
 #endif
@@ -219,7 +220,7 @@ namespace Aiwe.Controllers {
       } catch (Exception ex) {
         string exStr = ex.ToString();
         LogHelper.Error(User.Identity.Name, null, Aiwe.DH.Mvc, Aiwe.DH.MvcCommonControllerName,
-          commonDataTableName, "ExportAllToCSV", null, exStr);
+          commonDataTableName, Aibe.DH.ExportAllToCSVTableActionName, null, exStr);
 #if DEBUG
         ViewBag.ErrorMessage = exStr;
 #endif

@@ -118,6 +118,7 @@ namespace Aiwe.ActionFilters {
         if (action.IsAllowed(user)) //if user is found or is not defined
           return; //then returns
         filterContext.Result = redirectTo("InsufficientAccessRightAction", -1); //action is registered but role is not found
+        return;
       } //below onwards means actionNotFound
 
       //Table action checking (checked)

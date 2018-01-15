@@ -115,6 +115,5 @@ namespace Aiwe.Models {
     public bool IsAllowedToCallTableAction(string tableActionName) {
       return IsTableActionAllowed(tableActionName, user);
     }
-
   }
 }

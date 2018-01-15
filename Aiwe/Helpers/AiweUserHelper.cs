@@ -64,7 +64,7 @@ namespace Aiwe.Helpers {
 
     public static Dictionary<string, object> GetUserParameters (ApplicationUser user, string prefix) {
       Type type = user.GetType();
-      PropertyInfo[] properties = type.GetProperties(); //TODO check how to exclude some parameters
+      PropertyInfo[] properties = type.GetProperties(); //TODO check how to exclude some parameters by using reflection/attributes
       Dictionary<string, object> result = new Dictionary<string, object>();
       foreach (PropertyInfo property in properties) {
         if (defaultExcludedPropertyNames.Contains(property.Name)) //case insensitive
