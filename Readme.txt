@@ -1,3 +1,8 @@
+v1.0.0.0 release (16-Jan-2018 13:05)
+updates:
+- Add color strings and AiweWebColorHelper.
+
+-----------------------------------------------------------------------------------------------
 v0.14.10.0 beta (15-Jan-2018 18:45)
 updates:
 - Move UserTableName and RoleTableName to Aiwe.

@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -67,11 +66,22 @@ namespace Aiwe.Controllers {
       string passwordNormal = Encoding.UTF8.GetString(Convert.FromBase64String(password));
       bool result = UserHelper.AuthenticateUser(Aiwe.DH.WebApi, userNameNormal, passwordNormal);
       string message = string.Empty;
-      bool companySpecificAuthentication = getFeinmetallMessage(userNameNormal, out message);
+      //bool companySpecificAuthentication = getCompanySpecificMessage(userNameNormal, out message);
+      bool companySpecificAuthentication = true; //change this to company specific way of authenticating whenever necessary
       if (!result || !companySpecificAuthentication)
         return createErrorResponse(HttpStatusCode.NotAcceptable, Aibe.LCZ.NFE_UserCannotBeAuthenticated);
       return createAuthenticatedResponse(message);
     }
+
+    //Example of company specific message
+    //private bool getCompanySpecificMessage(string username, out string message) {
+    //  message = string.Empty;
+    //  ApplicationUser user = context.Users.ToList().FirstOrDefault(x => x.UserName.EqualsIgnoreCaseTrim(username));
+    //  if (user == null)
+    //    return false;
+    //  message = user.Team;
+    //  return true;
+    //}
 
     #region private methods
     ApplicationDbContext context = new ApplicationDbContext();
@@ -83,17 +93,6 @@ namespace Aiwe.Controllers {
       HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
       response.Content = new StringContent(jsonStr, Encoding.UTF8, Aiwe.DH.JsonType);
       return response;
-    }
-
-    //Company specific message
-    //TODO needs to be removed for real Aiwe!
-    private bool getFeinmetallMessage(string username, out string message) {
-      message = string.Empty;
-      ApplicationUser user = context.Users.ToList().FirstOrDefault(x => x.UserName.EqualsIgnoreCaseTrim(username));
-      if (user == null)
-        return false;
-      message = user.Team;
-      return true;
     }
 
     private HttpResponseMessage createResponseFor(ClientApiRequest request, ApiRequestType type) {

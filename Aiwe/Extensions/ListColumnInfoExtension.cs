@@ -29,7 +29,6 @@ namespace Aiwe.Extensions {
           ListColumnItem lcItem = new ListColumnItem(subdesc.Trim(), info.ListType, info.Widths);
           listColumnItems.Add(lcItem);
         }
-        //listColumnItems = descs?.Select(x => new ListColumnItem(x.Trim(), info.ListType, info.Widths)).ToList();
       }
       StringBuilder sb = new StringBuilder();
       sb.Append("<table style=\"border-collapse:separate;border-spacing:10px 5px;border:1px solid black\">");

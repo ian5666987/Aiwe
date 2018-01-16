@@ -277,6 +277,8 @@ namespace Aiwe.Controllers {
   }
 }
 
+//Legacy: to export the current table to Excel format
+
 //using System.IO;
 //using System.Runtime.InteropServices;
 //using Excel = Microsoft.Office.Interop.Excel;

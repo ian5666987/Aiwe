@@ -34,7 +34,7 @@ namespace Aiwe.Controllers {
     public ActionResult Index(int? page) {      
       var users = context.Users.Where(x => x.AdminRole != Aibe.DH.DevRole)
         //.ToList() //this may make EqualsIgnoreCase work, but wasting time in a way
-        //.OrderByDescending(x => x.AdminRole.EqualsIgnoreCase(Aibe.DH.MainAdminRole))
+        //.OrderByDescending(x => x.AdminRole.EqualsIgnoreCase(Aibe.DH.MainAdminRole)) //leave this as comment
         .OrderByDescending(x => x.AdminRole.ToLower() == Aibe.DH.MainAdminRole.ToLower())
         .ThenBy(x => x.FullName);
 
