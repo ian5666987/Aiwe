@@ -73,12 +73,12 @@ body .modal-admin {
       padding-left: 10px;
     }
 
-.button-odd-feinmetall {
+.button-odd-custom {
   background-color: #1a3a89;
   border-color: #1a3a89
 }
 
-.button-even-feinmetall {
+.button-even-custom {
   background-color: #737373;
   border-color: #737373
 }

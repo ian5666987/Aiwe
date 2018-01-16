@@ -257,6 +257,7 @@
   <ItemGroup>
     <Compile Include="ASTrio.cs" />
     <Compile Include="Helpers\AiweDropDownHelper.cs" />
+    <Compile Include="Helpers\AiweWebColorHelper.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="Extensions\LiveDropDownResultExtension.cs" />
     <Compile Include="Helpers\AiweCheckerHelper.cs" />

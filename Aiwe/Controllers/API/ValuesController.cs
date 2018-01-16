@@ -67,7 +67,7 @@ namespace Aiwe.Controllers {
       string passwordNormal = Encoding.UTF8.GetString(Convert.FromBase64String(password));
       bool result = UserHelper.AuthenticateUser(Aiwe.DH.WebApi, userNameNormal, passwordNormal);
       string message = string.Empty;
-      bool companySpecificAuthentication = getFeinmetallMessage(userNameNormal, out message);
+      bool companySpecificAuthentication = getCompanySpecificMessage(userNameNormal, out message);
       if (!result || !companySpecificAuthentication)
         return createErrorResponse(HttpStatusCode.NotAcceptable, Aibe.LCZ.NFE_UserCannotBeAuthenticated);
       return createAuthenticatedResponse(message);
@@ -86,8 +86,7 @@ namespace Aiwe.Controllers {
     }
 
     //Company specific message
-    //TODO needs to be removed for real Aiwe!
-    private bool getFeinmetallMessage(string username, out string message) {
+    private bool getCompanySpecificMessage(string username, out string message) {
       message = string.Empty;
       ApplicationUser user = context.Users.ToList().FirstOrDefault(x => x.UserName.EqualsIgnoreCaseTrim(username));
       if (user == null)

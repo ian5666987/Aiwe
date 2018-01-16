@@ -9,34 +9,46 @@
   @Scripts.Render("~/bundles/modernizr")
   <!--#1a3a89-->
 </head>
-<body style="background-color:#f3f3f3">
-  <div class="navbar navbar-inverse custom-navbar navbar-fixed-top" style="background-color:#FFFFFF;border-color:black">
+@{
+  string NavBarBackgroundColor = "#2386d3"; //"#098ef7"; // "#1196ff"; //dark green: #007215, gold: #e5cb06, shiny gold: #ffda0c, #f2cd02, ocean blue: #1196ff
+  string NavBarFontColor = "#f8f8f8"; //this color typically come in pair with LoginFontColor in Views/Shared/_LoginPartial.cshtml
+  string NavBarBorderColor = "#1d00a0";
+  string BackgroundColor = "#FFFFFF";
+  string ContentBackgroundColor = "#e0f4ff"; //"#feffe2"; soft blue: #ddf0ff, softer blue: #e0f4ff
+
+  string CompanyLogoImageName = "company-logo.png";
+  string CompanyBackgroundImageName = "company-background.png";
+}
+<body style="background-color:@BackgroundColor" background="../../../../@Aibe.DH.DefaultImageFolderName/@CompanyBackgroundImageName">
+  <div class="navbar navbar-inverse custom-navbar navbar-fixed-top" style="background-color:@NavBarBackgroundColor;border-color:@NavBarBorderColor">
     <div class="container">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"
-                style="background-color:#FFFFFF;border-color:black;color:black">          
-          <span class="icon-bar" style="background-color:black"></span>
-          <span class="icon-bar" style="background-color:black"></span>
-          <span class="icon-bar" style="background-color:black"></span>
+                style="background-color:@NavBarBackgroundColor;border-color:@NavBarFontColor;color:@NavBarFontColor">          
+          <span class="icon-bar" style="background-color:@NavBarFontColor"></span>
+          <span class="icon-bar" style="background-color:@NavBarFontColor"></span>
+          <span class="icon-bar" style="background-color:@NavBarFontColor"></span>
         </button>
       </div>
       <div class="navbar-collapse collapse"
-           style="background-color:#FFFFFF;border-color:black;">
+           style="background-color:@NavBarBackgroundColor;border-color:@NavBarBorderColor;">
         @Html.Partial("_LoginPartial")
         <ul class="nav navbar-nav navbar-right">
           @if (AiweUserHelper.UserHasAdminRight(User)) {
-            <li>@Html.ActionLink(Aibe.LCZ.W_Admin, Aibe.DH.IndexActionName, Aiwe.DH.MvcAdminControllerName, routeValues: null, htmlAttributes: new { style = "margin-top:20px;font-size:20px;color:grey" })</li>
+            <li>@Html.ActionLink(Aibe.LCZ.W_Admin, Aibe.DH.IndexActionName, Aiwe.DH.MvcAdminControllerName, routeValues: null, htmlAttributes: new { style = "margin-top:20px;font-size:20px;color:" + NavBarFontColor })</li>
           }
-          <li>@Html.ActionLink(Aibe.LCZ.W_Home, Aibe.DH.IndexActionName, Aiwe.DH.MvcHomeControllerName, routeValues: null, htmlAttributes: new { style = "margin-top:20px;font-size:20px;color:grey" })</li>                    
+          <li>@Html.ActionLink(Aibe.LCZ.W_Home, Aibe.DH.IndexActionName, Aiwe.DH.MvcHomeControllerName, routeValues: null, htmlAttributes: new { style = "margin-top:20px;font-size:20px;color:" + NavBarFontColor })</li>                    
           <li>
+            @*put company logo here*@
+            @*adjust the height and width accordingly*@
             <img class="nav navbar-nav navbar-left"
-                 src="../../../../@Aibe.DH.DefaultImageFolderName/feinmetall-logo.png" height="50px;" width="170px;" style="margin-top:10px;margin-bottom:10px;margin-right:10px;margin-left:15px;background-color:white" />
+                 src="../../../../@Aibe.DH.DefaultImageFolderName/@CompanyLogoImageName" height="50px;" width="50px;" style="margin-top:10px;margin-bottom:10px;margin-right:10px;margin-left:15px;background-color:@NavBarBackgroundColor" />
           </li>
         </ul>
       </div>
     </div>
   </div>
-  <div class="container body-content">
+  <div class="container body-content" style="background-color:@ContentBackgroundColor">
     <br />
     @RenderBody()
     <hr />

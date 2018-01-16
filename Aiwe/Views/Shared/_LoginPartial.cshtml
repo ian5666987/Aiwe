@@ -1,5 +1,8 @@
 ﻿@using Microsoft.AspNet.Identity
 @using Aiwe.Extensions
+@{ 
+  string LoginFontColor = "#f8f8f8"; //this color typically come in pair with NavBarFontColor in Views/Shared/_Layout.cshtml
+}
 @if (Request.IsAuthenticated)
 {
     using (Html.BeginForm(Aiwe.DH.LogOffActionName, Aiwe.DH.MvcAccountControllerName, FormMethod.Post, new { id = "logoutForm", @class = "navbar-left" }))
@@ -9,16 +12,17 @@
     <ul class="nav navbar-nav navbar-left">
         <li>
             @Html.ActionLink(Aibe.LCZ.W_Hello + " " + User.Identity.GetDisplayName() + "!", Aibe.DH.IndexActionName, Aiwe.DH.MvcManageControllerName, routeValues: null, 
-         htmlAttributes: new { title = Aibe.LCZ.NFM_ManageYourAccount, style = "margin-top:20px;font-size:20px;color:grey" })
+         htmlAttributes: new { title = Aibe.LCZ.NFM_ManageYourAccount, style = "margin-top:20px;font-size:20px;color:" + LoginFontColor })
         </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()" style="margin-top:20px;font-size:20px;color:grey">Log off</a></li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()" style="margin-top:20px;font-size:20px;color:@LoginFontColor">Log off</a></li>
     </ul>
     }
 }
 else
 {
     <ul class="nav navbar-nav navbar-left">
-      <li>@Html.ActionLink(Aibe.LCZ.W_LogIn, Aiwe.DH.LogInActionName, Aiwe.DH.MvcAccountControllerName, routeValues: null, htmlAttributes: new { id = "loginLink", style = "margin-top:20px;font-size:20px;color:grey" })</li>
+      <li>@Html.ActionLink(Aibe.LCZ.W_LogIn, Aiwe.DH.LogInActionName, Aiwe.DH.MvcAccountControllerName, routeValues: null, 
+       htmlAttributes: new { id = "loginLink", style = "margin-top:20px;font-size:20px;color:" + LoginFontColor })</li>
     </ul>
 }
 
