@@ -1,4 +1,4 @@
-v1.2.0.0 release (01-Feb-2018 09:29)
+v1.2.0.0 alpha (01-Feb-2018 09:29)
 updates:
 - PreActionTriggers and PreActionProcedures columns are implemented! Read the guideline for more details.
 - PostActionTriggers and PostActionProcedures columns are implemented! Read the guideline for more details.
