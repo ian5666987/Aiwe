@@ -1,3 +1,12 @@
+v1.2.0.0 release (01-Feb-2018 09:29)
+updates:
+- PreActionTriggers and PreActionProcedures columns are implemented! Read the guideline for more details.
+- PostActionTriggers and PostActionProcedures columns are implemented! Read the guideline for more details.
+- Empty trigger conditions are now supported for the PreActionTriggers and PostActionTriggers.
+- Plan Cancelled, PreActionProcedures and PostActionProcedures cannot be filled by Functions, must only be filled by Procedures.
+- SQLServerHandler "Execute" argument orders are swapped.
+
+-----------------------------------------------------------------------------------------------
 v1.0.1.0 alpha (16-Jan-2018 13:26)
 updates:
 - First alpha (development) version after Aiwe v1.

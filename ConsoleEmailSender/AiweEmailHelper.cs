@@ -30,7 +30,7 @@ namespace AiweEmailSender {
     private DataTable getNotSendEmails3DaysBefore() {
       //To get all data table in the CoreEmailInfo table where "Send3DaysBefore=0"
       return SQLServerHandler.GetFullDataTableWhere(Aibe.DH.DataDBConnectionString, Aibe.DH.EmailInfoTableName,
-        "IsSent=0 OR Send3DaysBefore=0");
+        string.Concat(Aibe.DH.EmailMakerIsSentColumnName, "=0 OR Send3DaysBefore=0"));
     }
 
     //Create update string to set IsSent=1 and Send3DaysBefore=1 after successful sending

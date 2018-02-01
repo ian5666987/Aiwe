@@ -177,8 +177,8 @@ namespace Aiwe.Controllers {
       try {
         ApiRequestResult result = new ApiRequestResult();
         int val = checkedRequest.RequestType == ApiRequestType.Create ?  //if it is create, execute scalar with SELECT SCOPE_IDENTITY() to get the latest cid created
-          int.Parse(SQLServerHandler.ExecuteScalar(string.Concat(sqlString, "; SELECT SCOPE_IDENTITY()"), Aibe.DH.DataDBConnectionString, pars).ToString()) :
-          SQLServerHandler.ExecuteScript(sqlString, Aibe.DH.DataDBConnectionString, pars);
+          int.Parse(SQLServerHandler.ExecuteScalar(Aibe.DH.DataDBConnectionString, string.Concat(sqlString, "; SELECT SCOPE_IDENTITY()"), pars).ToString()) :
+          SQLServerHandler.ExecuteScript(Aibe.DH.DataDBConnectionString, sqlString, pars);
 
         result.Success = val > 0;
         if (checkedRequest.RequestType == ApiRequestType.Create)

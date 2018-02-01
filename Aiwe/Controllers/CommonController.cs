@@ -87,16 +87,22 @@ namespace Aiwe.Controllers {
         return View(Aiwe.DH.ErrorViewName);
       }
 
+      var userPars = AiweUserHelper.GetUserParameters(User, Aibe.DH.ParameterUserPrefix);
+      meta.HandlePreActionProcedures(Aibe.DH.CreateActionName, -1, null, userPars); //pre action does not have cid or row
+
       //TODO Beware of duplicate record because the client clicks more than once
       // -> If identical record is found, display other page to ask the client to confirm
       BaseScriptModel scriptModel = LogicHelper.CreateInsertScriptModel(meta.TableSource, completeKeyInfo, dictCollections, now, meta);
-      object generatedId = SQLServerHandler.ExecuteScalar(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
+      object generatedId = SQLServerHandler.ExecuteScalar(Aibe.DH.DataDBConnectionString, scriptModel.Script, scriptModel.Pars);
       int cid = int.Parse(generatedId.ToString());
       bool saveAttachmentResult = AiweFileHelper.SaveAttachments(Request, 
         Server.MapPath("~/" + Aibe.DH.DefaultAttachmentFolderName + "/" + commonDataTableName + "/" + cid.ToString()));
-      meta.HandleEmailEvents(Aibe.DH.CreateActionName, cid, null, //create has no originalRow
-        AiweUserHelper.GetUserParameters(User, Aibe.DH.EmailMakerUserPrefix));
+
+      meta.HandleEmailEvents(Aibe.DH.CreateActionName, cid, null, userPars); //create has no originalRow
       meta.HandleHistoryEvents(Aibe.DH.CreateActionName, cid, null); //create has no originalRow
+
+      DataRow changedRow = meta.GetFullRowSource(cid);
+      meta.HandlePostActionProcedures(Aibe.DH.CreateActionName, cid, null, userPars); //does not have the original row BUT has cid now...
       return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 
@@ -141,14 +147,18 @@ namespace Aiwe.Controllers {
         return View(Aiwe.DH.ErrorViewName);
       }
 
+      var userPars = AiweUserHelper.GetUserParameters(User, Aibe.DH.ParameterUserPrefix);
       DataRow originalRow = meta.GetFullRowSource(cid);
+      meta.HandlePreActionProcedures(Aibe.DH.EditActionName, cid, originalRow, userPars);
+
       BaseScriptModel scriptModel = LogicHelper.CreateUpdateScriptModel(meta.TableSource, cid, completeKeyInfo, dictCollections, now);
-      SQLServerHandler.ExecuteScript(scriptModel.Script, Aibe.DH.DataDBConnectionString, scriptModel.Pars);
+      SQLServerHandler.ExecuteScript(Aibe.DH.DataDBConnectionString, scriptModel.Script, scriptModel.Pars);
       bool saveAttachmentResult = AiweFileHelper.SaveAttachments(Request,
         Server.MapPath("~/" + Aibe.DH.DefaultAttachmentFolderName + "/" + commonDataTableName + "/" + cid)); //there is no need for checking this too, because all errors are returned
-      meta.HandleEmailEvents(Aibe.DH.EditActionName, cid, originalRow, 
-        AiweUserHelper.GetUserParameters(User, Aibe.DH.EmailMakerUserPrefix));
+
+      meta.HandleEmailEvents(Aibe.DH.EditActionName, cid, originalRow, userPars); //handle email events and history events are still using the originalRow, this is correct
       meta.HandleHistoryEvents(Aibe.DH.EditActionName, cid, originalRow);
+      meta.HandlePostActionProcedures(Aibe.DH.EditActionName, cid, originalRow, userPars); //passing the originalRow, not the changed one
       return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 
@@ -165,10 +175,17 @@ namespace Aiwe.Controllers {
     [ActionName(Aibe.DH.DeleteActionName)]
     public ActionResult DeletePost(string commonDataTableName, int id) { //Where all common tables deletes are returned and can be deleted
       MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
-      meta.HandleEmailEvents(Aibe.DH.DeleteActionName, id, null, //delete must not have original row
-        AiweUserHelper.GetUserParameters(User, Aibe.DH.EmailMakerUserPrefix)); //email and history events must be handled before the deletion
+
+      var userPars = AiweUserHelper.GetUserParameters(User, Aibe.DH.ParameterUserPrefix);
+      DataRow originalRow = meta.GetFullRowSource(id);
+      meta.HandlePreActionProcedures(Aibe.DH.DeleteActionName, id, originalRow, userPars);
+
+      meta.HandleEmailEvents(Aibe.DH.DeleteActionName, id, null, userPars); //delete must not have original row //email and history events must be handled before the deletion
       meta.HandleHistoryEvents(Aibe.DH.DeleteActionName, id, null); //delete must not have original row
       LogicHelper.DeleteItem(meta.TableSource, id); //Currently do not return any error
+
+      meta.HandlePostActionProcedures(Aibe.DH.DeleteActionName, -1, null, userPars); //delete action has neither id nor row
+
       return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 
