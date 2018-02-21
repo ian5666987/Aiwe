@@ -1,9 +1,10 @@
-v1.3.0.0 alpha (21-Feb-2018 12:33)
+v1.3.0.0 alpha (21-Feb-2018 12:45)
 updates:
 - TableType is implemented! One new TableType is applied: Group, that is, to process some Database items as a group.
 - AggregationStatement is implemented! Read the guideline for more details.
 - Four new row actions are added to support Group TableType: CreateGroup, EditGroup, DeleteGroup, GroupDetails.
 - AUTO-DATE GroupByAutoDirective is removed (Plan Cancelled).
+- First standard version (shared with Aibe, Aide, and Aibe Editor)
 
 bugs fixed:
 - ColoringInfo.CheckConditionMet for DateTime Table Value Reference (TVR), query script extra end parentheses is removed
