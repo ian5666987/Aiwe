@@ -14,62 +14,66 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace Aiwe.Controllers {
   public class CommonController : Controller {
     [CommonActionFilter]
     //Get does not have filter
     public ActionResult Index(string commonDataTableName, int? page) { //Where all common tables are returned as list
-      return View(getFilterIndexModel(commonDataTableName, page, null, loadAllData: false));
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      return View(getFilterIndexModel(meta, commonDataTableName, page, null, loadAllData: false, isGrouping: meta.IsGroupTable));
     }
 
     [HttpPost]
     [CommonActionFilter]
     public ActionResult Index(string commonDataTableName, int? commonDataFilterPage, FormCollection collections) { //do not change the name commonDataFilterPage to page
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       if (collections.AllKeys.Any(x => x.EqualsIgnoreCase(Aibe.DH.FilterTableActionNameInput))) {
         string tableActionInput = collections[Aibe.DH.FilterTableActionNameInput];
         if (!string.IsNullOrWhiteSpace(tableActionInput)) {
           string prefix = Aibe.DH.DefaultTableActionPrefix + "-";
           if (tableActionInput.EqualsIgnoreCase(prefix + Aibe.DH.ExportToCSVTableActionName))
-            return exportToCSV(commonDataTableName, commonDataFilterPage, collections);
+            return exportToCSV(meta, commonDataTableName, commonDataFilterPage, collections, isGrouping: meta.IsGroupTable);
           else if (tableActionInput.EqualsIgnoreCase(prefix + Aibe.DH.ExportAllToCSVTableActionName))
-            return exportAllToCSV(commonDataTableName, commonDataFilterPage, collections);          
+            return exportAllToCSV(meta, commonDataTableName, commonDataFilterPage, collections, isGrouping: meta.IsGroupTable);          
         }
       }
-      return View(getFilterIndexModel(commonDataTableName, commonDataFilterPage, collections, loadAllData: false));
+      return View(getFilterIndexModel(meta, commonDataTableName, commonDataFilterPage, collections, loadAllData: false, isGrouping: meta.IsGroupTable));
     }
 
-    private AiweFilterIndexModel getFilterIndexModel(string commonDataTableName, int? page, FormCollection collections, bool loadAllData) {
+    private AiweFilterIndexModel getFilterIndexModel(MetaInfo meta, string commonDataTableName, int? page, FormCollection collections, bool loadAllData, bool isGrouping) {
       TempData.Clear();
-      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
       FilterIndexModel model = new FilterIndexModel(meta, page, collections == null ? 
         null : AiweTranslationHelper.FormCollectionToDictionary(collections));
 
       //Get index info
       QueryHelper.HandleUserRelatedScripting(model.QueryScript, Aiwe.DH.UserTableName, User?.Identity?.Name, AiweUserHelper.UserHasMainAdminRight(User),
         User == null || User.Identity == null ? false : User.Identity.IsAuthenticated, meta.UserRelatedFilters); //TODO not tested yet, but seems to be OK
-      model.CompleteModelAndData(loadAllData);
+      model.CompleteModelAndData(isGrouping, loadAllData);
       return new AiweFilterIndexModel(meta, User, model, model.StringDictionary);
     }
 
     [CommonActionFilter]
-    public ActionResult Create(string commonDataTableName) {
-      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
-      AiweCreateEditModel model = new AiweCreateEditModel(meta, Aibe.DH.CreateActionName, null);
+    public ActionResult Create(string commonDataTableName, string[] identifierKeys, string[] identifierValues) {
+      //Note that the identifiers are only not null if the calling comes from group details to create
+      //So the question now here, how the group details get its identifiers in the first place?
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);      
+      var identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
+      AiweCreateEditModel model = new AiweCreateEditModel(meta, Aibe.DH.CreateActionName, null, identifiers);
       return View(model);
     }
 
     [ValidateInput(false)]
     [HttpPost]
     [CommonActionFilter]
-    public ActionResult Create(string commonDataTableName, FormCollection collections) {
-      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+    public ActionResult Create(string commonDataTableName, string[] identifierKeys, string[] identifierValues, FormCollection collections) {
       DateTime now = DateTime.Now;
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      var identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
+      bool isFromGroupTable = identifiers != null && identifiers.Count > 0;
       Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
-
-      foreach (var item in dictCollections)
-        ModelState.Add(item.Key, new ModelState());
-
+      AiweTranslationHelper.AdjustModelState(ModelState, dictCollections); //to remove identifiers from model state
       List<string> checkExclusions = new List<string> { Aibe.DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
 
       //Check model state's validity
@@ -78,7 +82,7 @@ namespace Aiwe.Controllers {
         isTagChecked: Aiwe.DH.IsTagChecked);
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid)
-        return View(new AiweCreateEditModel(meta, Aibe.DH.CreateActionName, null));
+        return View(new AiweCreateEditModel(meta, Aibe.DH.CreateActionName, null, identifiers));
 
       //Only if model state is correct that we could get valid key infos safely
       var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(meta.TableSource, dictCollections, dictCollections.Keys, meta.ArrangedDataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.CreateActionName);
@@ -103,30 +107,35 @@ namespace Aiwe.Controllers {
 
       DataRow changedRow = meta.GetFullRowSource(cid);
       meta.HandlePostActionProcedures(Aibe.DH.CreateActionName, cid, null, userPars); //does not have the original row BUT has cid now...
-      return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
+      if (isFromGroupTable) {
+        RouteValueDictionary routeValues = AiweTranslationHelper.GetRouteValuesForRedirection(commonDataTableName, identifiers);
+        return RedirectToAction(Aibe.DH.GroupDetailsActionName, routeValues);
+      } else 
+        return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 
     //Likely used by filter and create edit
     [CommonActionFilter]
-    public ActionResult Edit(string commonDataTableName, int id) {
+    public ActionResult Edit(string commonDataTableName, string[] identifierKeys, string[] identifierValues, int id) {
       MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      var identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
       Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(meta.TableSource, id);
-      AiweCreateEditModel model = new AiweCreateEditModel(meta, Aibe.DH.EditActionName, LogicHelper.ObjectDictionaryToStringDictionary(objectDictionary));
+      AiweCreateEditModel model = new AiweCreateEditModel(meta, Aibe.DH.EditActionName, LogicHelper.ObjectDictionaryToStringDictionary(objectDictionary), identifiers);
       return View(model);
     }
 
     [ValidateInput(false)]
     [HttpPost]
     [CommonActionFilter]
-    public ActionResult Edit(string commonDataTableName, int cid, FormCollection collections) {
+    public ActionResult Edit(string commonDataTableName, string[] identifierKeys, string[] identifierValues, int cid, FormCollection collections) {
+      DateTime now = DateTime.Now;
       MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      var identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
+      bool isFromGroupTable = identifiers != null && identifiers.Count > 0;
       //Again, so that it will replaced with the given collection, using capital "C" -> "Cid"
       ModelState.Remove("cid"); //This is unique because the field parameters here contain "cid". 
-      DateTime now = DateTime.Now;
       Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
-
-      foreach (var item in dictCollections)
-        ModelState.Add(item.Key, new ModelState());
+      AiweTranslationHelper.AdjustModelState(ModelState, dictCollections); //to remove identifiers from model state
 
       List<string> checkExclusions = new List<string> { Aibe.DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
 
@@ -136,7 +145,7 @@ namespace Aiwe.Controllers {
         isTagChecked: Aiwe.DH.IsTagChecked);
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid) {
-        AiweCreateEditModel model = new AiweCreateEditModel(meta, Aibe.DH.EditActionName, dictCollections);
+        AiweCreateEditModel model = new AiweCreateEditModel(meta, Aibe.DH.EditActionName, dictCollections, identifiers);
         return View(model);
       }
 
@@ -159,66 +168,211 @@ namespace Aiwe.Controllers {
       meta.HandleEmailEvents(Aibe.DH.EditActionName, cid, originalRow, userPars); //handle email events and history events are still using the originalRow, this is correct
       meta.HandleHistoryEvents(Aibe.DH.EditActionName, cid, originalRow);
       meta.HandlePostActionProcedures(Aibe.DH.EditActionName, cid, originalRow, userPars); //passing the originalRow, not the changed one
-      return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
+
+      if (isFromGroupTable) {
+        RouteValueDictionary routeValues = AiweTranslationHelper.GetRouteValuesForRedirection(commonDataTableName, identifiers);
+        return RedirectToAction(Aibe.DH.GroupDetailsActionName, routeValues);
+      } else
+        return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 
     [CommonActionFilter]
-    public ActionResult Delete(string commonDataTableName, int id) { //Where all common tables details are returned and can be deleted
+    public ActionResult Delete(string commonDataTableName, string[] identifierKeys, string[] identifierValues, int id) { //Where all common tables details are returned and can be deleted
       MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      var identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
       Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(meta.TableSource, id);
-      AiweDetailsModel model = new AiweDetailsModel(meta, id, LogicHelper.ObjectDictionaryToStringDictionary(objectDictionary));
+      AiweDetailsModel model = new AiweDetailsModel(meta, id, LogicHelper.ObjectDictionaryToStringDictionary(objectDictionary), identifiers);
       return View(model);
     }
 
     [HttpPost]
     [CommonActionFilter]
     [ActionName(Aibe.DH.DeleteActionName)]
-    public ActionResult DeletePost(string commonDataTableName, int id) { //Where all common tables deletes are returned and can be deleted
+    public ActionResult DeletePost(string commonDataTableName, string[] identifierKeys, string[] identifierValues, int id) { //Where all common tables deletes are returned and can be deleted
       MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      var identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
+      bool isFromGroupTable = identifiers != null && identifiers.Count > 0;
 
       var userPars = AiweUserHelper.GetUserParameters(User, Aibe.DH.ParameterUserPrefix);
       DataRow originalRow = meta.GetFullRowSource(id);
       meta.HandlePreActionProcedures(Aibe.DH.DeleteActionName, id, originalRow, userPars);
-
       meta.HandleEmailEvents(Aibe.DH.DeleteActionName, id, null, userPars); //delete must not have original row //email and history events must be handled before the deletion
       meta.HandleHistoryEvents(Aibe.DH.DeleteActionName, id, null); //delete must not have original row
       LogicHelper.DeleteItem(meta.TableSource, id); //Currently do not return any error
 
       meta.HandlePostActionProcedures(Aibe.DH.DeleteActionName, -1, null, userPars); //delete action has neither id nor row
-
-      return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
+      if (isFromGroupTable) {
+        RouteValueDictionary routeValues = AiweTranslationHelper.GetRouteValuesForRedirection(commonDataTableName, identifiers);
+        return RedirectToAction(Aibe.DH.GroupDetailsActionName, routeValues);
+      } else
+        return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
     }
 
     //Later add filter to check if a user has right to see this table
     [CommonActionFilter]
-    public ActionResult Details(string commonDataTableName, int id) { //there must be a number named cid (common Id)
+    public ActionResult Details(string commonDataTableName, string[] identifierKeys, string[] identifierValues, int id) { //there must be a number named cid (common Id)
       MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      var identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
       Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(meta.TableSource, id);
-      AiweDetailsModel model = new AiweDetailsModel(meta, id, LogicHelper.ObjectDictionaryToStringDictionary(objectDictionary));
+      AiweDetailsModel model = new AiweDetailsModel(meta, id, LogicHelper.ObjectDictionaryToStringDictionary(objectDictionary), identifiers);
       return View(model);
     }
 
     //Simply returning a view which consists of list of attachments. The view should have some mechanism to download
     [CommonActionFilter]
-    public ActionResult DownloadAttachments(string commonDataTableName, int id) { //there must be a number named cid (common Id)
+    public ActionResult DownloadAttachments(string commonDataTableName, string[] identifierKeys, string[] identifierValues, int id) { //there must be a number named cid (common Id)
       MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      var identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
       Dictionary<string, object> objectDictionary = LogicHelper.FillDetailsFromTableToObjectDictionary(meta.TableSource, id);
-      AiweDetailsModel model = new AiweDetailsModel(meta, id, LogicHelper.ObjectDictionaryToStringDictionary(objectDictionary));
+      AiweDetailsModel model = new AiweDetailsModel(meta, id, LogicHelper.ObjectDictionaryToStringDictionary(objectDictionary), identifiers);
       return View(model);
     }
 
-    private ActionResult commonExportToCSV(string tableName, string fileDownloadName, AiweFilterIndexModel model) {
+    [CommonActionFilter]
+    public ActionResult CreateGroup(string commonDataTableName, string[] identifierColumns) {
+      DateTime now = DateTime.Now;
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      AiweCreateEditGroupModel model = new AiweCreateEditGroupModel(meta,
+        Aibe.DH.CreateGroupActionName, null, identifierColumns.ToList());
+      if (!model.Meta.IsGroupByFullyAutomatic())
+        return View(model);
+      Dictionary<string, string> dictCollections = new Dictionary<string, string>();
+      foreach (var identifierColumn in identifierColumns)
+        dictCollections.Add(identifierColumn, null);
+      return commonCreateEditGroup(commonDataTableName, Aibe.DH.CreateGroupActionName, identifierColumns, null, dictCollections); //if it is fully automatic, then consider CreateGroup POST has happened...
+    }
+
+    [ValidateInput(false)]
+    [HttpPost]
+    [CommonActionFilter]
+    public ActionResult CreateGroup(string commonDataTableName, string[] identifierColumns, FormCollection collections) {
+      Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
+      return commonCreateEditGroup(commonDataTableName, Aibe.DH.CreateGroupActionName, identifierColumns, null, dictCollections);
+    }
+
+    [CommonActionFilter]
+    public ActionResult EditGroup(string commonDataTableName, string[] identifierKeys, string[] identifierValues) {
+      DateTime now = DateTime.Now;
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      List<KeyValuePair<string, object>> identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
+      Dictionary<string, string> stringDict = new Dictionary<string, string>();
+      foreach (var identifier in identifiers)
+        stringDict.Add(identifier.Key, identifier.Value.ToString());
+      AiweCreateEditGroupModel model = new AiweCreateEditGroupModel(meta,
+        Aibe.DH.EditGroupActionName, stringDict, identifiers.Select(x => x.Key).ToList(), identifiers);
+      return View(model);
+    }
+
+    [ValidateInput(false)]
+    [HttpPost]
+    [CommonActionFilter]
+    public ActionResult EditGroup(string commonDataTableName, string[] identifierKeys, string[] identifierValues, FormCollection collections) {
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      List<KeyValuePair<string, object>> identifierInputs = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
+      Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
+      return commonCreateEditGroup(commonDataTableName, Aibe.DH.EditGroupActionName, identifierKeys, identifierInputs, dictCollections);
+    }
+
+    private ActionResult commonCreateEditGroup(string commonDataTableName, string actionName, string[] identifierColumns, 
+      List<KeyValuePair<string, object>> identifierInputs, Dictionary<string, string> dictCollections) {
+      DateTime now = DateTime.Now;
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      AiweTranslationHelper.AdjustModelState(ModelState, dictCollections); //to remove identifiers from model state
+
+      List<string> checkExclusions = new List<string> { Aibe.DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
+
+      //Check model state's validity
+      Dictionary<string, string> errorDict = new AiweCheckerHelper().CheckModelValidity(Aiwe.DH.TableModelClassPrefix, meta.TableSource, meta.ArrangedDataColumns,
+        dictCollections, ModelState.Keys.ToList(), meta, checkExclusions, AiweUserHelper.UserIsDeveloper(User), now, actionName, strongCheck: Aiwe.DH.UseStrongCheck,
+        isTagChecked: Aiwe.DH.IsTagChecked);
+      AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
+      if (!ModelState.IsValid)
+        return View(new AiweCreateEditGroupModel(meta, actionName, dictCollections, identifierColumns.ToList(), identifierInputs));
+
+      //Only if model state is correct that we could get valid key infos safely
+      var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(meta.TableSource, dictCollections, dictCollections.Keys,
+        meta.ArrangedDataColumns, filterStyle: false, meta: meta, actionType: actionName);
+      if (completeKeyInfo == null || completeKeyInfo.ValidKeys == null || !completeKeyInfo.ValidKeys.Any()) {
+        ViewBag.ErrorMessage = string.Format(Aibe.LCZ.E_InvalidOrEmptyParameter, commonDataTableName);
+        return View(Aiwe.DH.ErrorViewName);
+      }
+
+      List<KeyValuePair<string, object>> identifiers = LogicHelper.GetAllAutoGeneratedPairs(meta.TableSource, true, completeKeyInfo, dictCollections, now, meta);
+      if (actionName.EqualsIgnoreCase(Aibe.DH.CreateGroupActionName)) { //CreateGroup case
+        AiweFilterGroupDetailsModel filterGroupDetailsModel = getFilterGroupDetailsModel(commonDataTableName, identifiers);
+        return View(Aibe.DH.GroupDetailsActionName, filterGroupDetailsModel);
+      } else { //EditGroup case
+        int result = meta.ApplyEditGroup(identifierInputs, identifiers); //currently, the result is unchecked
+        return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
+      }
+    }
+
+    private AiweFilterGroupDetailsModel getFilterGroupDetailsModel(string commonDataTableName, List<KeyValuePair<string, object>> identifiers,
+      int? page = 1, Dictionary<string, string> collections = null, bool loadAllData = false, bool isGroupDeletion = false) {
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      FilterGroupDetailsModel model = new FilterGroupDetailsModel(meta, page, identifiers, collections);
+      QueryHelper.HandleUserRelatedScripting(model.QueryScript, Aiwe.DH.UserTableName, User?.Identity?.Name,
+        AiweUserHelper.UserHasMainAdminRight(User),
+        User?.Identity != null && !string.IsNullOrWhiteSpace(User.Identity.Name), meta.UserRelatedFilters);
+      model.CompleteModelAndData(isGrouping: false, loadAllData: loadAllData);
+      return new AiweFilterGroupDetailsModel(meta, User, model, isGroupDeletion, model.StringDictionary);
+    }
+
+    [CommonActionFilter]
+    public ActionResult GroupDetails(string commonDataTableName, string[] identifierKeys, string[] identifierValues, int? page = 1) {
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      var identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
+      return View(getFilterGroupDetailsModel(commonDataTableName, identifiers, page, null, loadAllData: false, isGroupDeletion: false));
+    }
+
+    [HttpPost]
+    [CommonActionFilter]
+    public ActionResult GroupDetails(string commonDataTableName, string[] identifierKeys, string[] identifierValues, int? commonDataFilterPage, FormCollection collections) {
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      var identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
+      Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
+      return View(getFilterGroupDetailsModel(commonDataTableName, identifiers, commonDataFilterPage, dictCollections, loadAllData: false, isGroupDeletion: false));
+    }
+
+    [CommonActionFilter]
+    public ActionResult DeleteGroup(string commonDataTableName, string[] identifierKeys, string[] identifierValues, int? page = 1) {
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      var identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
+      return View(getFilterGroupDetailsModel(commonDataTableName, identifiers, page, null, loadAllData: false, isGroupDeletion: true));
+    }
+
+    [HttpPost]
+    [CommonActionFilter]
+    public ActionResult DeleteGroup(string commonDataTableName, string[] identifierKeys, string[] identifierValues, int? commonDataFilterPage, FormCollection collections) {
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      var identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
+      Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
+      return View(getFilterGroupDetailsModel(commonDataTableName, identifiers, commonDataFilterPage, dictCollections, loadAllData: false, isGroupDeletion: true));
+    }
+
+    //This is where the actual delete occurs
+    [HttpPost]
+    [CommonActionFilter]
+    [ActionName(Aiwe.DH.DeleteGroupActualActionName)]
+    public ActionResult DeleteGroupActual(string commonDataTableName, string[] identifierKeys, string[] identifierValues) {
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      var identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
+      LogicHelper.DeleteGroup(meta.TableSource, identifiers);
+      return RedirectToAction(Aibe.DH.IndexActionName, new { commonDataTableName = commonDataTableName });
+    }
+
+    private ActionResult commonExportToCSV(string tableName, string fileDownloadName, AiweBaseFilterIndexModel model) {
       List<string> excludedColumns = model.GetExcludedColumnsInCsv(model.Meta.RawDataColumnNames, User);
-      string csvString = model.FiModel.GenerateCSVString(excludedColumns, Aiwe.DH.CsvDateTimeFormat);
+      string csvString = model.BaseModel.GenerateCSVString(excludedColumns, Aiwe.DH.CsvDateTimeFormat);
       byte[] buff = Encoding.ASCII.GetBytes(csvString);
       string mimeType = "text/csv";
       return File(buff, mimeType, fileDownloadName);
     }
 
-    private ActionResult exportToCSV (string commonDataTableName, int? commonDataFilterPage, FormCollection collections) {
+    private ActionResult exportToCSV (MetaInfo meta, string commonDataTableName, int? commonDataFilterPage, FormCollection collections, bool isGrouping) {
       try {
         return commonExportToCSV(commonDataTableName, commonDataTableName + ".csv",
-          getFilterIndexModel(commonDataTableName, commonDataFilterPage, collections, loadAllData: false));
+          getFilterIndexModel(meta, commonDataTableName, commonDataFilterPage, collections, loadAllData: false, isGrouping: isGrouping));
       } catch (Exception ex) {
         string exStr = ex.ToString();
         LogHelper.Error(User.Identity.Name, null, Aiwe.DH.Mvc, Aiwe.DH.MvcCommonControllerName,
@@ -230,10 +384,10 @@ namespace Aiwe.Controllers {
       }
     }
 
-    private ActionResult exportAllToCSV(string commonDataTableName, int? commonDataFilterPage, FormCollection collections) {
+    private ActionResult exportAllToCSV(MetaInfo meta, string commonDataTableName, int? commonDataFilterPage, FormCollection collections, bool isGrouping) {
       try { 
       return commonExportToCSV(commonDataTableName, commonDataTableName + "_All.csv",
-        getFilterIndexModel(commonDataTableName, commonDataFilterPage, collections, loadAllData: true));
+        getFilterIndexModel(meta, commonDataTableName, commonDataFilterPage, collections, loadAllData: true, isGrouping: isGrouping));
       } catch (Exception ex) {
         string exStr = ex.ToString();
         LogHelper.Error(User.Identity.Name, null, Aiwe.DH.Mvc, Aiwe.DH.MvcCommonControllerName,
@@ -373,4 +527,15 @@ namespace Aiwe.Controllers {
 //  } catch { //error log is handled by the action
 //    throw;
 //  }
+//}
+
+//[ValidateInput(false)]
+//[HttpPost]
+//[CommonActionFilter]
+//public ActionResult GroupDetails(string commonDataTableName, string[] identifierKeys, string[] identifierValues, FormCollection collections, int? page = 1, bool isGroupDeletion = false) {
+//  Dictionary<string, string> dictCollections = AiweTranslationHelper.FormCollectionToDictionary(collections);
+//  MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+//  var identifiers = AiweTranslationHelper.GetIdentifiers(meta, identifierKeys, identifierValues);
+//  AiweFilterGroupDetailsModel model = getFilterGroupDetailsModel(commonDataTableName, identifiers, page, dictCollections, loadAllData: false, isGroupDeletion: isGroupDeletion);
+//  return null;
 //}

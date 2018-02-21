@@ -114,6 +114,7 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Aibe.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Aibe.dll.config
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Cryptography.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.SqlServer.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.SqlServer.xml
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Models.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.String.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Values.pdb
@@ -232,5 +233,4 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.Migrations.InitialCreate.resources
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csproj.GenerateResource.Cache
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.pdb
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.SqlServer.xml
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csprojResolveAssemblyReference.cache

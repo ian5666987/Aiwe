@@ -1,0 +1,226 @@
+﻿@using Aibe.Helpers;
+@using Aibe.Models;
+@using Aibe.Models.Core;
+@using Aiwe.Helpers;
+@using Aiwe.Models;
+@using Extension.String;
+@using System;
+@using System.Collections.Generic;
+@using System.Data;
+@using System.Linq;
+@using System.Text;
+
+@model AiweFilterGroupDetailsModel
+
+@{
+  //initialize variables
+  ViewBag.Title = Aibe.LCZ.W_DeleteGroup;
+  ViewBag.SenderName = Model.TableName.ToLower(); //for javascript use
+  StringBuilder sb = new StringBuilder();
+  int iIndex = 0;
+  foreach(var identifier in Model.GdModel.Identifiers) {
+    if(iIndex > 0) {
+      sb.Append(", ");
+    }
+    sb.Append(string.Concat(identifier.Key, ": ", identifier.Value));
+    ++iIndex;
+  }
+}
+
+<!--The header-->
+<h2>
+  @ViewBag.Title - @Model.TableDisplayName
+  <br/>
+  <small>
+    (@(sb.ToString()))
+  </small>
+  &nbsp;
+
+  <!--The filter button-->
+  @if (!Model.Meta.FilterIsDisabled) {
+    <span class="btn btn-default"
+          data-toggle="modal"
+          data-target="#modal-for-@ViewBag.SenderName">
+      <span class="glyphicon glyphicon-filter"></span> @Aibe.LCZ.W_Filter
+    </span>
+    <small>
+      <span id="span-for-@ViewBag.SenderName-filter">
+        @if (Model.GdModel.FilterNo > 0) {
+          <span class="glyphicon glyphicon-ok-circle text-success" title="@Model.GdModel.FilterMsg"></span> <span title="@Aibe.LCZ.W_FilterElements">@Model.GdModel.FilterNo</span>
+        }
+      </span>
+    </small>
+  }
+</h2>
+<br />
+
+@if (!Model.HasTable) {
+  <h4 style="color:red">@Aibe.LCZ.NFE_NoDataTableFound</h4>
+} else {
+  <!--The data presentation-->
+  List<int> excludedColumnNo = new List<int>();
+
+  using (Html.BeginForm(Aibe.DH.DeleteGroupActionName, Aiwe.DH.MvcCommonControllerName, FormMethod.Post, new { id = "filterForm" })) {
+    @Html.Hidden(Aiwe.DH.CommonDataTableName, Model.Meta.TableName, new { @class = "uncounted-filter-item" });
+    iIndex = 0;
+    foreach (var identifier in Model.GdModel.Identifiers) {
+      @Html.Hidden(Aiwe.DH.IdentifierKeyName + "[" + iIndex + "]", identifier.Key, new { @class = "uncounted-filter-item" });
+      @Html.Hidden(Aiwe.DH.IdentifierValueName + "[" + iIndex + "]", identifier.Value, new { @class = "uncounted-filter-item" });
+      ++iIndex;
+    }
+
+  <!--The filter-->
+
+    if (!Model.Meta.FilterIsDisabled) {
+      <div id="modal-for-@ViewBag.SenderName" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color:@AiweWebColorHelper.FilterHeaderColor">
+              <button type="button" class="close" data-dismiss="modal"
+                      id="@ViewBag.SenderName-filter-cross-button"
+                      onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
+                &times;
+              </button>
+              <h4 class="modal-title" id="modal-for-@ViewBag.SenderName-header">@string.Format(Aibe.LCZ.M_FilterFor, Model.TableDisplayName)</h4>
+            </div>
+            <div class="modal-body">
+              @Html.Partial("_Filter", Model)
+            </div>
+            <div class="modal-footer" style="background-color:@AiweWebColorHelper.FilterHeaderColor">
+              <button type="button" class="btn btn-default" data-dismiss="modal"
+                      id="@ViewBag.SenderName-filter-use-button"
+                      title="@Aibe.LCZ.NFM_ApplyFilterButtonHelp"
+                      onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
+                @Aibe.LCZ.W_Apply
+              </button>
+              <button type="button" class="btn btn-default" data-dismiss="modal"
+                      id="@ViewBag.SenderName-filter-close-button"
+                      title="@Aibe.LCZ.NFM_CloseFilterButtonHelp"
+                      onclick="submitFilterModalForm(this, event, '@ViewBag.SenderName')">
+                @Aibe.LCZ.W_Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    if (Model.RowNo <= 0 && !Model.Meta.FilterIsDisabled && Model.GdModel.FilterNo > 0) {
+      string addFilterString = !Model.Meta.FilterIsDisabled && Model.GdModel.FilterNo > 0 ?
+        Aibe.LCZ.NFE_MatchingTheAppliedFilter : string.Empty;
+      <h4 style="color:red">@string.Format(Aibe.LCZ.E_NoRecordFoundInTable, Model.TableDisplayName) @addFilterString</h4>
+      <br/>
+    }
+
+  <!--The form-->
+
+      <!--The upper navigation-->
+      @Html.Partial(ViewBag.NavigationUsed == null ? "_SharedNavigation" : (string)ViewBag.NavigationUsed, Model.NavData)
+      <br />
+
+    <!--The table-->
+
+    List<ColumnInfo> includedColumns = Model.ColumnInfos.Where(x => x.IsIndexIncluded).ToList();
+    bool isCidForced = !includedColumns.Any(x => x.Name.EqualsIgnoreCase(Aibe.DH.Cid));
+
+      <table class="table table-bordered table-striped">
+        <tr>
+          @foreach (ColumnInfo column in includedColumns) {
+            <th>@column.DisplayName</th>
+          }
+        </tr>
+        @foreach (DataRow row in Model.IndexRows) {
+          <tr>
+            @{
+              int id = 0; //record Id
+              object cid = row[Aibe.DH.Cid]; //included or not, Cid must be taken to get the data id
+              if (cid != null) {
+                id = (int)cid;
+              }
+            }
+
+            @foreach (ColumnInfo columnInfo in includedColumns) {
+              object val = row[columnInfo.Name];
+              if (!Model.IsColumnIncludedInIndex(columnInfo.Name, User)) {
+                continue;
+              }
+              if (columnInfo.IsSciptColumn) { //takes too long if all data is loaded here
+                <td>
+                  <i>[@Aibe.LCZ.NFM_SeeOnDetails]</i>
+                </td>
+              } else if (columnInfo.IsIndexShowImage) {
+                PictureColumnInfo pcInfo = Model.Meta.GetPictureColumnInfo(columnInfo.Name);
+                string imgSizeStr = pcInfo.IndexIsStretched ? "width:" + pcInfo.IndexWidth + "px;height:" + pcInfo.IndexHeight + "px" :
+                  pcInfo.IndexHeightComesFirst ? "height:" + pcInfo.IndexHeight + "px" : "width:" + pcInfo.IndexWidth + "px";
+                <td>
+                  @if (val is DBNull || val == null || string.IsNullOrWhiteSpace(val.ToString())) {
+                    <i>[@Aibe.LCZ.W_NoPicture]</i>
+                  } else if (val.ToString().Contains("/") || val.ToString().Contains("\\")) { //longer relative path
+                    <img src="~/@Aibe.DH.DefaultAttachmentFolderName/@val" style="@imgSizeStr" />
+                  } else {
+                    <img src="~/@Aibe.DH.DefaultAttachmentFolderName/@Model.TableName/@id/@val" style="@imgSizeStr" />
+                  }
+                </td>
+              } else if (columnInfo.IsListColumn) {
+                string dataValue = val == null ? string.Empty : val.ToString();
+                <td>
+                  @Html.Raw(Model.GetListColumnDetailsHTML(columnInfo.Name, dataValue))
+                </td>
+              } else {
+                string dateTimeFormat = Model.Meta.GetCustomDateTimeFormatFor(columnInfo.Name, Aibe.DH.IndexPageName);
+                string printedVal = DateTimeHelper.ProcessPossibleDateTimeString(val, columnInfo.IsDateTime, dateTimeFormat ?? Aiwe.DH.IndexDateTimeFormat);
+                if (columnInfo.Colorings == null) {
+                  <td>@printedVal</td>
+                } else if (columnInfo.Colorings.Any(x => x.ColumnName.EqualsIgnoreCase(columnInfo.Name))) {
+                  ColoringInfo colorItem = columnInfo.Colorings.FirstOrDefault(x => x.ColumnName.EqualsIgnoreCase(columnInfo.Name));
+                  object usedVal = colorItem.ConditionColumnIsDifferentColumn ? row[colorItem.ConditionColumnName] : val;
+                  bool isConditionMet = colorItem.CheckConditionMet(columnInfo.DataType, usedVal, id);
+                  if (isConditionMet) {
+                    <td style="background-color:@colorItem.Color">@printedVal</td>
+                  } else {
+                    <td>@printedVal</td>
+                  }
+                } else {
+                  <td>@printedVal</td>
+                }
+              }
+            }
+
+          </tr>
+              }
+      </table>
+
+      <!--The lower data navigation-->
+      @Html.Partial(ViewBag.NavigationUsed == null ? "_SharedNavigation" : (string)ViewBag.NavigationUsed, Model.NavData)
+      <br />
+  }
+
+  <div class="row">
+  @if (Model.IsAllowedToCallAction(Aibe.DH.DeleteGroupActionName)) {
+    using (Html.BeginForm(Aiwe.DH.DeleteGroupActualActionName, Aiwe.DH.MvcCommonControllerName, FormMethod.Post,
+      new { id = "commonForm", enctype = "multipart/form-data" })) {
+      @Html.Hidden(Aiwe.DH.CommonDataTableName, Model.Meta.TableName, new { @class = "uncounted-filter-item" });
+      if (Model.GdModel.Identifiers != null) {
+        iIndex = 0;
+        foreach (var identifier in Model.GdModel.Identifiers) {
+          @Html.Hidden(Aiwe.DH.IdentifierKeyName + "[" + iIndex + "]", identifier.Key, new { @class = "uncounted-filter-item" });
+          @Html.Hidden(Aiwe.DH.IdentifierValueName + "[" + iIndex + "]", identifier.Value, new { @class = "uncounted-filter-item" });
+          ++iIndex;
+        }
+      }
+      <div class="btn btn-danger col-md-2" style="margin-left:12px;margin-right:8px; margin-top:5px;" onclick="submitCommonForm()"> 
+        <span class="glyphicon glyphicon-remove"><font style="font-family:verdana;"> @Aibe.LCZ.W_DeleteGroup</font></span>
+      </div>
+    }
+  }
+
+  <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@Aibe.DH.IndexActionName/@Model.TableName"
+      class="btn btn-primary col-md-2"
+      style="margin-left:12px; margin-top:5px;">
+    <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> @Aibe.LCZ.W_BackToGroupList</font></span>
+  </a>
+
+  </div>
+  <br />
+}
+

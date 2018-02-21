@@ -1,12 +1,29 @@
 ﻿@using Aiwe.Models;
+@using Aiwe.Helpers;
 
 @model AiweDetailsModel
 
 @{
   ViewBag.Title = Aibe.LCZ.W_Delete;
+  string additionalLabel = string.Empty;
+  string urlPars = string.Empty;
+  if (Model.Identifiers != null && Model.Identifiers.Count > 0) {
+    foreach (var identifier in Model.Identifiers) {
+      additionalLabel += ", " + identifier.Key + ": " + identifier.Value;
+    }
+    ViewBag.Title += additionalLabel;
+    urlPars = AiweTranslationHelper.GetIdentifiersUrl(Model.Identifiers);
+  }
 }
 
 @using (Html.BeginForm(Aibe.DH.DeleteActionName, Aiwe.DH.MvcCommonControllerName, FormMethod.Post, new { id = "commonForm" })) {
+  int iIndex = 0;
+  foreach (var identifier in Model.Identifiers) {
+    @Html.Hidden(Aiwe.DH.IdentifierKeyName + "[" + iIndex + "]", identifier.Key);
+    @Html.Hidden(Aiwe.DH.IdentifierValueName + "[" + iIndex + "]", identifier.Value);
+    ++iIndex;
+  }
+
   <input type="hidden" name="@Aibe.DH.TableNameParameterName" value="@Model.TableName"/>
   <input type="hidden" name="id" value="@Model.Cid" />
   <h2>@Model.TableDisplayName <small>(@ViewBag.Title)</small></h2>
@@ -16,10 +33,10 @@
   Html.RenderPartial("_DetailsPart");
   <div class="row">
     <div class="form-group">
-      <div class="btn btn-danger col-md-1" style="margin-left:12px; margin-right:8px; margin-top:15px;" onclick="submitCommonForm()">
+      <div class="btn btn-danger col-md-2" style="margin-left:12px; margin-right:8px; margin-top:15px;" onclick="submitCommonForm()">
         <span class="glyphicon glyphicon-remove"><font style="font-family:verdana;"> @Aibe.LCZ.W_Delete</font></span>
       </div>
-      <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@Aibe.DH.IndexActionName/@Model.TableName"
+      <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@(Model.GroupDetailsOrigin ? Aibe.DH.GroupDetailsActionName : Aibe.DH.IndexActionName)/@(Model.TableName + (string.IsNullOrWhiteSpace(urlPars) ? string.Empty : "?" + urlPars))"
          class="btn btn-primary col-md-2"
          style="margin-left:12px; margin-top:15px;">
         <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> @Aibe.LCZ.W_BackToList</font></span>

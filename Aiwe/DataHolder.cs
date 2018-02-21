@@ -55,6 +55,15 @@ namespace Aiwe {
     //Website specifics
     public const string UserTableName = "AspNetUsers";
     public const string RoleTableName = "AspNetRoles";
+    public const string IdentifierKeyName = "identifierKeys";
+    public const string IdentifierValueName = "identifierValues";
+    public const string IdentifierColumnName = "identifierColumns";
+    public const string NonCreateIdParName = "id";
+    public const string CommonDataTableName = "commonDataTableName";
+    public readonly static List<string> IdentifierNames = new List<string> {
+      IdentifierKeyName, IdentifierValueName, IdentifierColumnName,
+    };
+    public const string DeleteGroupActualActionName = "DeleteGroupActual";
 
     //Table
     public const string TableModelClassPrefix = "Aiwe.Models.DB.";

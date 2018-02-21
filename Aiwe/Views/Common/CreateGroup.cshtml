@@ -1,0 +1,36 @@
+﻿@using Aiwe.Models;
+
+@model AiweCreateEditGroupModel
+
+@{
+  ViewBag.Title = Aibe.LCZ.W_CreateGroup;
+  ViewBag.LabelClasses = "col-md-" + Model.CreateEditLabelPortion;
+  ViewBag.EditorClass = "col-md-" + (12 - Model.CreateEditLabelPortion);
+}
+
+<h2>@Model.TableDisplayName <small>(@ViewBag.Title)</small></h2>
+<br />
+
+@using (Html.BeginForm(Aibe.DH.CreateGroupActionName, Aiwe.DH.MvcCommonControllerName, FormMethod.Post, 
+  new { id = "commonForm", enctype = "multipart/form-data" })) {
+  int iIndex = 0;
+  foreach (var identifierColumn in Model.IdentifierColumns) {
+    @Html.Hidden(Aiwe.DH.IdentifierColumnName + "[" + iIndex + "]", identifierColumn);
+    ++iIndex;
+  }
+  @Html.Partial("_CreateEditGroupPart")
+  <div class="row">
+    <div class="form-group">
+      <div class="@ViewBag.LabelClasses"></div>
+      <div class="btn btn-success col-md-2" style="margin-left:12px; margin-right:8px; margin-top:15px;" onclick="submitCommonForm()">
+        <span class="glyphicon glyphicon-plus"><font style="font-family:verdana;"> @Aibe.LCZ.W_CreateGroup</font></span>
+      </div>
+      <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@Aibe.DH.IndexActionName/@Model.TableName"
+         class="btn btn-primary col-md-2"
+         style="margin-left:12px; margin-top:15px;">
+        <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> @Aibe.LCZ.W_BackToList</font></span>
+      </a>
+    </div>
+    <br />
+  </div>
+}

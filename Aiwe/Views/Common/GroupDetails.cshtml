@@ -5,21 +5,35 @@
 @using Aiwe.Models;
 @using Extension.String;
 @using System;
-@using System.Data;
 @using System.Collections.Generic;
+@using System.Data;
 @using System.Linq;
+@using System.Text;
 
-@model AiweFilterIndexModel
+@model AiweFilterGroupDetailsModel
 
 @{
   //initialize variables
-  ViewBag.Title = Aibe.LCZ.W_Index;
+  ViewBag.Title = Model.IsGroupDeletion ? Aibe.LCZ.W_DeleteGroup : Aibe.LCZ.W_GroupDetails;
   ViewBag.SenderName = Model.TableName.ToLower(); //for javascript use
+  StringBuilder sb = new StringBuilder();
+  int iIndex = 0;
+  foreach(var identifier in Model.GdModel.Identifiers) {
+    if(iIndex > 0) {
+      sb.Append(", ");
+    }
+    sb.Append(string.Concat(identifier.Key, ": ", identifier.Value));
+    ++iIndex;
+  }
 }
 
 <!--The header-->
 <h2>
   @ViewBag.Title - @Model.TableDisplayName
+  <br/>
+  <small>
+    (@(sb.ToString()))
+  </small>
   &nbsp;
 
   <!--The filter button-->
@@ -31,8 +45,8 @@
     </span>
     <small>
       <span id="span-for-@ViewBag.SenderName-filter">
-        @if (Model.FiModel.FilterNo > 0) {
-          <span class="glyphicon glyphicon-ok-circle text-success" title="@Model.FiModel.FilterMsg"></span> <span title="@Aibe.LCZ.W_FilterElements">@Model.FiModel.FilterNo</span>
+        @if (Model.GdModel.FilterNo > 0) {
+          <span class="glyphicon glyphicon-ok-circle text-success" title="@Model.GdModel.FilterMsg"></span> <span title="@Aibe.LCZ.W_FilterElements">@Model.GdModel.FilterNo</span>
         }
       </span>
     </small>
@@ -46,7 +60,14 @@
   <!--The data presentation-->
   List<int> excludedColumnNo = new List<int>();
 
-  using (Html.BeginForm(Aibe.DH.IndexActionName, Aiwe.DH.MvcCommonControllerName, FormMethod.Post, new { id = "filterForm" })) {
+  using (Html.BeginForm(Aibe.DH.GroupDetailsActionName, Aiwe.DH.MvcCommonControllerName, FormMethod.Post, new { id = "filterForm" })) {
+    @Html.Hidden(Aiwe.DH.CommonDataTableName, Model.Meta.TableName, new { @class = "uncounted-filter-item" });
+    iIndex = 0;
+    foreach (var identifier in Model.GdModel.Identifiers) {
+      @Html.Hidden(Aiwe.DH.IdentifierKeyName + "[" + iIndex + "]", identifier.Key, new { @class = "uncounted-filter-item" });
+      @Html.Hidden(Aiwe.DH.IdentifierValueName + "[" + iIndex + "]", identifier.Value, new { @class = "uncounted-filter-item" });
+      ++iIndex;
+    }
 
   <!--The filter-->
 
@@ -84,8 +105,8 @@
       </div>
     }
 
-    if (Model.RowNo <= 0) {
-      string addFilterString = !Model.Meta.FilterIsDisabled && Model.FiModel.FilterNo > 0 ?
+    if (Model.RowNo <= 0 && !Model.Meta.FilterIsDisabled && Model.GdModel.FilterNo > 0) {
+      string addFilterString = !Model.Meta.FilterIsDisabled && Model.GdModel.FilterNo > 0 ?
         Aibe.LCZ.NFE_MatchingTheAppliedFilter : string.Empty;
       <h4 style="color:red">@string.Format(Aibe.LCZ.E_NoRecordFoundInTable, Model.TableDisplayName) @addFilterString</h4>
       <br/>
@@ -115,17 +136,9 @@
           <tr>
             @{
               int id = 0; //record Id
-              List<KeyValuePair<string, object>> identifiers = new List<KeyValuePair<string, object>>();
-              if (Model.Meta.IsGroupTable) {
-                foreach (var identifierColumn in Model.FiModel.IdentifierColumns) {
-                  object identifier = row[identifierColumn];
-                  identifiers.Add(new KeyValuePair<string, object>(identifierColumn, identifier));
-                }
-              } else {
-                object cid = row[Aibe.DH.Cid]; //included or not, Cid must be taken to get the data id
-                if (cid != null) {
-                  id = (int)cid;
-                }
+              object cid = row[Aibe.DH.Cid]; //included or not, Cid must be taken to get the data id
+              if (cid != null) {
+                id = (int)cid;
               }
             }
 
@@ -176,36 +189,27 @@
               }
             }
 
-            @if (Model.Meta.HasAnyNonCreateAction) {
+            @if (Model.Meta.HasNonCreateAction && !Model.IsGroupDeletion) {
               int actCount = 0;
               <td>
-                @foreach (var action in Model.Meta.AllNonCreateActions) {                  
+                @foreach (var action in Model.Meta.NonCreateActions) {
                   if (Model.IsAllowedToCallAction(action.Name)) {
+                    string urlPars = AiweTranslationHelper.GetIdentifiersUrl(Model.GdModel.Identifiers);
                     if (actCount > 0) {
                       @:|
                     }
-                    bool isDefaultAction = Model.Meta.IsDefaultAction(action.Name);
-                    bool isRowAction = Aibe.DH.DefaultRowActions.Any(x => x.EqualsIgnoreCase(action.Name));
-                    if(isDefaultAction && isRowAction && Model.Meta.IsGroupTable) {
-                      continue;
-                    }
-                    string urlPars = AiweTranslationHelper.GetIdentifiersUrl(identifiers);
-                    if (!string.IsNullOrWhiteSpace(urlPars)) {
-                      urlPars = "&" + urlPars;
-                    }
-                    urlPars = Aiwe.DH.NonCreateIdParName + "=" + id + urlPars;
-                    if (isDefaultAction) { //actions with default action links
+                    if (Model.Meta.IsDefaultAction(action.Name)) { //actions with default action links
                       string aName = Aibe.LCZ.GetLocalizedDefaultActionName(action.Name);
-                      if (id == 0 && identifiers.Count <= 0) {
-                      <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@action.Name/@Model.TableName">@aName.ToCamelBrokenString()</a>
+                      if (id == 0) {
+                      <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@action.Name/@(Model.TableName + (string.IsNullOrWhiteSpace(urlPars) ? string.Empty : "?" + urlPars))">@aName.ToCamelBrokenString()</a>
                       } else {
-                      <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@action.Name/@Model.TableName?@urlPars">@aName.ToCamelBrokenString()</a>
+                      <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@action.Name/@Model.TableName/@(id + (string.IsNullOrWhiteSpace(urlPars) ? string.Empty : "?" + urlPars))">@aName.ToCamelBrokenString()</a>
                       }
                     } else { //action with customized custom link
-                      if (id == 0 && identifiers.Count <= 0) {
-                      <a href="../../../../../../@Model.TableName/@action.Name">@action.Name.ToCamelBrokenString()</a>
+                      if (id == 0) {
+                      <a href="../../../../../../@Model.TableName/@(action.Name + (string.IsNullOrWhiteSpace(urlPars) ? string.Empty : "?" + urlPars))">@action.Name.ToCamelBrokenString()</a>
                       } else {
-                      <a href="../../../../../../@Model.TableName/@action.Name?@urlPars">@action.Name.ToCamelBrokenString()</a>
+                      <a href="../../../../../../@Model.TableName/@action.Name/@(id + (string.IsNullOrWhiteSpace(urlPars) ? string.Empty : "?" + urlPars))">@action.Name.ToCamelBrokenString()</a>
                       }
                     }
                     actCount++;
@@ -222,29 +226,18 @@
       <br />
 
     <div class="row">
-    @if (Model.Meta.HasAnyCreateAction) {
-      if (!Model.Meta.IsGroupTable && Model.IsAllowedToCallAction(Aibe.DH.CreateActionName)) {
+    @if (Model.Meta.HasCreateAction) {
+      if (Model.IsAllowedToCallAction(Aibe.DH.CreateActionName)) {
+        string urlPars = AiweTranslationHelper.GetIdentifiersUrl(Model.GdModel.Identifiers);
         bool defaultCreateAction = Model.Meta.IsDefaultAction(Aibe.DH.CreateActionName);
-        string createLink = defaultCreateAction ? "../../../../../../" + Aiwe.DH.MvcCommonControllerName + "/" + Aibe.DH.CreateActionName + "/" + Model.TableName :
-        "../../../../../../" + Model.TableName + "/" + Aibe.DH.CreateActionName;
+        string createLink = defaultCreateAction ? "../../../../../../" + Aiwe.DH.MvcCommonControllerName + "/" + Aibe.DH.CreateActionName + "/" +
+          Model.TableName + (string.IsNullOrWhiteSpace(urlPars) ? string.Empty : "?" + urlPars) :
+        "../../../../../../" + Model.TableName + "/" + Aibe.DH.CreateActionName + (string.IsNullOrWhiteSpace(urlPars) ? string.Empty : "?" + urlPars);
         <div class="col-md-3">
           <a href="@createLink"
               class="btn btn-success btn-block"
               style="margin-top:5px;margin-right:5px;">
             <span class="glyphicon glyphicon-plus"></span> @Aibe.LCZ.W_CreateNew
-          </a>
-        </div>
-      } else if (Model.Meta.IsGroupTable && Model.IsAllowedToCallAction(Aibe.DH.CreateGroupActionName)) {
-        string urlPars = AiweTranslationHelper.GetIdentifierColumnsUrl(Model.FiModel.IdentifierColumns);
-        bool defaultCreateAction = Model.Meta.IsDefaultAction(Aibe.DH.CreateGroupActionName);
-        string createLink = defaultCreateAction ? "../../../../../../" + Aiwe.DH.MvcCommonControllerName + "/" + Aibe.DH.CreateGroupActionName + "/" +
-          Model.TableName + (string.IsNullOrWhiteSpace(urlPars) ? string.Empty : "?" + urlPars) :
-        "../../../../../../" + Model.TableName + "/" + Aibe.DH.CreateGroupActionName + (string.IsNullOrWhiteSpace(urlPars) ? string.Empty : "?" + urlPars);
-        <div class="col-md-3">
-          <a href="@createLink"
-             class="btn btn-success btn-block"
-             style="margin-top:5px;margin-right:5px;">
-            <span class="glyphicon glyphicon-plus"></span> @Aibe.LCZ.W_CreateGroup
           </a>
         </div>
       }
@@ -285,6 +278,13 @@
         }
       }          
     }
+
+    <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@Aibe.DH.IndexActionName/@Model.TableName"
+        class="btn btn-primary col-md-2"
+        style="margin-left:12px; margin-top:5px;">
+      <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> @Aibe.LCZ.W_BackToGroupList</font></span>
+    </a>
+
     </div>
     <br />
   }

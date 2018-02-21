@@ -1,9 +1,19 @@
 ﻿@using Aiwe.Models;
+@using Aiwe.Helpers;
 
 @model AiweDetailsModel
 
 @{
   ViewBag.Title = Aibe.LCZ.W_DownloadAttachments;
+  string additionalLabel = string.Empty;
+  string urlPars = string.Empty;
+  if (Model.Identifiers != null && Model.Identifiers.Count > 0) {
+    foreach (var identifier in Model.Identifiers) {
+      additionalLabel += ", " + identifier.Key + ": " + identifier.Value;
+    }
+    ViewBag.Title += additionalLabel;
+    urlPars = AiweTranslationHelper.GetIdentifiersUrl(Model.Identifiers);
+  }
 }
 
 <h2>@Model.TableDisplayName <small>(@ViewBag.Title)</small></h2>
@@ -12,7 +22,7 @@
 @Html.Partial("_DownloadAttachmentsPart")
 <div class="row">
   <div class="form-group">
-    <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@Aibe.DH.IndexActionName/@Model.TableName"
+    <a href="../../../../../../@Aiwe.DH.MvcCommonControllerName/@(Model.GroupDetailsOrigin ? Aibe.DH.GroupDetailsActionName : Aibe.DH.IndexActionName)/@(Model.TableName + (string.IsNullOrWhiteSpace(urlPars) ? string.Empty : "?" + urlPars))"
        class="btn btn-primary col-md-2"
        style="margin-left:12px; margin-top:15px;">
       <span class="glyphicon glyphicon-circle-arrow-left"><font style="font-family:verdana;"> @Aibe.LCZ.W_BackToList</font></span>

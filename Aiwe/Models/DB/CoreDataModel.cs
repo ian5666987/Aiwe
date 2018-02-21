@@ -48,6 +48,9 @@ namespace Aiwe.Models.DB {
     public virtual DbSet<TestTableCommonI> TestTableCommonIs { get; set; }
     public virtual DbSet<TestTableCommonJ> TestTableCommonJs { get; set; }
     public virtual DbSet<TestTableCommonJ_History> TestTableCommonJ_History { get; set; }
+    public virtual DbSet<TestTableCommonK> TestTableCommonKs { get; set; }
+    public virtual DbSet<TestTableCommonK_SpResult> TestTableCommonK_SpResult { get; set; }
+    public virtual DbSet<TestTableCommonL> TestTableCommonLs { get; set; }
     public virtual DbSet<TestTableSpecificA> TestTableSpecificAs { get; set; }
     public virtual DbSet<TestTableSpecificB> TestTableSpecificBs { get; set; }
     public virtual DbSet<CFG_CUS_LOC> CFG_CUS_LOC { get; set; }
@@ -80,6 +83,14 @@ namespace Aiwe.Models.DB {
       modelBuilder.Entity<TestTableCommonE>()
           .Property(e => e.DecimalType)
           .HasPrecision(18, 7);
+
+      modelBuilder.Entity<TestTableCommonL>()
+          .Property(e => e.ItemPrice)
+          .HasPrecision(18, 0);
+
+      modelBuilder.Entity<TestTableCommonL>()
+          .Property(e => e.ItemTotalPrice)
+          .HasPrecision(18, 0);
 
       modelBuilder.Entity<VServiceLog>()
           .Property(e => e.MailSent)

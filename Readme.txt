@@ -1,9 +1,20 @@
+v1.3.0.0 alpha (21-Feb-2018 12:33)
+updates:
+- TableType is implemented! One new TableType is applied: Group, that is, to process some Database items as a group.
+- AggregationStatement is implemented! Read the guideline for more details.
+- Four new row actions are added to support Group TableType: CreateGroup, EditGroup, DeleteGroup, GroupDetails.
+- AUTO-DATE GroupByAutoDirective is removed (Plan Cancelled).
+
+bugs fixed:
+- ColoringInfo.CheckConditionMet for DateTime Table Value Reference (TVR), query script extra end parentheses is removed
+
+-----------------------------------------------------------------------------------------------
 v1.2.0.0 alpha (01-Feb-2018 09:29)
 updates:
 - PreActionTriggers and PreActionProcedures columns are implemented! Read the guideline for more details.
 - PostActionTriggers and PostActionProcedures columns are implemented! Read the guideline for more details.
 - Empty trigger conditions are now supported for the PreActionTriggers and PostActionTriggers.
-- Plan Cancelled, PreActionProcedures and PostActionProcedures cannot be filled by Functions, must only be filled by Procedures.
+- PreActionProcedures and PostActionProcedures cannot be filled by Functions, must only be filled by Procedures (Plan Cancelled).
 - SQLServerHandler "Execute" argument orders are swapped.
 
 -----------------------------------------------------------------------------------------------

@@ -295,7 +295,10 @@
     <Compile Include="Helpers\AiweDataFilterHelper.cs" />
     <Compile Include="Helpers\AiweFileHelper.cs" />
     <Compile Include="Helpers\AiweViewHelper.cs" />
+    <Compile Include="Models\AiweCreateEditGroupModel.cs" />
     <Compile Include="Models\AiweCreateEditModel.cs" />
+    <Compile Include="Models\AiweBaseFilterIndexModel.cs" />
+    <Compile Include="Models\AiweFilterGroupDetailsModel.cs" />
     <Compile Include="Models\DB\CFG_CUS_INF.cs" />
     <Compile Include="Models\DB\CFG_CUS_LOC.cs" />
     <Compile Include="Models\DB\CFG_CUS_SUB.cs" />
@@ -338,6 +341,9 @@
     <Compile Include="Models\DB\TestTableCommonI.cs" />
     <Compile Include="Models\DB\TestTableCommonJ.cs" />
     <Compile Include="Models\DB\TestTableCommonJ_History.cs" />
+    <Compile Include="Models\DB\TestTableCommonK.cs" />
+    <Compile Include="Models\DB\TestTableCommonK_SpResult.cs" />
+    <Compile Include="Models\DB\TestTableCommonL.cs" />
     <Compile Include="Models\DB\TestTableSpecificA.cs" />
     <Compile Include="Models\DB\TestTableSpecificB.cs" />
     <Compile Include="Models\DB\VServiceInfo.cs" />
@@ -499,6 +505,11 @@
     <Content Include="Views\MetaItem\Success.cshtml" />
     <Content Include="Views\Common\DownloadAttachments.cshtml" />
     <Content Include="Views\Common\_DownloadAttachmentsPart.cshtml" />
+    <Content Include="Views\Common\GroupDetails.cshtml" />
+    <Content Include="Views\Common\_CreateEditGroupPart.cshtml" />
+    <Content Include="Views\Common\CreateGroup.cshtml" />
+    <Content Include="Views\Common\EditGroup.cshtml" />
+    <Content Include="Views\Common\DeleteGroup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

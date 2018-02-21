@@ -32,6 +32,11 @@
     string controlClasses = "form-control form-control-common-plus";
     string dataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
 
+    if (Model.GroupDetailsOrigin && Model.IsColumnIdentifier(cn)) {
+      <input type="hidden" name="@cn" value="@Model.GetIdentifierValueFor(cn)" />
+      continue;
+    }
+
     if (!isColumnIncluded) { //skipped columns, include prefilled columns
       if (cn == Aibe.DH.Cid) { //must already be declared outside for edit otherwise must not be included. Either case, skips.
         continue; //TODO not sure if we are to retain the capital 'C' here and thus must use equal-equal signs...
