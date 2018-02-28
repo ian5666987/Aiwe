@@ -1,4 +1,4 @@
-v1.4.0.0 alpha (28-Feb-2018 17:20)
+v1.4.0.0 alpha (28-Feb-2018 19:15)
 updates:
 - ForeignInfoColumns is added and is implemented!
 - _DetailsPart, _CreateEditPart, _CreateEditGroupPart cshtmls are adjusted.
