@@ -1,0 +1,42 @@
+﻿@using Aiwe.Models.ViewModels;
+@using Aibe.Helpers;
+@using Aibe.Models;
+@using Aibe.Models.Core;
+@using System.Data;
+@using Extension.String;
+
+@model ForeignInfoViewModel
+
+@{ 
+  string dateTimeFormat = Model.BaseModel.Meta.GetCustomDateTimeFormatFor(Model.ColumnName, Model.PageName);
+  bool isForeignKey = Model.BaseModel.Meta.IsForeignInfoColumn(Model.ColumnName);
+}
+
+<div class="@Model.EditorClasses">@DateTimeHelper.ProcessPossibleDateTimeString(Model.Value, 
+                               Model.BaseModel.Meta.IsDateTimeColumn(Model.ColumnName), dateTimeFormat ?? Model.DefaultDateTimeFormat)</div>
+
+@if (isForeignKey) {
+  ForeignInfoColumnInfo info = Model.BaseModel.Meta.GetForeignInfoColumn(Model.ColumnName);
+  DataRow row = info.GetForeignData(Model.ColumnName, Model.Value);
+  if (info.IsFullForeignInfo) {
+    var columns = info.GetForeignFullColumns();
+    foreach (DataColumn column in columns) {
+      object rowValue = row == null ? null : row[column.ColumnName];
+      //string usedColumnName = Aibe.DH.ForeignInfoPrefix + "-" + column.ColumnName + "-" + Model.ColumnName;
+      string displayName = column.ColumnName.ToCamelBrokenString();
+      string usedValue = rowValue == null ? string.Empty : rowValue.ToString();
+      <div class="@(Model.LabelClasses + " common-foreign-info-label")"><b>@displayName</b></div>
+      <div class="@(Model.EditorClasses + " common-foreign-info-value")">@usedValue</div>
+    }
+  } else {
+    foreach (var columnNamePair in info.RefColumnNamePairs) {
+      object rowValue = row == null ? null : row[columnNamePair.Key];
+      //string usedColumnName = Aibe.DH.ForeignInfoPrefix + "-" + columnNamePair.Key + "-" + Model.ColumnName;
+      string displayName = columnNamePair.Value;
+      string usedValue = rowValue == null ? string.Empty : rowValue.ToString();
+      <div class="@(Model.LabelClasses + " common-foreign-info-label")"><b>@displayName</b></div>
+      <div class="@(Model.EditorClasses + " common-foreign-info-value")">@usedValue</div>
+    }
+  }
+}
+

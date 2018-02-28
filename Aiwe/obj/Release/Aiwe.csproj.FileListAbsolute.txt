@@ -233,3 +233,4 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.csproj.GenerateResource.Cache
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.SqlServer.xml
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.csprojResolveAssemblyReference.cache

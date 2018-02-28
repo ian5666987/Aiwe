@@ -107,7 +107,7 @@
           @foreach (ColumnInfo column in includedColumns) {
             <th>@column.DisplayName</th>
           }
-          @if (Model.Meta.HasNonCreateAction) {
+          @if (Model.Meta.HasIndexNonCreateAction) {
             <th>@Aibe.LCZ.W_Actions</th>
           }
         </tr>
@@ -176,10 +176,10 @@
               }
             }
 
-            @if (Model.Meta.HasAnyNonCreateAction) {
+            @if (Model.Meta.HasIndexNonCreateAction) {
               int actCount = 0;
               <td>
-                @foreach (var action in Model.Meta.AllNonCreateActions) {                  
+                @foreach (var action in Model.Meta.IndexNonCreateActions) {                  
                   if (Model.IsAllowedToCallAction(action.Name)) {
                     if (actCount > 0) {
                       @:|

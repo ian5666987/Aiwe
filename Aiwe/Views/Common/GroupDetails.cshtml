@@ -128,7 +128,7 @@
           @foreach (ColumnInfo column in includedColumns) {
             <th>@column.DisplayName</th>
           }
-          @if (Model.Meta.HasNonCreateAction) {
+          @if (Model.Meta.HasGroupDetailsNonCreateAction) {
             <th>@Aibe.LCZ.W_Actions</th>
           }
         </tr>
@@ -189,10 +189,10 @@
               }
             }
 
-            @if (Model.Meta.HasNonCreateAction && !Model.IsGroupDeletion) {
+            @if (Model.Meta.HasGroupDetailsNonCreateAction && !Model.IsGroupDeletion) {
               int actCount = 0;
               <td>
-                @foreach (var action in Model.Meta.NonCreateActions) {
+                @foreach (var action in Model.Meta.GroupDetailsNonCreateActions) {
                   if (Model.IsAllowedToCallAction(action.Name)) {
                     string urlPars = AiweTranslationHelper.GetIdentifiersUrl(Model.GdModel.Identifiers);
                     if (actCount > 0) {

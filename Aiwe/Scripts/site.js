@@ -60,6 +60,24 @@ function processLiveDd(element, ldColNames, dataTypes, applyListColumnLoad) {
       }
     });
   }
+
+  var firstTimeLoad = $('#is-first-load').text();
+  if (firstTimeLoad != 'True') {
+    $.ajax({
+      url: '../../../Common/GetForeignInfo/' + tableName,
+      async: true,
+      data: {
+        commonDataTableName: tableName, changedColumnName: colName, changedColumnValue: inputValue
+      },
+      traditional: true,
+      success: function (data) {
+        $.each(data, function (v, obj) {
+          $('#ForeignInfo-' + obj.Name + '-' + colName).html(obj.ViewString);
+        });
+      }
+    });
+  }
+  $('#is-first-load').text('False');
 }
 
 function submitFilterModalForm(submitter, ev, filteredType) {

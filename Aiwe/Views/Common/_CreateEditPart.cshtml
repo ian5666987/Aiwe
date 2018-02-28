@@ -1,6 +1,7 @@
 ﻿@using Aibe.Helpers;
 @using Aibe.Models.Core;
 @using Aibe.Models;
+@using Aiwe.Models.ViewModels;
 @using Aiwe.Helpers;
 @using Aiwe.Models;
 @using Aiwe.Extensions;
@@ -18,6 +19,7 @@
     string cn = column.ColumnName;
     bool isScriptColumn = Model.Meta.IsScriptColumn(cn);
     bool isReadOnly = (!isCreate && Model.Meta.IsEditShowOnly(cn)) || isScriptColumn; //TODO for now, script column is always read only
+    bool isForeignKey = Model.Meta.IsForeignInfoColumn(cn);
     bool isColumnIncluded = Model.IsColumnIncludedInCreateEdit(column, User);
 
     //ordered by precedence
@@ -29,7 +31,7 @@
 
     string hiddenAttrIfReadOnly = isReadOnly ? "hidden=\"hidden\"" : string.Empty;
     string readOnlyAttrIfReadOnly = isReadOnly ? "readonly=\"readonly\"" : string.Empty;
-    string controlClasses = "form-control form-control-common-plus";
+    //string controlClasses = "form-control form-control-common-plus";
     string dataType = column.DataType.ToString().Substring(Aibe.DH.SharedPrefixDataType.Length);
 
     if (Model.GroupDetailsOrigin && Model.IsColumnIdentifier(cn)) {
@@ -56,8 +58,8 @@
         string dataDateValue = dataValueDt.HasValue ? dataValueDt.Value.ToString(Aibe.DH.DefaultDateFormat) : string.Empty;
         string dataTimeName = cn + Aibe.DH.CreateEditTimeAppendixName;
         string dataTimeValue = Model.GetTime(dataTimeName, dataValueDt);
-        <input type="hidden" name="@cn" class="@controlClasses" value="@dataDateValue" />
-        <input type="hidden" name="@dataTimeName" class="@controlClasses" value="@dataTimeValue" />
+        <input type="hidden" name="@cn" class="@Aiwe.DH.ControlClasses" value="@dataDateValue" />
+        <input type="hidden" name="@dataTimeName" class="@Aiwe.DH.ControlClasses" value="@dataTimeValue" />
         continue;
       }
 
@@ -124,16 +126,40 @@
         dataValue = prefix + dataValue + postfix;
       }
 
-      <div class="form-group">
-        <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
-        <div class="@ViewBag.EditorClass">
-          @if (isDropDown) {
-            List<string> dropdowns = Model.Meta.GetStaticCreateEditDropDownFor(cn, dataValue, Aibe.DH.DropDownTextDataType);
-            if (dropdowns == null || dropdowns.Count <= 0) {
-              <input type="text" name="@cn" class="@controlClasses" value="@dataValue" @readOnlyAttrIfReadOnly/>
-            } else if (isReadOnly) {
-              <input type="text" name="@cn" class="@controlClasses" value="@dataValue" readonly="readonly" />
-            } else { //string dropdown case
+      if (isDropDown) {
+        List<string> dropdowns = Model.Meta.GetStaticCreateEditDropDownFor(cn, dataValue, Aibe.DH.DropDownTextDataType);
+        if (dropdowns == null || dropdowns.Count <= 0) {
+          <div class="form-group">
+            <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
+            <div class="@ViewBag.EditorClass">
+              <input type="text" name="@cn" class="@Aiwe.DH.ControlClasses" value="@dataValue" @readOnlyAttrIfReadOnly/>
+              @Html.ValidationMessage(cn, new { @class = "text-danger" })
+            </div>
+          </div>
+          Html.RenderPartial("_ForeignInfoCreateEditPart", new ForeignInfoViewModel {
+            ColumnName = cn, Value = dataValue,
+            PageName = Aibe.DH.CreateEditFilterPageName, DefaultDateTimeFormat = Aiwe.DH.DetailsDateTimeFormat,
+            LabelClasses = ViewBag.LabelClasses, EditorClasses = ViewBag.EditorClass,
+            BaseModel = Model,
+          });
+        } else if (isReadOnly) {
+          <div class="form-group">
+            <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
+            <div class="@ViewBag.EditorClass">
+              <input type="text" name="@cn" class="@Aiwe.DH.ControlClasses" value="@dataValue" readonly="readonly" />
+              @Html.ValidationMessage(cn, new { @class = "text-danger" })
+            </div>
+          </div>
+          Html.RenderPartial("_ForeignInfoCreateEditPart", new ForeignInfoViewModel {
+            ColumnName = cn, Value = dataValue,
+            PageName = Aibe.DH.CreateEditFilterPageName, DefaultDateTimeFormat = Aiwe.DH.DetailsDateTimeFormat,
+            LabelClasses = ViewBag.LabelClasses, EditorClasses = ViewBag.EditorClass,
+            BaseModel = Model,
+          });
+        } else { //string dropdown case
+          <div class="form-group">
+            <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
+            <div class="@ViewBag.EditorClass">
               <div id="live-dd-@cn" class="live-dd" commondatatype="@Aibe.DH.DropDownTextDataType">
                 @{ 
                   List<SelectListItem> dropdownItems = new List<SelectListItem> {
@@ -145,22 +171,46 @@
                     item.Selected = true;
                   }
                 }
-                @Html.DropDownList(cn, dropdownItems, new { @class = controlClasses + " common-column-dropdown",
+                @Html.DropDownList(cn, dropdownItems, new { @class = Aiwe.DH.ControlClasses + " common-column-dropdown",
                   id = "common-column-dropdown-" + cn })
                </div>
               <input type="text" class="common-column-dropdown-original" id="common-column-dropdown-original-@cn" value="@dataValue" hidden="hidden" />
-            }
-          } else if (isTextField) { //string, not column and not TextField
-            <textarea class="@controlClasses"
+              @Html.ValidationMessage(cn, new { @class = "text-danger" })
+            </div>
+          </div>
+          Html.RenderPartial("_ForeignInfoCreateEditPart", new ForeignInfoViewModel {
+            ColumnName = cn, Value = dataValue,
+            PageName = Aibe.DH.CreateEditFilterPageName, DefaultDateTimeFormat = Aiwe.DH.DetailsDateTimeFormat,
+            LabelClasses = ViewBag.LabelClasses, EditorClasses = ViewBag.EditorClass,
+            BaseModel = Model,
+          });
+        }
+      } else if (isTextField) { //string, not column and not TextField
+        <div class="form-group">
+          <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
+          <div class="@ViewBag.EditorClass">
+            <textarea class="@Aiwe.DH.ControlClasses"
                       rows="@Model.Meta.GetTextFieldRowSize(cn)"                                                
                       name="@cn" @readOnlyAttrIfReadOnly>@dataValue</textarea> //must be written this way and cannot be auto adjusted. Otherwise the dataValue will be put in the centre of the area (not in the beginning)
-          } else if (isPictureColumn) { //picture
-            PictureColumnInfo pcInfo = Model.Meta.GetPictureColumnInfo(cn);
-            string imgSizeStr = pcInfo.IsStretched ? "width:" + pcInfo.Width + "px;height:" + pcInfo.Height + "px" :
-              pcInfo.HeightComesFirst ? "height:" + pcInfo.Height + "px" : "width:" + pcInfo.Width + "px";
-            string picColumnName = cn + Aibe.DH.CreateEditPictureLinkAppendixName;
-            string picColumnValue = Model.GetData(picColumnName);
-            string columnValue = Model.GetData(cn, false);
+            @Html.ValidationMessage(cn, new { @class = "text-danger" })
+          </div>
+        </div>
+        Html.RenderPartial("_ForeignInfoCreateEditPart", new ForeignInfoViewModel {
+          ColumnName = cn, Value = dataValue,
+          PageName = Aibe.DH.CreateEditFilterPageName, DefaultDateTimeFormat = Aiwe.DH.DetailsDateTimeFormat,
+          LabelClasses = ViewBag.LabelClasses, EditorClasses = ViewBag.EditorClass,
+          BaseModel = Model,
+        });
+      } else if (isPictureColumn) { //picture
+        PictureColumnInfo pcInfo = Model.Meta.GetPictureColumnInfo(cn);
+        string imgSizeStr = pcInfo.IsStretched ? "width:" + pcInfo.Width + "px;height:" + pcInfo.Height + "px" :
+          pcInfo.HeightComesFirst ? "height:" + pcInfo.Height + "px" : "width:" + pcInfo.Width + "px";
+        string picColumnName = cn + Aibe.DH.CreateEditPictureLinkAppendixName;
+        string picColumnValue = Model.GetData(picColumnName);
+        string columnValue = Model.GetData(cn, false);
+        <div class="form-group">
+          <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
+          <div class="@ViewBag.EditorClass">
             <div style="margin-top:7px">
               @if (!string.IsNullOrWhiteSpace(columnValue)) { //try to load the image
                 string cid = Model.GetData(Aibe.DH.Cid);
@@ -188,16 +238,22 @@
                 </span>
                 }
               }
-              <input class="@controlClasses"
+              <input class="@Aiwe.DH.ControlClasses"
                       type="hidden" name="@cn" value="@columnValue"
                       id="common-string-picture-@cn" />
             </div>
-          } else if (isNonPictureAttachmentColumn) {
-            AttachmentInfo attInfo = Model.Meta.GetNonPictureAttachmentColumn(cn);
-            string formats = attInfo.Formats == null || attInfo.Formats.Count <= 0 ? "*" : string.Join(",", attInfo.Formats);
-            string attColumnName = cn + Aibe.DH.CreateEditNonPictureAttachmentAppendixName;
-            string attColumnValue = Model.GetData(attColumnName);
-            string columnValue = Model.GetData(cn, false);
+            @Html.ValidationMessage(cn, new { @class = "text-danger" })
+          </div>
+        </div>
+      } else if (isNonPictureAttachmentColumn) {
+        AttachmentInfo attInfo = Model.Meta.GetNonPictureAttachmentColumn(cn);
+        string formats = attInfo.Formats == null || attInfo.Formats.Count <= 0 ? "*" : string.Join(",", attInfo.Formats);
+        string attColumnName = cn + Aibe.DH.CreateEditNonPictureAttachmentAppendixName;
+        string attColumnValue = Model.GetData(attColumnName);
+        string columnValue = Model.GetData(cn, false);
+        <div class="form-group">
+          <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
+          <div class="@ViewBag.EditorClass">
             <div style="margin-top:7px">
               @if (!string.IsNullOrWhiteSpace(columnValue)) { //try to load the attachment
                 if (string.IsNullOrWhiteSpace(dataValue)) {
@@ -221,23 +277,35 @@
                 </span>
                 }
               }
-              <input class="@controlClasses"
+              <input class="@Aiwe.DH.ControlClasses"
                       type="hidden" name="@cn" value="@columnValue"
                       id="common-string-attachment-@cn" />
             </div>
-          } else if (isListColumn) {
-            string lcType = Model.Meta.GetListColumnType(cn);
-            bool hasStaticTemplate = string.IsNullOrWhiteSpace(dataValue) &&
-              Model.Meta.ListColumnHasStaticTemplate(cn);
-            string usedDataValue = hasStaticTemplate ?
-              Model.Meta.GetColumnStaticTemplate(cn) : dataValue;
-            ListColumnInfo info = Model.Meta.GetListColumnInfo(cn);
-            if (isReadOnly) {
+            @Html.ValidationMessage(cn, new { @class = "text-danger" })
+          </div>
+        </div>
+      } else if (isListColumn) {
+        string lcType = Model.Meta.GetListColumnType(cn);
+        bool hasStaticTemplate = string.IsNullOrWhiteSpace(dataValue) &&
+          Model.Meta.ListColumnHasStaticTemplate(cn);
+        string usedDataValue = hasStaticTemplate ?
+          Model.Meta.GetColumnStaticTemplate(cn) : dataValue;
+        ListColumnInfo info = Model.Meta.GetListColumnInfo(cn);
+        if (isReadOnly) {
+          <div class="form-group">
+            <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
+            <div class="@ViewBag.EditorClass">
               <input type="hidden" name="@cn" id="ro-content-@cn" value="@usedDataValue" />
               <div>
                 @Html.Raw(info.GetHTML(usedDataValue, true))
               </div>
-            } else {
+              @Html.ValidationMessage(cn, new { @class = "text-danger" })
+            </div>
+          </div>
+        } else {
+          <div class="form-group">
+            <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
+            <div class="@ViewBag.EditorClass">
               <div id="common-subcolumn-datavalue-@cn">
                 <input type="hidden" name="@cn" id="common-subcolumn-content-@cn" value="@usedDataValue" />
               </div>                  
@@ -246,13 +314,25 @@
               <div id="common-subcolumn-div-@cn">
                 @Html.Raw(info.GetHTML(usedDataValue))
               </div>
-            }
-          } else { //normal string
-            <input type="text" name="@cn" class="@controlClasses" value="@dataValue" @readOnlyAttrIfReadOnly/>
-          }        
-        @Html.ValidationMessage(cn, new { @class = "text-danger" })
+              @Html.ValidationMessage(cn, new { @class = "text-danger" })
+            </div>
+          </div>
+        }
+      } else { //normal string
+        <div class="form-group">
+          <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
+          <div class="@ViewBag.EditorClass">
+            <input type="text" name="@cn" class="@Aiwe.DH.ControlClasses" value="@dataValue" @readOnlyAttrIfReadOnly/>
+            @Html.ValidationMessage(cn, new { @class = "text-danger" })
+          </div>
         </div>
-      </div>
+        Html.RenderPartial("_ForeignInfoCreateEditPart", new ForeignInfoViewModel {
+          ColumnName = cn, Value = dataValue,
+          PageName = Aibe.DH.CreateEditFilterPageName, DefaultDateTimeFormat = Aiwe.DH.DetailsDateTimeFormat,
+          LabelClasses = ViewBag.LabelClasses, EditorClasses = ViewBag.EditorClass,
+          BaseModel = Model,
+        });
+      }
       continue;
     } 
   
@@ -260,22 +340,58 @@
       string dataValue = Model.GetData(cn);
 
       if (Model.ActionType.EqualsIgnoreCase(Aibe.DH.CreateActionName) && Model.Meta.IsAutoGenerated(cn)){
-        <input type="hidden" name="@cn" class="@controlClasses" value="@dataValue" />
+        <input type="hidden" name="@cn" class="@Aiwe.DH.ControlClasses" value="@dataValue" />
         continue;
       } 
 
-      <div class="form-group">
-        <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
-        <div class="@ViewBag.EditorClass">
-          @if (isReadOnly) {
-            <input type="text" name="@cn" class="@controlClasses" value="@dataValue" readonly="readonly" />
-          } else if (!isDropDown) { //normal number, use input type = "number"
-            <input type="number" name="@cn" class="@controlClasses" value="@dataValue" @readOnlyAttrIfReadOnly />
-          } else { //dropdown number
-            List<string> dropdowns = Model.Meta.GetStaticCreateEditDropDownFor(cn, dataValue);
-            if (dropdowns == null || dropdowns.Count <= 0) {
-              <input type="number" name="@cn" class="@controlClasses" value="@dataValue" @readOnlyAttrIfReadOnly/>
-            } else { //number dropdown case
+      if (isReadOnly) {
+        <div class="form-group">
+          <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
+          <div class="@ViewBag.EditorClass">
+            <input type="text" name="@cn" class="@Aiwe.DH.ControlClasses" value="@dataValue" readonly="readonly" />
+            @Html.ValidationMessage(cn, new { @class = "text-danger" })
+          </div>
+        </div>
+        Html.RenderPartial("_ForeignInfoCreateEditPart", new ForeignInfoViewModel {
+          ColumnName = cn, Value = dataValue,
+          PageName = Aibe.DH.CreateEditFilterPageName, DefaultDateTimeFormat = Aiwe.DH.DetailsDateTimeFormat,
+          LabelClasses = ViewBag.LabelClasses, EditorClasses = ViewBag.EditorClass,
+          BaseModel = Model,
+        });
+      } else if (!isDropDown) { //normal number, use input type = "number"
+        <div class="form-group">
+          <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
+          <div class="@ViewBag.EditorClass">
+            <input type="number" name="@cn" class="@Aiwe.DH.ControlClasses" value="@dataValue" @readOnlyAttrIfReadOnly />
+            @Html.ValidationMessage(cn, new { @class = "text-danger" })
+          </div>
+        </div>
+        Html.RenderPartial("_ForeignInfoCreateEditPart", new ForeignInfoViewModel {
+          ColumnName = cn, Value = dataValue,
+          PageName = Aibe.DH.CreateEditFilterPageName, DefaultDateTimeFormat = Aiwe.DH.DetailsDateTimeFormat,
+          LabelClasses = ViewBag.LabelClasses, EditorClasses = ViewBag.EditorClass,
+          BaseModel = Model,
+        });
+      } else { //dropdown number
+        List<string> dropdowns = Model.Meta.GetStaticCreateEditDropDownFor(cn, dataValue);
+        if (dropdowns == null || dropdowns.Count <= 0) {
+          <div class="form-group">
+            <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
+            <div class="@ViewBag.EditorClass">
+              <input type="number" name="@cn" class="@Aiwe.DH.ControlClasses" value="@dataValue" @readOnlyAttrIfReadOnly/>
+              @Html.ValidationMessage(cn, new { @class = "text-danger" })
+            </div>
+          </div>
+          Html.RenderPartial("_ForeignInfoCreateEditPart", new ForeignInfoViewModel {
+            ColumnName = cn, Value = dataValue,
+            PageName = Aibe.DH.CreateEditFilterPageName, DefaultDateTimeFormat = Aiwe.DH.DetailsDateTimeFormat,
+            LabelClasses = ViewBag.LabelClasses, EditorClasses = ViewBag.EditorClass,
+            BaseModel = Model,
+          });
+        } else { //number dropdown case
+          <div class="form-group">
+            <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
+            <div class="@ViewBag.EditorClass">
               <div id="live-dd-@cn" class="live-dd" commondatatype="@Aibe.DH.DropDownNumberDataType">
                 @{
                   List<SelectListItem> dropdownItems = new List<SelectListItem> {
@@ -287,15 +403,21 @@
                     item.Selected = true;
                   }
                 }
-                @Html.DropDownList(cn, dropdownItems, new { @class = controlClasses + " common-column-dropdown",
+                @Html.DropDownList(cn, dropdownItems, new { @class = Aiwe.DH.ControlClasses + " common-column-dropdown",
                   id = "common-column-dropdown-" + cn })
               </div>
               <input type="text" class="common-column-dropdown-original" id="common-column-dropdown-original-@cn" value="@dataValue" hidden="hidden" />
-            }
-          }
-        @Html.ValidationMessage(cn, new { @class = "text-danger" })
-        </div>
-      </div>      
+              @Html.ValidationMessage(cn, new { @class = "text-danger" })
+            </div>
+          </div>
+          Html.RenderPartial("_ForeignInfoCreateEditPart", new ForeignInfoViewModel {
+            ColumnName = cn, Value = dataValue,
+            PageName = Aibe.DH.CreateEditFilterPageName, DefaultDateTimeFormat = Aiwe.DH.DetailsDateTimeFormat,
+            LabelClasses = ViewBag.LabelClasses, EditorClasses = ViewBag.EditorClass,
+            BaseModel = Model,
+          });
+        }
+      }
       continue;
     }
                     
@@ -307,8 +429,8 @@
       string dataTimeValue = Model.GetTime(dataTimeName, dataValueDt);
 
       if (Model.Meta.IsTimeStampAppliedFor(cn, Model.ActionType)) { //if it is timestamp column for the particular column and action, don't use it
-        <input type="hidden" name="@cn" class="@controlClasses" value="@dataDateValue" />
-        <input type="hidden" name="@dataTimeName" class="@controlClasses" value="@dataTimeValue" />
+        <input type="hidden" name="@cn" class="@Aiwe.DH.ControlClasses" value="@dataDateValue" />
+        <input type="hidden" name="@dataTimeName" class="@Aiwe.DH.ControlClasses" value="@dataTimeValue" />
         continue;
       }
 
@@ -316,8 +438,8 @@
         <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
         <div class="@ViewBag.EditorClass">
           <div class="row form-inline" style="margin-left:0px;">
-            <input type="date" name="@cn" class="@controlClasses" value="@dataDateValue" @readOnlyAttrIfReadOnly/>
-            <input type="time" step="1" name="@dataTimeName" class="@controlClasses" value="@dataTimeValue" @readOnlyAttrIfReadOnly/>
+            <input type="date" name="@cn" class="@Aiwe.DH.ControlClasses" value="@dataDateValue" @readOnlyAttrIfReadOnly/>
+            <input type="time" step="1" name="@dataTimeName" class="@Aiwe.DH.ControlClasses" value="@dataTimeValue" @readOnlyAttrIfReadOnly/>
           </div>
           @Html.ValidationMessage(cn, new { @class = "text-danger" })
           @Html.ValidationMessage(dataTimeName, new { @class = "text-danger" })
@@ -332,7 +454,7 @@
         <div class="form-group">
           <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
           <div class="@ViewBag.EditorClass">          
-            <input type="text" name="@cn" class="@controlClasses" value="@dataValue" readonly="readonly" />
+            <input type="text" name="@cn" class="@Aiwe.DH.ControlClasses" value="@dataValue" readonly="readonly" />
           </div>
         </div>
         continue;
@@ -347,7 +469,7 @@
       <div class="form-group">
         <label class="control-label @ViewBag.LabelClasses">@Model.Meta.GetColumnDisplayName(cn)</label>
         <div class="@ViewBag.EditorClass">          
-          @Html.DropDownList(cn, dropdownItems, new { @class = controlClasses })
+          @Html.DropDownList(cn, dropdownItems, new { @class = Aiwe.DH.ControlClasses })
           @Html.ValidationMessage(cn, new { @class = "text-danger" })
         </div>
       </div>      
@@ -357,6 +479,7 @@
     <p>Name: @Model.Meta.GetColumnDisplayName(cn), Type: @dataType</p>    
   }
   <div id="common-table-name" hidden>@Model.TableName</div>
+  <div id="is-first-load" hidden>True</div>
   @Html.ValidationMessage(Aibe.LCZ.I_UnknownColumn, new { @class = "text-danger" })
 </div>
 

@@ -1,3 +1,14 @@
+v1.4.0.0 alpha (28-Feb-2018 17:20)
+updates:
+- ForeignInfoColumns is added and is implemented!
+- _DetailsPart, _CreateEditPart, _CreateEditGroupPart cshtmls are adjusted.
+- _ForeignInfoCreateEditPart and _ForeignInfoDetailsPart are added.
+- Some Foreign models are added.
+
+bugs fixed:
+- Customized Actions are not shown in the [Normal] [TableType].
+
+-----------------------------------------------------------------------------------------------
 v1.3.0.0 alpha (21-Feb-2018 12:45)
 updates:
 - TableType is implemented! One new TableType is applied: Group, that is, to process some Database items as a group.
@@ -7,7 +18,7 @@ updates:
 - First standard version (shared with Aibe, Aide, and Aibe Editor)
 
 bugs fixed:
-- ColoringInfo.CheckConditionMet for DateTime Table Value Reference (TVR), query script extra end parentheses is removed
+- ColoringInfo.CheckConditionMet for DateTime Table Value Reference (TVR), query script extra end parentheses is removed.
 
 -----------------------------------------------------------------------------------------------
 v1.2.0.0 alpha (01-Feb-2018 09:29)

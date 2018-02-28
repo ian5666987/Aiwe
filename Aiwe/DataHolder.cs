@@ -64,6 +64,7 @@ namespace Aiwe {
       IdentifierKeyName, IdentifierValueName, IdentifierColumnName,
     };
     public const string DeleteGroupActualActionName = "DeleteGroupActual";
+    public const string ControlClasses = "form-control form-control-common-plus";
 
     //Table
     public const string TableModelClassPrefix = "Aiwe.Models.DB.";
@@ -80,7 +81,9 @@ namespace Aiwe {
     //Special items
     public readonly static List<string> OnlyAccessCheckingActions = new List<string> {
       Aibe.DH.IndexActionName,
-      "GetLiveDropDownItems", "GetLiveSubcolumns", "GetSubcolumnItems", "UpdateSubcolumnItemsDescription"
+      "GetLiveDropDownItems", "GetLiveSubcolumns",
+      "GetForeignInfo",
+      "GetSubcolumnItems", "UpdateSubcolumnItemsDescription"
     };
   }
 }

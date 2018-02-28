@@ -344,6 +344,8 @@
     <Compile Include="Models\DB\TestTableCommonK.cs" />
     <Compile Include="Models\DB\TestTableCommonK_SpResult.cs" />
     <Compile Include="Models\DB\TestTableCommonL.cs" />
+    <Compile Include="Models\DB\TestTableCommonM.cs" />
+    <Compile Include="Models\DB\TestTableCommonN.cs" />
     <Compile Include="Models\DB\TestTableSpecificA.cs" />
     <Compile Include="Models\DB\TestTableSpecificB.cs" />
     <Compile Include="Models\DB\VServiceInfo.cs" />
@@ -352,6 +354,7 @@
     <Compile Include="Models\DB\VServiceTest.cs" />
     <Compile Include="Models\DB\VTrainingLog.cs" />
     <Compile Include="Models\DB\VTrainingTest.cs" />
+    <Compile Include="Models\Extras\ForeignInfoResult.cs" />
     <Compile Include="Models\MVC\AccountViewModels.cs" />
     <Compile Include="Models\AiweBaseTableModel.cs" />
     <Compile Include="Models\DB\Partials\PartialMetaItem.cs" />
@@ -361,6 +364,7 @@
     <Compile Include="Models\ViewModels\ApplicationUserCreateViewModel.cs" />
     <Compile Include="Models\ViewModels\ApplicationUserEditViewModel.cs" />
     <Compile Include="Models\ViewModels\ApplicationUserViewModel.cs" />
+    <Compile Include="Models\ViewModels\ForeignInfoViewModel.cs" />
     <Compile Include="Models\ViewModels\RoleViewModel.cs" />
     <Compile Include="Models\AiweFilterIndexModel.cs" />
     <Compile Include="Models\Filters\ApplicationUserFilter.cs" />
@@ -510,6 +514,8 @@
     <Content Include="Views\Common\CreateGroup.cshtml" />
     <Content Include="Views\Common\EditGroup.cshtml" />
     <Content Include="Views\Common\DeleteGroup.cshtml" />
+    <Content Include="Views\Common\_ForeignInfoDetailsPart.cshtml" />
+    <Content Include="Views\Common\_ForeignInfoCreateEditPart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -4,6 +4,7 @@ using Aibe.Models.Core;
 using Aiwe.ActionFilters;
 using Aiwe.Extensions;
 using Aiwe.Models;
+using Aiwe.Models.Extras;
 using Aiwe.Helpers;
 using Extension.Database.SqlServer;
 using Extension.Models;
@@ -419,6 +420,28 @@ namespace Aiwe.Controllers {
       List<ListColumnResult> results = meta.GetLiveListColumnResults(changedColumnName, changedColumnValue);
       foreach (var result in results)
         result.ViewString = result.UsedListColumnInfo.GetHTML(result.DataValue);
+      return Json(results, JsonRequestBehavior.AllowGet);
+    }
+
+    //Called when live dropdown is lifted up
+    [CommonActionFilter]
+    public JsonResult GetForeignInfo(string commonDataTableName, string changedColumnName, string changedColumnValue) {
+      MetaInfo meta = AiweTableHelper.GetMeta(commonDataTableName);
+      if (!meta.IsForeignInfoColumn(changedColumnName))
+        return Json(null, JsonRequestBehavior.AllowGet);
+      ForeignInfoColumnInfo info = meta.GetForeignInfoColumn(changedColumnName);
+      if (info == null)
+        return Json(null, JsonRequestBehavior.AllowGet);
+      List<ForeignInfoResult> results = new List<ForeignInfoResult>();
+      if (string.IsNullOrWhiteSpace(changedColumnValue)) {
+        List<DataColumn> columns = info.GetAffectedColumns();
+        foreach (var column in columns)
+          results.Add(new ForeignInfoResult(new KeyValuePair<string, object>(column.ColumnName, string.Empty)));
+      } else {
+        List<KeyValuePair<string, object>> tempResults = info.GetForeignDataDictionary(changedColumnName, changedColumnValue);
+        foreach (var tempResult in tempResults)
+          results.Add(new ForeignInfoResult(tempResult));
+      }
       return Json(results, JsonRequestBehavior.AllowGet);
     }
 

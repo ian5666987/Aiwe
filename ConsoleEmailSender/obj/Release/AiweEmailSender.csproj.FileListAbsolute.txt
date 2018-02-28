@@ -20,3 +20,5 @@ C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\bin\Release\Extension.Checker.pdb
 C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\bin\Release\Extension.Cryptography.pdb
 C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\obj\Release\AiweEmailSender.exe
 C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\obj\Release\AiweEmailSender.pdb
+C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\bin\Release\Extension.Database.SqlServer.xml
+C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\obj\Release\AiweEmailSender.csprojResolveAssemblyReference.cache

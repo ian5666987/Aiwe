@@ -584,6 +584,31 @@
             <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
             <returns>number of rows of the retrieved table.</returns>
         </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetCountFilterByParameters(System.Data.SqlClient.SqlConnection,System.String,System.Collections.Generic.Dictionary{System.String,System.Object},System.String,System.String)">
+            <summary>
+            To get the number of rows of the specified table filtered by default method using a collection of filter column name-value pairs.
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="tableName">the table name to get the data from.</param>
+            <param name="filters">the collection of filter column name-value pairs used to filter the data queried.</param>
+            <param name="addWhereClause">the additional WHERE clause to filter the result further.</param>
+            <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
+            <returns>number of rows of the retrieved table.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetCountFilterByParameters(System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object},System.String,System.String)">
+            <summary>
+            To get the number of rows of the specified table filtered by default method using a collection of filter column name-value pairs.
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="tableName">the table name to get the data from.</param>
+            <param name="filters">the collection of filter column name-value pairs used to filter the data queried.</param>
+            <param name="addWhereClause">the additional WHERE clause to filter the result further.</param>
+            <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
+            <returns>number of rows of the retrieved table.</returns>
+        </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetColumns(System.Data.SqlClient.SqlConnection,System.String,System.String)">
             <summary>
             To get the columns (list of DataColumn) of the specified table.
@@ -682,6 +707,33 @@
             <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
             <returns>the DataTable query result.</returns>
         </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetFullDataTableFilterByParameters(System.Data.SqlClient.SqlConnection,System.String,System.Collections.Generic.Dictionary{System.String,System.Object},System.String,System.String,System.String)">
+            <summary>
+            To get complete data (all columns retrieved) from the specified table filtered by default method using a collection of filter column name-value pairs.
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="tableName">the table name to get the data from.</param>
+            <param name="filters">the collection of filter column name-value pairs used to filter the data queried.</param>
+            <param name="addWhereClause">the additional WHERE clause to filter the result further.</param>
+            <param name="orderByClause">the ORDER BY clause to order the column sequence of the data retrieved.</param>
+            <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
+            <returns>the DataTable query result.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetFullDataTableFilterByParameters(System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object},System.String,System.String,System.String)">
+            <summary>
+            To get complete data (all columns retrieved) from the specified table filtered by default method using a collection of filter column name-value pairs.
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="tableName">the table name to get the data from.</param>
+            <param name="filters">the collection of filter column name-value pairs used to filter the data queried.</param>
+            <param name="addWhereClause">the additional WHERE clause to filter the result further.</param>
+            <param name="orderByClause">the ORDER BY clause to order the column sequence of the data retrieved.</param>
+            <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
+            <returns>the DataTable query result.</returns>
+        </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetPartialDataTable(System.Data.SqlClient.SqlConnection,System.String,System.Collections.Generic.List{System.String},System.String,System.String)">
             <summary>
             To get selected columns' data from the specified table.
@@ -765,6 +817,35 @@
             <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
             <returns>the DataTable query result.</returns>
         </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetPartialDataTableFilterByParameters(System.Data.SqlClient.SqlConnection,System.String,System.Collections.Generic.List{System.String},System.Collections.Generic.Dictionary{System.String,System.Object},System.String,System.String,System.String)">
+            <summary>
+            To get selected columns' data from the specified table filtered by default method using a collection of filter column name-value pairs.
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="tableName">the table name to get the data from.</param>
+            <param name="columnNames">the selected columns to be queried from the data table.</param>
+            <param name="filters">the collection of filter column name-value pairs used to filter the data queried.</param>
+            <param name="addWhereClause">the additional WHERE clause to filter the result further.</param>
+            <param name="orderByClause">the ORDER BY clause to order the column sequence of the data retrieved.</param>
+            <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
+            <returns>the DataTable query result.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetPartialDataTableFilterByParameters(System.String,System.String,System.Collections.Generic.List{System.String},System.Collections.Generic.Dictionary{System.String,System.Object},System.String,System.String,System.String)">
+            <summary>
+            To get selected columns' data from the specified table filtered by default method using a collection of filter column name-value pairs.
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="tableName">the table name to get the data from.</param>
+            <param name="columnNames">the selected columns to be queried from the data table.</param>
+            <param name="filters">the collection of filter column name-value pairs used to filter the data queried.</param>
+            <param name="addWhereClause">the additional WHERE clause to filter the result further.</param>
+            <param name="orderByClause">the ORDER BY clause to order the column sequence of the data retrieved.</param>
+            <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
+            <returns>the DataTable query result.</returns>
+        </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetFullFirstDataRow(System.Data.SqlClient.SqlConnection,System.String,System.String,System.String)">
             <summary>
             To get first data row of complete data (all columns retrieved) from the specified table.
@@ -837,6 +918,33 @@
             <param name="tableName">the table name to get the data from.</param>
             <param name="filterObj">the filter object used to filter the data queried.</param>
             <param name="useNull">to specify if null value in the filterObj is interpreted as equal to NULL or is skipped.</param>
+            <param name="addWhereClause">the additional WHERE clause to filter the result further.</param>
+            <param name="orderByClause">the ORDER BY clause to order the column sequence of the data retrieved.</param>
+            <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
+            <returns>the first DataRow query result.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetFullFirstDataRowFilterByParameters(System.Data.SqlClient.SqlConnection,System.String,System.Collections.Generic.Dictionary{System.String,System.Object},System.String,System.String,System.String)">
+            <summary>
+            To get first data row of complete data (all columns retrieved) from the specified table filtered by default method using a collection of filter column name-value pairs.
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="tableName">the table name to get the data from.</param>
+            <param name="filters">the collection of filter column name-value pairs used to filter the data queried.</param>
+            <param name="addWhereClause">the additional WHERE clause to filter the result further.</param>
+            <param name="orderByClause">the ORDER BY clause to order the column sequence of the data retrieved.</param>
+            <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
+            <returns>the first DataRow query result.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetFullFirstDataRowFilterByParameters(System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object},System.String,System.String,System.String)">
+            <summary>
+            To get first data row of complete data (all columns retrieved) from the specified table filtered by default method using a collection of filter column name-value pairs.
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="tableName">the table name to get the data from.</param>
+            <param name="filters">the collection of filter column name-value pairs used to filter the data queried.</param>
             <param name="addWhereClause">the additional WHERE clause to filter the result further.</param>
             <param name="orderByClause">the ORDER BY clause to order the column sequence of the data retrieved.</param>
             <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
@@ -925,6 +1033,35 @@
             <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
             <returns>the first DataRow query result.</returns>
         </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetPartialFirstDataRowFilterByParameters(System.Data.SqlClient.SqlConnection,System.String,System.Collections.Generic.List{System.String},System.Collections.Generic.Dictionary{System.String,System.Object},System.String,System.String,System.String)">
+            <summary>
+            To get first data row of selected columns' data from the specified table filtered by default method using a collection of filter column name-value pairs.
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="tableName">the table name to get the data from.</param>
+            <param name="columnNames">the selected columns to be queried from the data table.</param>
+            <param name="filters">the collection of filter column name-value pairs used to filter the data queried.</param>
+            <param name="addWhereClause">the additional WHERE clause to filter the result further.</param>
+            <param name="orderByClause">the ORDER BY clause to order the column sequence of the data retrieved.</param>
+            <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
+            <returns>the first DataRow query result.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetPartialFirstDataRowFilterByParameters(System.String,System.String,System.Collections.Generic.List{System.String},System.Collections.Generic.Dictionary{System.String,System.Object},System.String,System.String,System.String)">
+            <summary>
+            To get first data row of selected columns' data from the specified table filtered by default method using a collection of filter column name-value pairs.
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="tableName">the table name to get the data from.</param>
+            <param name="columnNames">the selected columns to be queried from the data table.</param>
+            <param name="filters">the collection of filter column name-value pairs used to filter the data queried.</param>
+            <param name="addWhereClause">the additional WHERE clause to filter the result further.</param>
+            <param name="orderByClause">the ORDER BY clause to order the column sequence of the data retrieved.</param>
+            <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
+            <returns>the first DataRow query result.</returns>
+        </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetSingleColumn(System.Data.SqlClient.SqlConnection,System.String,System.String,System.String,System.String)">
             <summary>
             To get selected column's data from the specified table.
@@ -1003,6 +1140,35 @@
             <param name="columnName">the selected column to be queried from the data table.</param>
             <param name="filterObj">the filter object used to filter the data queried.</param>
             <param name="useNull">to specify if null value in the filterObj is interpreted as equal to NULL or is skipped.</param>
+            <param name="addWhereClause">the additional WHERE clause to filter the result further.</param>
+            <param name="orderByClause">the ORDER BY clause to order the column sequence of the data retrieved.</param>
+            <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
+            <returns>the list of object query result.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetSingleColumnFilterByParameters(System.Data.SqlClient.SqlConnection,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object},System.String,System.String,System.String)">
+            <summary>
+            To get selected column's data from the specified table filtered by default method using a collection of filter column name-value pairs.
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="tableName">the table name to get the data from.</param>
+            <param name="columnName">the selected column to be queried from the data table.</param>
+            <param name="filters">the collection of filter column name-value pairs used to filter the data queried.</param>
+            <param name="addWhereClause">the additional WHERE clause to filter the result further.</param>
+            <param name="orderByClause">the ORDER BY clause to order the column sequence of the data retrieved.</param>
+            <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
+            <returns>the list of object query result.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetSingleColumnFilterByParameters(System.String,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Object},System.String,System.String,System.String)">
+            <summary>
+            To get selected column's data from the specified table filtered by default method using a collection of filter column name-value pairs.
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="tableName">the table name to get the data from.</param>
+            <param name="columnName">the selected column to be queried from the data table.</param>
+            <param name="filters">the collection of filter column name-value pairs used to filter the data queried.</param>
             <param name="addWhereClause">the additional WHERE clause to filter the result further.</param>
             <param name="orderByClause">the ORDER BY clause to order the column sequence of the data retrieved.</param>
             <param name="use">to specify database to be used other than what has been provided by the current connection.</param>

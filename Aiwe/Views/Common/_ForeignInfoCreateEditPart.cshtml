@@ -1,0 +1,44 @@
+﻿@using Aiwe.Models.ViewModels;
+@using Aibe.Models.Core;
+@using System.Data;
+@using Extension.String;
+
+@model ForeignInfoViewModel
+
+@{ 
+  bool isForeignKey = Model.BaseModel.Meta.IsForeignInfoColumn(Model.ColumnName);
+}
+
+@if (isForeignKey) {
+  ForeignInfoColumnInfo info = Model.BaseModel.Meta.GetForeignInfoColumn(Model.ColumnName);
+  DataRow row = info.GetForeignData(Model.ColumnName, Model.Value);
+  if (info.IsFullForeignInfo) {
+    var columns = info.GetForeignFullColumns();
+    foreach (DataColumn column in columns) {
+      object rowValue = row == null ? null : row[column.ColumnName];
+      string usedColumnName = Aibe.DH.ForeignInfoPrefix + "-" + column.ColumnName + "-" + Model.ColumnName;
+      string displayName = column.ColumnName.ToCamelBrokenString();
+      string usedValue = rowValue == null ? string.Empty : rowValue.ToString();
+      <div class="form-group">
+        <label class="control-label common-foreign-info-label @Model.LabelClasses">@displayName</label>
+        <div class="common-foreign-info-div @Model.EditorClasses" id="@usedColumnName">
+          <p class="common-foreign-info-value @Aiwe.DH.ControlClasses" readonly="readonly">@usedValue</p>
+        </div>
+      </div>
+    }
+  } else {
+    foreach (var columnNamePair in info.RefColumnNamePairs) {
+      object rowValue = row == null ? null : row[columnNamePair.Key];
+      string usedColumnName = Aibe.DH.ForeignInfoPrefix + "-" + columnNamePair.Key + "-" + Model.ColumnName;
+      string displayName = columnNamePair.Value;
+      string usedValue = rowValue == null ? string.Empty : rowValue.ToString();
+      <div class="form-group">
+        <label class="control-label common-foreign-info-label @Model.LabelClasses">@displayName</label>
+        <div class="common-foreign-info-div @Model.EditorClasses" id="@usedColumnName">
+          <p class="common-foreign-info-value @Aiwe.DH.ControlClasses" readonly="readonly">@usedValue</p>
+        </div>
+      </div>
+    }
+  }
+}
+

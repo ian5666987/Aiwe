@@ -168,5 +168,8 @@ namespace Aiwe.Models.DB
 
         [StringLength(4000)]
         public string AggregationStatement { get; set; }
+
+        [StringLength(4000)]
+        public string ForeignInfoColumns { get; set; }
     }
 }
