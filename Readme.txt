@@ -1,3 +1,8 @@
+v1.4.0.1 alpha (09-Mar-2018 14:15)
+bugs fixed:
+- History trigger writes the additional TableName and Cid everytime the item is moved to the history table. Because Cid is changed everytime, then duplicates of prefixes will occur.
+
+-----------------------------------------------------------------------------------------------
 v1.4.0.0 alpha (28-Feb-2018 19:15)
 updates:
 - ForeignInfoColumns is added and is implemented!
