@@ -157,62 +157,62 @@
         </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteProcedureOrFunction(System.Data.SqlClient.SqlConnection,System.String)">
             <summary>
-            To execute a Stored Procedure or a Function using scalar execution.
+            To execute a Stored Procedure or a Function using non-query execution.
             <para>
             This method does not open or close database connection. The connection must already be opened for the method to work.
             </para>
             </summary>
             <param name="conn">the already opened database connection.</param>
-            <param name="script">the script to be executed using scalar execution.</param>
-            <returns>generated object.</returns>
+            <param name="script">the script to be executed using non-query execution.</param>
+            <returns>generated integer.</returns>
         </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteProcedureOrFunction(System.String,System.String)">
             <summary>
-            To execute a Stored Procedure or a Function using scalar execution.
+            To execute a Stored Procedure or a Function using non-query execution.
             </summary>
             <param name="connectionString">the string used to establish connection with the database.</param>
-            <param name="script">the script to be executed using scalar execution.</param>
-            <returns>generated object.</returns>
+            <param name="script">the script to be executed using non-query execution.</param>
+            <returns>generated integer.</returns>
         </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteProcedureOrFunction(System.Data.SqlClient.SqlConnection,System.String,System.Collections.Generic.List{System.Data.SqlClient.SqlParameter})">
             <summary>
-            To execute a Stored Procedure or a Function using scalar execution.
+            To execute a Stored Procedure or a Function using non-query execution.
             <para>
             This method does not open or close database connection. The connection must already be opened for the method to work.
             </para>
             </summary>
             <param name="conn">the already opened database connection.</param>
-            <param name="script">the script to be executed using scalar execution.</param>
+            <param name="script">the script to be executed using non-query execution.</param>
             <param name="pars">list of SQL parameters.</param>
-            <returns>generated object.</returns>
+            <returns>generated integer.</returns>
         </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteProcedureOrFunction(System.String,System.String,System.Collections.Generic.List{System.Data.SqlClient.SqlParameter})">
             <summary>
-            To execute a Stored Procedure or a Function using scalar execution.
+            To execute a Stored Procedure or a Function using non-query execution.
             </summary>
             <param name="connectionString">the string used to establish connection with the database.</param>
-            <param name="script">the script to be executed using scalar execution.</param>
+            <param name="script">the script to be executed using non-query execution.</param>
             <param name="pars">list of SQL parameters.</param>
-            <returns>generated object.</returns>
+            <returns>generated integer.</returns>
         </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteProcedureOrFunction(System.Data.SqlClient.SqlConnection,Extension.Models.BaseScriptModel)">
             <summary>
-            To execute a Stored Procedure or a Function using scalar execution.
+            To execute a Stored Procedure or a Function using non-query execution.
             <para>
             This method does not open or close database connection. The connection must already be opened for the method to work.
             </para>
             </summary>
             <param name="conn">the already opened database connection.</param>
             <param name="scriptModel">basic script model to be executed.</param>
-            <returns>generated object.</returns>
+            <returns>generated integer.</returns>
         </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteProcedureOrFunction(System.String,Extension.Models.BaseScriptModel)">
             <summary>
-            To execute a Stored Procedure or a Function using scalar execution.
+            To execute a Stored Procedure or a Function using non-query execution.
             </summary>
             <param name="connectionString">the string used to establish connection with the database.</param>
             <param name="scriptModel">basic script model to be executed.</param>
-            <returns>generated object.</returns>
+            <returns>generated integer.</returns>
         </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetProcedures(System.Data.SqlClient.SqlConnection,System.String)">
             <summary>

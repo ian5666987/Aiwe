@@ -1,3 +1,8 @@
+v1.4.0.2 alpha (13-Mar-2018 15:05)
+bugs fixed:
+- Working Roles checking in the User creation/edit causes new working role unadded to the user-role table.
+
+-----------------------------------------------------------------------------------------------
 v1.4.0.1 alpha (09-Mar-2018 14:15)
 bugs fixed:
 - History trigger writes the additional TableName and Cid everytime the item is moved to the history table. Because Cid is changed everytime, then duplicates of prefixes will occur.
