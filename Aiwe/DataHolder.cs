@@ -11,7 +11,7 @@ namespace Aiwe {
     public const string MainAdminEmail = "admin@companyname.com";
     public const string MainAdminPass = "Adm1n15tr@t0r";
     public const string AdminAuthorizedRoles = Aibe.DH.AdminRole + "," + Aibe.DH.MainAdminRole + "," + Aibe.DH.DevRole;
-    public readonly static List<string> WorkingRoles = new List<string> { "User", "Supervisor", "Manager" }; //TODO not in the right place, but move it here first for now...
+    //public readonly static List<string> WorkingRoles = new List<string> { "User", "Supervisor", "Manager" }; //No longer used, for now...
     public readonly static List<string> DeveloperEmails = new List<string> { Aibe.DH.DevEmail, SharedDevEmail };
 
     //Website requests
