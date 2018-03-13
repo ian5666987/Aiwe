@@ -1,3 +1,8 @@
+v1.0.0.0 release update 1 (13-Mar-2018 13:30)
+bugs fixed:
+- Working Roles checking in the User creation/edit causes new working role unadded to the user-role table. Fixed.
+
+-----------------------------------------------------------------------------------------------
 v1.0.0.0 release (16-Jan-2018 13:05)
 updates:
 - Add color strings and AiweWebColorHelper.
