@@ -101,7 +101,8 @@ namespace Aiwe.Controllers {
 
         if (result.Succeeded) {
           if (!string.IsNullOrWhiteSpace(model.WorkingRole) &&
-            Aiwe.DH.WorkingRoles.Any(x => x.EqualsIgnoreCase(model.WorkingRole))) {
+            !Aibe.DH.AllowedAdminRoles.Any(x => x.EqualsIgnoreCase(model.WorkingRole))
+            ) {
             var addRoleResult = UserManager.AddToRole(user.Id, model.WorkingRole);
             if (!addRoleResult.Succeeded)
               return RedirectToAction(Aiwe.DH.ErrorLocalActionName);
@@ -231,7 +232,8 @@ namespace Aiwe.Controllers {
 
         if (oldWorkingRole != model.WorkingRole && //old role is different from the current role
           !string.IsNullOrWhiteSpace(model.WorkingRole) && //new role is not empty
-          Aiwe.DH.WorkingRoles.Any(x => x.EqualsIgnoreCase(model.WorkingRole))) { //just add new role
+          !Aibe.DH.AllowedAdminRoles.Any(x => x.EqualsIgnoreCase(model.WorkingRole))
+          ) { //just add new role
           var addRoleResult = UserManager.AddToRole(user.Id, model.WorkingRole);
           if (!addRoleResult.Succeeded)
             return RedirectToAction(Aiwe.DH.ErrorLocalActionName);
