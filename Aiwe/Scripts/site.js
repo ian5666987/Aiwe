@@ -77,7 +77,6 @@ function processLiveDd(element, ldColNames, dataTypes, applyListColumnLoad) {
       }
     });
   }
-  $('#is-first-load').text('False');
 }
 
 function submitFilterModalForm(submitter, ev, filteredType) {
@@ -251,7 +250,6 @@ $(document).ready(function () {
     $('#attachmentremove-' + strId).hide(); //the remove button must be hidden too
   });
 
-
   //Catch all events related to changes http://stackoverflow.com/questions/21215049/disable-text-entry-in-input-type-number
   $('.number-input').on('change keyup', function () {
     var sanitized = $(this).val().replace(/[^0-9]/g, ''); // Remove invalid characters
@@ -392,5 +390,6 @@ $(document).ready(function () {
     for (j = 0; j < elements.length; ++j) {
       processLiveDd(elements[j], ldColNames, dataTypes, false); //the first time does not apply listColumn loading
     }
+    $('#is-first-load').text('False'); //v1.4.1.0 fixing the problem of more than one live-dd causing the is-first-load to be triggered to false too quickly
   });
 });

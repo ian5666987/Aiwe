@@ -101,6 +101,7 @@
 
     List<ColumnInfo> includedColumns = Model.ColumnInfos.Where(x => x.IsIndexIncluded).ToList();
     bool isCidForced = !includedColumns.Any(x => x.Name.EqualsIgnoreCase(Aibe.DH.Cid));
+    int rowIndex = 0; //v1.4.1.0
 
       <table class="table table-bordered table-striped">
         <tr>
@@ -118,7 +119,9 @@
               List<KeyValuePair<string, object>> identifiers = new List<KeyValuePair<string, object>>();
               if (Model.Meta.IsGroupTable) {
                 foreach (var identifierColumn in Model.FiModel.IdentifierColumns) {
-                  object identifier = row[identifierColumn];
+                  //object identifier = row[identifierColumn];
+                  DataRow identifierRow = Model.IdentifierIndexRows[rowIndex]; //v1.4.1.0 to distinguish true identifiers for group table from what are displayed in the index view
+                  object identifier = identifierRow[identifierColumn];
                   identifiers.Add(new KeyValuePair<string, object>(identifierColumn, identifier));
                 }
               } else {
@@ -214,6 +217,7 @@
               </td>
             }
           </tr>
+          ++rowIndex; //v1.4.1.0
         }
       </table>
 

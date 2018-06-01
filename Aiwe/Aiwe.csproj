@@ -52,6 +52,10 @@
     <Reference Include="AjaxControlToolkit, Version=17.1.1.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
       <HintPath>..\packages\AjaxControlToolkit.17.1.1.0\lib\net40\AjaxControlToolkit.dll</HintPath>
     </Reference>
+    <Reference Include="Extension.Checker, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\VS2015\Desktop\DLL\Extension\Checker\bin\Release\Extension.Checker.dll</HintPath>
+    </Reference>
     <Reference Include="Extension.Cryptography">
       <HintPath>..\..\..\..\VS2015\Desktop\DLL\Extension\Cryptography\bin\Release\Extension.Cryptography.dll</HintPath>
     </Reference>
@@ -257,6 +261,7 @@
   <ItemGroup>
     <Compile Include="ASTrio.cs" />
     <Compile Include="Helpers\AiweDropDownHelper.cs" />
+    <Compile Include="Helpers\AiweForeignHelper.cs" />
     <Compile Include="Helpers\AiweWebColorHelper.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="Extensions\LiveDropDownResultExtension.cs" />

@@ -233,4 +233,3 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.Migrations.InitialCreate.resources
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csproj.GenerateResource.Cache
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.pdb
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csprojResolveAssemblyReference.cache

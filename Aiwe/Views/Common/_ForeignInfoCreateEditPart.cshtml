@@ -11,7 +11,8 @@
 
 @if (isForeignKey) {
   ForeignInfoColumnInfo info = Model.BaseModel.Meta.GetForeignInfoColumn(Model.ColumnName);
-  DataRow row = info.GetForeignData(Model.ColumnName, Model.Value);
+  //DataRow row = info.GetForeignData(Model.ColumnName, Model.Value);
+  DataRow row = info.GetForeignData(Model.Value);
   if (info.IsFullForeignInfo) {
     var columns = info.GetForeignFullColumns();
     foreach (DataColumn column in columns) {
@@ -27,10 +28,10 @@
       </div>
     }
   } else {
-    foreach (var columnNamePair in info.RefColumnNamePairs) {
-      object rowValue = row == null ? null : row[columnNamePair.Key];
-      string usedColumnName = Aibe.DH.ForeignInfoPrefix + "-" + columnNamePair.Key + "-" + Model.ColumnName;
-      string displayName = columnNamePair.Value;
+    foreach (var columnNameTrio in info.RefColumnNameTrios) {
+      object rowValue = row == null ? null : row[columnNameTrio.Item1];
+      string usedColumnName = Aibe.DH.ForeignInfoPrefix + "-" + columnNameTrio.Item1 + "-" + Model.ColumnName;
+      string displayName = columnNameTrio.Item2;
       string usedValue = rowValue == null ? string.Empty : rowValue.ToString();
       <div class="form-group">
         <label class="control-label common-foreign-info-label @Model.LabelClasses">@displayName</label>

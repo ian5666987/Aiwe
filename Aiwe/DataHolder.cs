@@ -45,7 +45,7 @@ namespace Aiwe {
     public const string ErrorLocalActionName = "ErrorLocal";
     public const string ErrorActionName = "Error";
     public const string ErrorViewName = "Error";
-    public const bool UseStrongCheck = true;
+    public const bool UseStrongCheck = false; //change this to false so that non-existence class is considered OK when checking model's validity
     public const bool IsTagChecked = true; //Web must actually check the tags
     public const string IndexDateTimeFormat = Aibe.DH.DefaultDateTimeFormat;
     public const string DetailsDateTimeFormat = Aibe.DH.DefaultDateTimeFormat;

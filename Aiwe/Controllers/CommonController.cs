@@ -77,13 +77,16 @@ namespace Aiwe.Controllers {
       AiweTranslationHelper.AdjustModelState(ModelState, dictCollections); //to remove identifiers from model state
       List<string> checkExclusions = new List<string> { Aibe.DH.TableNameParameterName }; //different per Action, because of additional item in the ModelState
 
-      //Check model state's validity
+      //Check model state's validity (v1.4.1.0 exclude checking for the assigned foreign info data)
       Dictionary<string, string> errorDict = new AiweCheckerHelper().CheckModelValidity(Aiwe.DH.TableModelClassPrefix, meta.TableSource, meta.ArrangedDataColumns, 
         dictCollections, ModelState.Keys.ToList(), meta, checkExclusions, AiweUserHelper.UserIsDeveloper(User), now, Aibe.DH.CreateActionName, strongCheck: Aiwe.DH.UseStrongCheck, 
         isTagChecked: Aiwe.DH.IsTagChecked);
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid)
         return View(new AiweCreateEditModel(meta, Aibe.DH.CreateActionName, null, identifiers));
+
+      //v1.4.1.0 insert the value of the foreign items here... so that values from foreign items can be transferred to the dictCollections to be further processed
+      AiweForeignHelper.HandleForeignAssignment(meta, dictCollections);
 
       //Only if model state is correct that we could get valid key infos safely
       var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(meta.TableSource, dictCollections, dictCollections.Keys, meta.ArrangedDataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.CreateActionName);
@@ -149,6 +152,9 @@ namespace Aiwe.Controllers {
         AiweCreateEditModel model = new AiweCreateEditModel(meta, Aibe.DH.EditActionName, dictCollections, identifiers);
         return View(model);
       }
+
+      //v1.4.1.0 insert the value of the foreign items here... so that values from foreign items can be transferred to the dictCollections to be further processed
+      AiweForeignHelper.HandleForeignAssignment(meta, dictCollections);
 
       var filteredKeys = dictCollections.Keys.Where(x => !x.EqualsIgnoreCase(Aibe.DH.Cid)); //everything filled but the Cid
       var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(meta.TableSource, dictCollections, filteredKeys, meta.ArrangedDataColumns, filterStyle: false, meta: meta, actionType: Aibe.DH.EditActionName);
@@ -289,6 +295,9 @@ namespace Aiwe.Controllers {
       AiweTranslationHelper.FillModelStateWithErrorDictionary(ModelState, errorDict);
       if (!ModelState.IsValid)
         return View(new AiweCreateEditGroupModel(meta, actionName, dictCollections, identifierColumns.ToList(), identifierInputs));
+
+      //v1.4.1.0 insert the value of the foreign items here... so that values from foreign items can be transferred to the dictCollections to be further processed
+      AiweForeignHelper.HandleForeignAssignment(meta, dictCollections);
 
       //Only if model state is correct that we could get valid key infos safely
       var completeKeyInfo = KeyInfoHelper.GetCompleteKeyInfo(meta.TableSource, dictCollections, dictCollections.Keys,
@@ -438,7 +447,8 @@ namespace Aiwe.Controllers {
         foreach (var column in columns)
           results.Add(new ForeignInfoResult(new KeyValuePair<string, object>(column.ColumnName, string.Empty)));
       } else {
-        List<KeyValuePair<string, object>> tempResults = info.GetForeignDataDictionary(changedColumnName, changedColumnValue);
+        //List<KeyValuePair<string, object>> tempResults = info.GetForeignDataDictionary(changedColumnName, changedColumnValue);
+        List<KeyValuePair<string, object>> tempResults = info.GetForeignDataDictionary(changedColumnValue);
         foreach (var tempResult in tempResults)
           results.Add(new ForeignInfoResult(tempResult));
       }

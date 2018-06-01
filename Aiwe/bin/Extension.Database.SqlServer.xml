@@ -70,6 +70,16 @@
             To indicate if the argument is a return argument.
             </summary>
         </member>
+        <member name="P:Extension.Database.SqlServer.SQLServerArgument.HasError">
+            <summary>
+            To indicate if the argument has error in its creation.
+            </summary>
+        </member>
+        <member name="P:Extension.Database.SqlServer.SQLServerArgument.ErrorMessage">
+            <summary>
+            The argument's error message.
+            </summary>
+        </member>
         <member name="T:Extension.Database.SqlServer.SQLServerHandler">
             <summary>
             Handler for basic SQL Server database operations using System.Data.SqlClient.
@@ -2068,6 +2078,17 @@
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
             <returns>The list of views and their respective column names.</returns>
         </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.HasEquivalentDataType(System.String)">
+            <summary>
+            To check if equivalent .NET data type could be obtained from SQL Server's data-type string
+            <para>
+            Obtained from: https://msdn.microsoft.com/en-us/library/cc716729(v=vs.100).aspx and https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/sql-server-data-type-mappings
+            </para>
+            Available string: BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Int, Image, Money, NChar, NText, NVarChar, Numeric, Real, RowVersion, Timestamp, SmallDateTime, SmallInt, SmallMoney, Sql_Variant, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar
+            </summary>
+            <param name="dbDataTypeString">the database's data type in string.</param>
+            <returns>Equivalent .NET data type.</returns>
+        </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetEquivalentDataType(System.String)">
             <summary>
             To get equivalent .NET data type from SQL Server's data-type string
@@ -2077,6 +2098,20 @@
             Available string: BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Int, Image, Money, NChar, NText, NVarChar, Numeric, Real, RowVersion, Timestamp, SmallDateTime, SmallInt, SmallMoney, Sql_Variant, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar
             </summary>
             <param name="dbDataTypeString">the database's data type in string.</param>
+            <returns>Equivalent .NET data type.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.HasEquivalentDataType(System.Data.SqlDbType)">
+            <summary>
+            To check if equivalent .NET data type could be obtained from SQL Server's data-type
+            <para>
+            Obtained from: https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/sql-server-data-type-mappings
+            </para>
+            Available type(s): BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Image, Int, Money, NChar, NText, NVarChar, Real, SmallDateTime, SmallInt, SmallMoney, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar, Variant
+            <para>
+            Unavailable type(s): Structured, Udt, Xml
+            </para>
+            </summary>
+            <param name="dbType">the database's data type.</param>
             <returns>Equivalent .NET data type.</returns>
         </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetEquivalentDataType(System.Data.SqlDbType)">
@@ -2091,6 +2126,16 @@
             </para>
             </summary>
             <param name="dbType">the database's data type.</param>
+            <returns>Equivalent .NET data type.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.HasDbDataType(System.String)">
+            <summary>
+            To check if equivalent SQL Server data type could be obtained from SQL Server's data-type string
+            <para>
+            Available string: BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Int, Image, Money, NChar, NText, NVarChar, Numeric, Real, Timestamp, SmallDateTime, SmallInt, SmallMoney, Sql_Variant, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar
+            </para>
+            </summary>
+            <param name="dbDataTypeString">the database's data type in string.</param>
             <returns>Equivalent .NET data type.</returns>
         </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetDbDataType(System.String)">
@@ -2111,6 +2156,15 @@
             <param name="dbType">the database's data type.</param>
             <param name="dbDtFormat">the database's data's date-time format (only applied for date/date-time data).</param>
             <returns>Equivalent .NET data.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetEquivalentDataCollection(System.Object,System.Data.SqlDbType,System.String)">
+            <summary>
+            To get equivalent .NET data collection from SQL Server's data collection
+            </summary>
+            <param name="input">the database's data object (collection).</param>
+            <param name="dbType">the database's data type.</param>
+            <param name="dbDtFormat">the database's data's date-time format (only applied for date/date-time data).</param>
+            <returns>Equivalent .NET data collection.</returns>
         </member>
     </members>
 </doc>

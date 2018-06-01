@@ -1,11 +1,22 @@
+v1.4.1.0 alpha (01-Jun-2018 16:10)
+updates:
+- Implement IdentifierAggregationQueryScript for ForeignInfoColumns 
+- Support distinction between aggregation value shown in the Index view of Group Table and its identifier columns actually used to group the table
+- ForeignInfoColumns support assignment of foreign values to original tables when creating and editing.
+
+bugs fixed:
+- Group details for group deletion does not support wide-table horizontal scrolling (Aide). Fixed.
+- Javascript. Foreign info for first time loading set to false is put inside the processLiveDd instead of after all live-dd have been processed after $(window).load. Fixed.
+
+-----------------------------------------------------------------------------------------------
 v1.4.0.2 alpha (13-Mar-2018 15:05)
 bugs fixed:
-- Working Roles checking in the User creation/edit causes new working role unadded to the user-role table.
+- Working Roles checking in the User creation/edit causes new working role unadded to the user-role table. Fixed.
 
 -----------------------------------------------------------------------------------------------
 v1.4.0.1 alpha (09-Mar-2018 14:15)
 bugs fixed:
-- History trigger writes the additional TableName and Cid everytime the item is moved to the history table. Because Cid is changed everytime, then duplicates of prefixes will occur.
+- History trigger writes the additional TableName and Cid everytime the item is moved to the history table. Because Cid is changed everytime, then duplicates of prefixes will occur. Fixed.
 
 -----------------------------------------------------------------------------------------------
 v1.4.0.0 alpha (28-Feb-2018 19:15)
@@ -16,7 +27,7 @@ updates:
 - Some Foreign models are added.
 
 bugs fixed:
-- Customized Actions are not shown in the [Normal] [TableType].
+- Customized Actions are not shown in the [Normal] [TableType]. Fixed.
 
 -----------------------------------------------------------------------------------------------
 v1.3.0.0 alpha (21-Feb-2018 12:45)
@@ -28,7 +39,7 @@ updates:
 - First standard version (shared with Aibe, Aide, and Aibe Editor)
 
 bugs fixed:
-- ColoringInfo.CheckConditionMet for DateTime Table Value Reference (TVR), query script extra end parentheses is removed.
+- ColoringInfo.CheckConditionMet for DateTime Table Value Reference (TVR), query script extra end parentheses is removed. Fixed.
 
 -----------------------------------------------------------------------------------------------
 v1.2.0.0 alpha (01-Feb-2018 09:29)

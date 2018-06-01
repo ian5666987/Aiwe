@@ -191,7 +191,7 @@
           <div class="@ViewBag.EditorClass">
             <textarea class="@Aiwe.DH.ControlClasses"
                       rows="@Model.Meta.GetTextFieldRowSize(cn)"                                                
-                      name="@cn" @readOnlyAttrIfReadOnly>@dataValue</textarea> //must be written this way and cannot be auto adjusted. Otherwise the dataValue will be put in the centre of the area (not in the beginning)
+                      name="@cn" @readOnlyAttrIfReadOnly>@dataValue</textarea> <!--must be written this way and cannot be auto adjusted. Otherwise the dataValue will be put in the centre of the area (not in the beginning)-->
             @Html.ValidationMessage(cn, new { @class = "text-danger" })
           </div>
         </div>
