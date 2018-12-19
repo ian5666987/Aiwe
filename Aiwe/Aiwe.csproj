@@ -26,6 +26,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -71,6 +72,9 @@
     <Reference Include="Extension.Values, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\VS2015\Desktop\DLL\Extension\Values\bin\Release\Extension.Values.dll</HintPath>
+    </Reference>
+    <Reference Include="Extension.Xml">
+      <HintPath>..\..\..\..\VS2015\Desktop\DLL\Extension\Xml\bin\Release\Extension.Xml.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.0.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.0.6\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
@@ -381,6 +385,7 @@
     <Compile Include="Models\API\ClientApiRequestAttachment.cs" />
     <Compile Include="Models\API\ClientApiRequest.cs" />
     <Compile Include="Models\API\CheckedClientApiRequest.cs" />
+    <Compile Include="ParameterHolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="Startup.cs" />

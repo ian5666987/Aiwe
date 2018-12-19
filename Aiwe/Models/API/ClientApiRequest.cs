@@ -3,19 +3,22 @@ using System.Linq;
 
 namespace Aiwe.Models.API {
   public class ClientApiRequest {
-    public string UserName { get; private set; }
-    public string Password { get; private set; }
-    public string RequestType { get; private set; }
-    public string TableName { get; private set; } //The request should probably still use table name because it is used to get MetaInfo
-    public string ColumnNames { get; private set; } //TODO currently is vulnerable to SQL injection attacks... but leave it for for now...
-    public string FilterDesc { get; private set; }
-    public string OrderByDesc { get; private set; }
-    public int? ItemsLoaded { get; private set; }
-    public int? ItemsSkipped { get; private set; }
-    public int? Id { get; private set; }
-    public string Value { get; private set; }
-    public ClientApiRequestAttachment[] Attachments { get; private set; }
+    public string UserName { get; set; } //since v1.5.0.0 must have public setter so that it can be serialized using XML
+    public string Password { get; set; } //since v1.5.0.0 must have public setter so that it can be serialized using XML
+    public string RequestType { get; set; } //since v1.5.0.0 must have public setter so that it can be serialized using XML
+    public string TableName { get; set; }  //since v1.5.0.0 must have public setter so that it can be serialized using XML
+    //The request should probably still use table name because it is used to get MetaInfo
+    public string ColumnNames { get; set; }  //since v1.5.0.0 must have public setter so that it can be serialized using XML
+    //TODO currently is vulnerable to SQL injection attacks... but leave it for for now...
+    public string FilterDesc { get; set; } //since v1.5.0.0 must have public setter so that it can be serialized using XML
+    public string OrderByDesc { get; set; } //since v1.5.0.0 must have public setter so that it can be serialized using XML
+    public int? ItemsLoaded { get; set; } //since v1.5.0.0 must have public setter so that it can be serialized using XML
+    public int? ItemsSkipped { get; set; } //since v1.5.0.0 must have public setter so that it can be serialized using XML
+    public int? Id { get; set; } //since v1.5.0.0 must have public setter so that it can be serialized using XML
+    public string Value { get; set; } //since v1.5.0.0 must have public setter so that it can be serialized using XML
+    public ClientApiRequestAttachment[] Attachments { get; set; } //since v1.5.0.0 must have public setter so that it can be serialized using XML
 
+    public ClientApiRequest() { }//since v1.5.0.0 must have parameterless constructor so that it can be serialized using XML
     public ClientApiRequest(string userName, string password, string requestType, string tableName,
       string columnNames, string filterDesc, string orderByDesc, int? itemsLoaded, int? itemsSkipped,
       int? id, string value, ClientApiRequestAttachment[] attachments) {

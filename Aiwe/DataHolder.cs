@@ -22,6 +22,7 @@ namespace Aiwe {
     public const string DeleteRequest = "DELETE";
 
     //Website related
+    public const string XmlType = "application/xml";
     public const string JsonType = "application/json";
     public const string WebApi = "Web Api";
     public const string Mvc = "MVC";

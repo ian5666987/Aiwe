@@ -16,6 +16,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
+using Extension.Xml;
 
 namespace Aiwe.Controllers {
   //[Authorize]
@@ -76,23 +77,34 @@ namespace Aiwe.Controllers {
     #region private methods
     ApplicationDbContext context = new ApplicationDbContext();
     private HttpResponseMessage createAuthenticatedResponse(string message) {
-      ApiRequestResult resultApi = new ApiRequestResult();
-      resultApi.Message = string.Concat(HttpStatusCode.OK.ToString().ToCamelBrokenString(), "|", message);
-      resultApi.Success = true;
-      string jsonStr = JsonConvert.SerializeObject(resultApi); //must be assigned AFTER all value assignments are done
-      HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
-      response.Content = new StringContent(jsonStr, Encoding.UTF8, Aiwe.DH.JsonType);
-      return response;
+      try {
+        ApiRequestResult resultApi = new ApiRequestResult();
+        resultApi.Message = string.Concat(HttpStatusCode.OK.ToString().ToCamelBrokenString(), "|", message);
+        resultApi.Success = true;
+        string contentStr = Aiwe.PH.IsJson ? //must be assigned AFTER all value assignments are done
+          JsonConvert.SerializeObject(resultApi) :
+          Serializer.GetSerialization(resultApi);
+        HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
+        response.Content = new StringContent(contentStr, Encoding.UTF8, Aiwe.PH.WebApiDataType);
+        return response;
+      } catch(Exception ex) {
+        throw ex;
+      }
     }
 
     //Company specific message
     private bool getCompanySpecificMessage(string username, out string message) {
       message = string.Empty;
-      ApplicationUser user = context.Users.ToList().FirstOrDefault(x => x.UserName.EqualsIgnoreCaseTrim(username));
-      if (user == null)
-        return false;
-      message = user.Team;
-      return true;
+      //try {
+        ApplicationUser user = context.Users.ToList().FirstOrDefault(x => x.UserName.EqualsIgnoreCaseTrim(username));
+        if (user == null)
+          return false;
+        message = user.Team;
+        return true;
+      //} catch (Exception ex) {
+      //  message = ex.ToString();
+      //  return false;
+      //}
     }
 
     private HttpResponseMessage createResponseFor(ClientApiRequest request, ApiRequestType type) {
@@ -162,9 +174,13 @@ namespace Aiwe.Controllers {
 #if DEBUG
       ApiRequestResult result = new ApiRequestResult();
       result.Message = string.Concat(code.ToString().ToCamelBrokenString(), ", ", Aiwe.LCZ.W_AdditionalMessage, ": ", errorMsg);
-      string jsonStr = JsonConvert.SerializeObject(result); //must be assigned AFTER all value assignments are done
+
+      string contentStr = Aiwe.PH.IsJson ? //must be assigned AFTER all value assignments are done
+        JsonConvert.SerializeObject(result) :
+        Serializer.GetSerialization(result);
+
       HttpResponseMessage errorResponse = this.Request.CreateResponse(HttpStatusCode.OK);
-      errorResponse.Content = new StringContent(jsonStr, Encoding.UTF8, Aiwe.DH.JsonType);
+      errorResponse.Content = new StringContent(contentStr, Encoding.UTF8, Aiwe.PH.WebApiDataType);
 #else
       HttpResponseMessage errorResponse = this.Request.CreateErrorResponse(code, errorMsg);
       errorResponse.Content = new StringContent(errorMsg);
@@ -212,13 +228,15 @@ namespace Aiwe.Controllers {
           }
         }
 
-        string jsonStr = JsonConvert.SerializeObject(result); //must be assigned AFTER all value assignments are done
+        string contentStr = Aiwe.PH.IsJson ? //must be assigned AFTER all value assignments are done
+          JsonConvert.SerializeObject(result) :
+          Serializer.GetSerialization(result);
 #if DEBUG
         HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
 #else
         HttpResponseMessage response = this.Request.CreateResponse(val > 0 ? HttpStatusCode.OK : HttpStatusCode.NotModified);
 #endif
-        response.Content = new StringContent(jsonStr, Encoding.UTF8, Aiwe.DH.JsonType);
+        response.Content = new StringContent(contentStr, Encoding.UTF8, Aiwe.PH.WebApiDataType);
         return response;
 
       } catch (Exception ex) {
@@ -243,10 +261,12 @@ namespace Aiwe.Controllers {
         if ((result.Columns == null || result.Columns.Count <= 0) && (result.Rows == null || result.Rows.Count <= 0))
           return createErrorResponse(HttpStatusCode.NotFound, Aiwe.LCZ.NFE_DataRequestedNotFound);
 
-        string jsonStr = JsonConvert.SerializeObject(result);
+        string contentStr = Aiwe.PH.IsJson ?
+          JsonConvert.SerializeObject(result) :
+          Serializer.GetSerialization(result);
 
         HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
-        response.Content = new StringContent(jsonStr, Encoding.UTF8, Aiwe.DH.JsonType);
+        response.Content = new StringContent(contentStr, Encoding.UTF8, Aiwe.PH.WebApiDataType);
         return response;
       } catch (Exception ex) {
         string exStr = ex.ToString();

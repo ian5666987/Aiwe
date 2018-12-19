@@ -1,7 +1,13 @@
+v1.5.0.0 alpha (19-Dec-2018 10:02)
+updates:
+- Adds "ParameterHolder.cs" file in the Aiwe project.
+- Supports XML data type for Web API. To do it: change "IsJson" parameter in the "ParameterHolder.cs" file to "false".
+
+-----------------------------------------------------------------------------------------------
 v1.4.1.0 alpha (01-Jun-2018 16:10)
 updates:
-- Implement IdentifierAggregationQueryScript for ForeignInfoColumns 
-- Support distinction between aggregation value shown in the Index view of Group Table and its identifier columns actually used to group the table
+- Implement IdentifierAggregationQueryScript for ForeignInfoColumns.
+- Support distinction between aggregation value shown in the Index view of Group Table and its identifier columns actually used to group the table.
 - ForeignInfoColumns support assignment of foreign values to original tables when creating and editing.
 
 bugs fixed:

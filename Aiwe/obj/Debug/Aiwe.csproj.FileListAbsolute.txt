@@ -233,3 +233,11 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.Migrations.InitialCreate.resources
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csproj.GenerateResource.Cache
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Xml.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.Base.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Xml.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.Base.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.Base.xml
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csprojAssemblyReference.cache
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csproj.CoreCompileInputs.cache
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csproj.CopyComplete

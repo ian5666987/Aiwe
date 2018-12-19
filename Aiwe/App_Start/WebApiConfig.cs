@@ -13,8 +13,9 @@ namespace Aiwe {
       // Web API routes
       config.MapHttpAttributeRoutes();
 
-      //To make the default as JSON instead of XML
-      config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
+      if (PH.IsJson) //until version 1.4.1.0, only supports JSON Web Api data type
+        //To make the default as JSON instead of XML
+        config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
 
       config.Routes.MapHttpRoute(
           name: "DefaultApi",
