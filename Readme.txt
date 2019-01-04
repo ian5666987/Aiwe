@@ -1,3 +1,9 @@
+v1.5.0.1 alpha (04-Jan-2019 11:49)
+updates:
+- Updates Aibe version to 1.4.1.1
+- Forces Aibe to use "false" for all its "SimpleExpression" constructors, "allowRightEmptyWithMiddleSign" flag.
+
+-----------------------------------------------------------------------------------------------
 v1.5.0.0 alpha (19-Dec-2018 10:02)
 updates:
 - Adds "ParameterHolder.cs" file in the Aiwe project.

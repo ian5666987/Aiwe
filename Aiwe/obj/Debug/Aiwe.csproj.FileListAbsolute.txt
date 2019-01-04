@@ -241,3 +241,4 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.Base.xml
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csprojAssemblyReference.cache
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csproj.CoreCompileInputs.cache
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Debug\Aiwe.csproj.CopyComplete
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.VisualStudio.WCFReference.Interop.xml
