@@ -1,3 +1,8 @@
+v1.5.1.0 alpha (15-Jan-2019 11:13)
+updates:
+- In WebApiConfig.cs: Forces Aiwe to use XmlSerializer instead of DataContract for Xml serialization and deserialization
+
+-----------------------------------------------------------------------------------------------
 v1.5.0.1 alpha (04-Jan-2019 11:49)
 updates:
 - Updates Aibe version to 1.4.1.1

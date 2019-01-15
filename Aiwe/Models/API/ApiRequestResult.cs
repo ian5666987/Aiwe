@@ -43,7 +43,7 @@ namespace Aiwe.Models.API {
           foreach (DataRow row in table.Rows) {
             ApiRequestRowInfo rInfo = new ApiRequestRowInfo {
               RowIndex = index++,
-              RowData = row.ItemArray.ToList(),
+              RowData = row.ItemArray.Select(x => x is DBNull ? null : x).ToList(), //v1.5.1.0 cannot treat DBNull directly, but converts it to real null!
               RowColumnNames = Columns.Select(x => x.ColumnName).ToList(),
             };
             object cid = row[Aibe.DH.Cid];
