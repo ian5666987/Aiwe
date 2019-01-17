@@ -1,11 +1,19 @@
+v1.5.2.0 alpha (17-Jan-2019 12:17)
+updates:
+- Updates Aibe version to 1.4.2.0.
+
+bugs fixed:
+- ForeignInfoColumn uses same SqlParameters as actual data table loaded. Fixed.
+
+-----------------------------------------------------------------------------------------------
 v1.5.1.0 alpha (15-Jan-2019 11:13)
 updates:
-- In WebApiConfig.cs: Forces Aiwe to use XmlSerializer instead of DataContract for Xml serialization and deserialization
+- In WebApiConfig.cs: Forces Aiwe to use XmlSerializer instead of DataContract for Xml serialization and deserialization.
 
 -----------------------------------------------------------------------------------------------
 v1.5.0.1 alpha (04-Jan-2019 11:49)
 updates:
-- Updates Aibe version to 1.4.1.1
+- Updates Aibe version to 1.4.1.1.
 - Forces Aibe to use "false" for all its "SimpleExpression" constructors, "allowRightEmptyWithMiddleSign" flag.
 
 -----------------------------------------------------------------------------------------------
