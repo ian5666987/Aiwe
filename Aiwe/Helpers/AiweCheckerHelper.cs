@@ -79,7 +79,8 @@ namespace Aiwe.Helpers {
           continue; //if things are not required or is filterStyle, immediately continue
         }
 
-        if (isTagChecked) {
+        if (isTagChecked) { //to prevent insertion of dangerous element like <script> ... javascript </script> to be inserted
+          bool hasTagError = true; //assume to have tag error until it is proven otherwise, added on 20191125, v1.5.2.1 onward
           if (tableSource.EqualsIgnoreCase(Aibe.DH.MetaTableName)) { //Meta table may contain tags
             if (!Text.ContainsOnlyAllowedTags(val, Aibe.DH.AllowedMetaTableTags)) //can only have allowed tags
               errorDict.Add(key, string.Format(Aibe.LCZ.E_ContainsPotentiallyDangerousElements, displayName ?? string.Empty, val ?? string.Empty));
@@ -89,7 +90,10 @@ namespace Aiwe.Helpers {
               errorDict.Add(key, string.Format(Aibe.LCZ.E_ContainsPotentiallyDangerousElements, displayName ?? string.Empty, val ?? string.Empty));
           } else if (Text.ContainsTag(val)) //unacceptable value
             errorDict.Add(key, string.Format(Aibe.LCZ.E_ContainsPotentiallyDangerousElements, displayName ?? string.Empty, val ?? string.Empty));
-          continue;
+          else //if no tag error detected, then change the tag error flag to false, added on 20191125, v1.5.2.1 onward
+            hasTagError = false; //added on 20191125, v1.5.2.1 onward
+          if (hasTagError) //if tag error is detected, no need to proceed with the checking of this element, added on 20191125, v1.5.2.1 onward
+            continue;
         }
 
         //These must be checked AFTER the check for required/not-required, because if they are required, they cannot be skipped

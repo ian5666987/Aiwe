@@ -1,3 +1,8 @@
+v1.5.2.1 alpha (25-Nov-2019 11:01)
+bugs fixed:
+- No error found in the tag-check portion in the AiweCheckerHelper causes the program to go to the next element without further checking the same element (such as the validity of its length). Fixed.
+
+-----------------------------------------------------------------------------------------------
 v1.5.2.0 alpha (17-Jan-2019 12:17)
 updates:
 - Updates Aibe version to 1.4.2.0.
