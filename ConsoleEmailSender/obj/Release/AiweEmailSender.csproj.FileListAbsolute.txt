@@ -21,4 +21,9 @@ C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\bin\Release\Extension.Cryptography.
 C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\obj\Release\AiweEmailSender.exe
 C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\obj\Release\AiweEmailSender.pdb
 C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\bin\Release\Extension.Database.SqlServer.xml
-C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\obj\Release\AiweEmailSender.csprojResolveAssemblyReference.cache
+C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\bin\Release\Extension.Database.Base.dll
+C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\bin\Release\Extension.Database.Base.pdb
+C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\bin\Release\Extension.Database.Base.xml
+C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\obj\Release\AiweEmailSender.csprojAssemblyReference.cache
+C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\obj\Release\AiweEmailSender.csproj.CoreCompileInputs.cache
+C:\ASTrio\VS2017\Web\Aiwe\ConsoleEmailSender\obj\Release\AiweEmailSender.csproj.CopyComplete

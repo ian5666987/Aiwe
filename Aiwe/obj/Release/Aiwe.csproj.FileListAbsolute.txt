@@ -233,4 +233,13 @@ C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.csproj.GenerateResource.Cache
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.dll
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.pdb
 C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.SqlServer.xml
-C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.csprojResolveAssemblyReference.cache
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Xml.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.Base.dll
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Xml.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Newtonsoft.Json.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.Base.pdb
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Extension.Database.Base.xml
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\bin\Microsoft.VisualStudio.WCFReference.Interop.xml
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.csprojAssemblyReference.cache
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.csproj.CoreCompileInputs.cache
+C:\ASTrio\VS2017\Web\Aiwe\Aiwe\obj\Release\Aiwe.csproj.CopyComplete

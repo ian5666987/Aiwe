@@ -80,6 +80,28 @@
             The argument's error message.
             </summary>
         </member>
+        <member name="T:Extension.Database.SqlServer.SQLServerBaseScriptModel">
+            <summary>
+            The basic model for the database basic command. Used primarily for stacking commands to be executed as a single transaction.
+            </summary>
+        </member>
+        <member name="P:Extension.Database.SqlServer.SQLServerBaseScriptModel.Script">
+            <summary>
+            The script part of the command
+            </summary>
+        </member>
+        <member name="P:Extension.Database.SqlServer.SQLServerBaseScriptModel.Pars">
+            <summary>
+            The parameters part of the command
+            </summary>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerBaseScriptModel.#ctor(System.String,System.Collections.Generic.List{System.Data.SqlClient.SqlParameter})">
+            <summary>
+            Constructor for the basic model for the database basic command. Used primarily for stacking commands to be executed as a single transaction.
+            </summary>
+            <param name="script">The script part of the command</param>
+            <param name="pars">The parameters part of the command</param>
+        </member>
         <member name="T:Extension.Database.SqlServer.SQLServerHandler">
             <summary>
             Handler for basic SQL Server database operations using System.Data.SqlClient.
@@ -124,6 +146,71 @@
             <param name="script">the script to be executed using non-query execution.</param>
             <param name="pars">list of SQL parameters.</param>
             <returns>number of rows affected.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteSpecialScript(System.Data.SqlClient.SqlConnection,System.String,System.Collections.Generic.List{System.Object})">
+            <summary>
+            To execute SQL script using non-query execution. Useful for non-query and non-data insertion (UPDATE and DELETE).
+            The parameters in the [script] must be specially named @par1, @par2, @par3, and so on in accordance with the list of object ([parValues]) assigned
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="script">the script to be executed using non-query execution.</param>
+            <param name="parValues">the list of objects containing values of specially named parameters in the [script]</param>
+            <returns>number of rows affected.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteSpecialScript(System.String,System.String,System.Collections.Generic.List{System.Object})">
+            <summary>
+            To execute SQL script using non-query execution. Useful for non-query and non-data insertion (UPDATE and DELETE).
+            The parameters in the [script] must be specially named @par1, @par2, @par3, and so on in accordance with the list of object ([parValues]) assigned
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="script">the script to be executed using non-query execution.</param>
+            <param name="parValues">the list of objects containing values of specially named parameters in the [script]</param>
+            <returns>number of rows affected.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteSpecialScriptGetTable(System.Data.SqlClient.SqlConnection,System.String,System.Collections.Generic.List{System.Object})">
+            <summary>
+            To execute SQL script and return table from the execution. 
+            The parameters in the [script] must be specially named @par1, @par2, @par3, and so on in accordance with the list of object ([parValues]) assigned
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="script">the script to be executed that returns DataTable</param>
+            <param name="parValues">the list of objects containing values of specially named parameters in the [script]</param>
+            <returns>The DataTable result of the executed script</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteSpecialScriptGetTable(System.String,System.String,System.Collections.Generic.List{System.Object})">
+            <summary>
+            To execute SQL script and return table from the execution.
+            The parameters in the [script] must be specially named @par1, @par2, @par3, and so on in accordance with the list of object ([parValues]) assigned
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="script">the script to be executed that returns DataTable</param>
+            <param name="parValues">the list of objects containing values of specially named parameters in the [script]</param>
+            <returns>The DataTable result of the executed script</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteCommandGetTable(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlCommand)">
+            <summary>
+            To execute SQL command and return table from the execution.
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="command">the command to be executed that returns DataTable</param>
+            <returns>The DataTable result of the executed script</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteCommandGetTable(System.String,System.Data.SqlClient.SqlCommand)">
+            <summary>
+            To execute SQL command and return table from the execution.
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="command">the command to be executed that returns DataTable</param>
+            <returns>The DataTable result of the executed script</returns>
         </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteScalar(System.Data.SqlClient.SqlConnection,System.String)">
             <summary>
@@ -205,7 +292,7 @@
             <param name="pars">list of SQL parameters.</param>
             <returns>generated integer.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteProcedureOrFunction(System.Data.SqlClient.SqlConnection,Extension.Models.BaseScriptModel)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteProcedureOrFunction(System.Data.SqlClient.SqlConnection,Extension.Database.SqlServer.SQLServerBaseScriptModel)">
             <summary>
             To execute a Stored Procedure or a Function using non-query execution.
             <para>
@@ -216,9 +303,32 @@
             <param name="scriptModel">basic script model to be executed.</param>
             <returns>generated integer.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteProcedureOrFunction(System.String,Extension.Models.BaseScriptModel)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteProcedureOrFunction(System.String,Extension.Database.SqlServer.SQLServerBaseScriptModel)">
             <summary>
             To execute a Stored Procedure or a Function using non-query execution.
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="scriptModel">basic script model to be executed.</param>
+            <returns>generated integer.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteProcedureOrFunction(System.Data.SqlClient.SqlConnection,Extension.Models.BaseScriptModel)">
+            <summary>
+            To execute a Stored Procedure or a Function using non-query execution. (deprecated)
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            (deprecated) use function with SQLServerBaseScriptModel instead.
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="scriptModel">basic script model to be executed.</param>
+            <returns>generated integer.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteProcedureOrFunction(System.String,Extension.Models.BaseScriptModel)">
+            <summary>
+            To execute a Stored Procedure or a Function using non-query execution. (deprecated)
+            <para>
+            (deprecated) use function with SQLServerBaseScriptModel instead.
+            </para>
             </summary>
             <param name="connectionString">the string used to establish connection with the database.</param>
             <param name="scriptModel">basic script model to be executed.</param>
@@ -707,7 +817,7 @@
             <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
             <returns>the aggregated value.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteBaseScripts(System.Data.SqlClient.SqlConnection,System.Collections.Generic.List{Extension.Models.BaseScriptModel})">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteBaseScripts(System.Data.SqlClient.SqlConnection,System.Collections.Generic.List{Extension.Database.SqlServer.SQLServerBaseScriptModel})">
             <summary>
             To execute series of basic scripts (single insertion, update, or deletion) in a single transaction.
             <para>
@@ -718,9 +828,32 @@
             <param name="scripts">collection of basic scripts to be executed.</param>
             <returns>list of number of affected rows, it should all be 1 for successful transaction using basic scripts.</returns>
         </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteBaseScripts(System.String,System.Collections.Generic.List{Extension.Database.SqlServer.SQLServerBaseScriptModel})">
+            <summary>
+            To execute series of basic scripts (single insertion, update, or deletion) in a single transaction.
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="scripts">collection of basic scripts to be executed.</param>
+            <returns>list of number of affected rows, it should all be 1 for successful transaction using basic scripts.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteBaseScripts(System.Data.SqlClient.SqlConnection,System.Collections.Generic.List{Extension.Models.BaseScriptModel})">
+            <summary>
+            To execute series of basic scripts (single insertion, update, or deletion) in a single transaction.
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            (deprecated) use function with SQLServerBaseScriptModel instead.
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="scripts">collection of basic scripts to be executed.</param>
+            <returns>list of number of affected rows, it should all be 1 for successful transaction using basic scripts.</returns>
+        </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.ExecuteBaseScripts(System.String,System.Collections.Generic.List{Extension.Models.BaseScriptModel})">
             <summary>
             To execute series of basic scripts (single insertion, update, or deletion) in a single transaction.
+            <para>
+            (deprecated) use function with SQLServerBaseScriptModel instead.
+            </para>
             </summary>
             <param name="connectionString">the string used to establish connection with the database.</param>
             <param name="scripts">collection of basic scripts to be executed.</param>
@@ -902,6 +1035,25 @@
             <param name="connectionString">the string used to establish connection with the database.</param>
             <param name="tableName">the table name to get the data from.</param>
             <param name="use">to specify database to be used other than what has been provided by the current connection.</param>
+            <returns>number of rows of the retrieved table.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetCountByScript(System.Data.SqlClient.SqlConnection,System.String)">
+            <summary>
+            To get the number of rows of the specified table by simple execution of a script.
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="script">the script to be executed.</param>
+            <returns>number of rows of the retrieved table.</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetCountByScript(System.String,System.String)">
+            <summary>
+            To get the number of rows of the specified table by simple execution of a script.
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="script">the script to be executed.</param>
             <returns>number of rows of the retrieved table.</returns>
         </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetCountWhere(System.Data.SqlClient.SqlConnection,System.String,System.String,System.String)">
@@ -1551,6 +1703,73 @@
             <param name="table">The data DataTable to get the first row from.</param>
             <returns>The first row data result.</returns>
         </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.TryGetSingleCell(System.Data.SqlClient.SqlConnection,System.String,System.Object@)">
+            <summary>
+            The function to check if the first cell result of the query using value that is not null and not <see cref="T:System.DBNull"/>
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="selectSqlQuery">the generic SELECT SQL query to be executed.</param>
+            <param name="result">the resulting single <see cref="T:System.Object"/> from the execution.</param>
+            <returns>The checking result</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.TryGetSingleCell(System.Data.SqlClient.SqlConnection,System.String,System.Data.SqlClient.SqlParameter,System.Object@)">
+            <summary>
+            The function to check if the first cell result of the query using value that is not null and not <see cref="T:System.DBNull"/>
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="selectSqlQuery">the generic SELECT SQL query to be executed.</param>
+            <param name="par">the parameter of the query string.</param>
+            <param name="result">the resulting single <see cref="T:System.Object"/> from the execution.</param>
+            <returns>The checking result</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.TryGetSingleCell(System.Data.SqlClient.SqlConnection,System.String,System.Collections.Generic.IEnumerable{System.Data.SqlClient.SqlParameter},System.Object@)">
+            <summary>
+            The function to check if the first cell result of the query using value that is not null and not <see cref="T:System.DBNull"/>
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="selectSqlQuery">the generic SELECT SQL query to be executed.</param>
+            <param name="pars">the parameters of the query string.</param>
+            <param name="result">the resulting single <see cref="T:System.Object"/> from the execution.</param>
+            <returns>The checking result</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.TryGetSingleCell(System.String,System.String,System.Object@)">
+            <summary>
+            The function to check if the first cell result of the query using value that is not null and not <see cref="T:System.DBNull"/>
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="selectSqlQuery">the generic SELECT SQL query to be executed.</param>
+            <param name="result">the resulting single <see cref="T:System.Object"/> from the execution.</param>
+            <returns>The checking result</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.TryGetSingleCell(System.String,System.String,System.Data.SqlClient.SqlParameter,System.Object@)">
+            <summary>
+            The function to check if the first cell result of the query using value that is not null and not <see cref="T:System.DBNull"/>
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="selectSqlQuery">the generic SELECT SQL query to be executed.</param>
+            <param name="par">the parameter of the query string.</param>
+            <param name="result">the resulting single <see cref="T:System.Object"/> from the execution.</param>
+            <returns>The checking result</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.TryGetSingleCell(System.String,System.String,System.Collections.Generic.IEnumerable{System.Data.SqlClient.SqlParameter},System.Object@)">
+            <summary>
+            The function to check if the first cell result of the query using value that is not null and not <see cref="T:System.DBNull"/>
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="selectSqlQuery">the generic SELECT SQL query to be executed.</param>
+            <param name="pars">the parameters of the query string.</param>
+            <param name="result">the resulting single <see cref="T:System.Object"/> from the execution.</param>
+            <returns>The checking result</returns>
+        </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetDataTable(System.Data.SqlClient.SqlConnection,System.String)">
             <summary>
             To retrieve DataTable based on generic SELECT SQL query.
@@ -1673,6 +1892,36 @@
             <param name="pars">the parameters of the query string.</param>
             <returns>the DataSet query result.</returns>
         </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.TableHasValue(System.Data.DataTable)">
+            <summary>
+            The function to check if a table has at least one column and one row and has the value that is not null and not <see cref="T:System.DBNull"/> in its first row and first column
+            </summary>
+            <param name="table">The table to be checked</param>
+            <returns>The checking result</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.tryGetSingleCell(System.Data.SqlClient.SqlConnection,System.String,System.Collections.Generic.IEnumerable{System.Data.SqlClient.SqlParameter},System.Object@)">
+            <summary>
+            The function to check if the first cell result of the query using value that is not null and not <see cref="T:System.DBNull"/>
+            <para>
+            This method does not open or close database connection. The connection must already be opened for the method to work.
+            </para>
+            </summary>
+            <param name="conn">the already opened database connection.</param>
+            <param name="selectSqlQuery">the generic SELECT SQL query to be executed.</param>
+            <param name="pars">the parameters of the query string.</param>
+            <param name="result">the resulting single <see cref="T:System.Object"/> from the execution.</param>
+            <returns>The checking result</returns>
+        </member>
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.tryGetSingleCell(System.String,System.String,System.Collections.Generic.IEnumerable{System.Data.SqlClient.SqlParameter},System.Object@)">
+            <summary>
+            The function to check if the first cell result of the query using value that is not null and not <see cref="T:System.DBNull"/>
+            </summary>
+            <param name="connectionString">the string used to establish connection with the database.</param>
+            <param name="selectSqlQuery">the generic SELECT SQL query to be executed.</param>
+            <param name="pars">the parameters of the query string.</param>
+            <param name="result">the resulting single <see cref="T:System.Object"/> from the execution.</param>
+            <returns>The checking result</returns>
+        </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.getDataTable(System.Data.SqlClient.SqlConnection,System.String,System.Collections.Generic.IEnumerable{System.Data.SqlClient.SqlParameter})">
             <summary>
             To retrieve DataTable based on generic SELECT SQL query.
@@ -1782,10 +2031,10 @@
             </summary>
             <typeparam name="T">generic type parameter.</typeparam>
             <param name="conn">the already opened database connection.</param>
-            <param name="tableName">the target table for the object to be inserted into.</param>
-            <param name="obj">the object to be inserted.</param>
+            <param name="tableName">the target table for the object to be updated.</param>
+            <param name="obj">the object to be updated.</param>
             <param name="idName">the id name for this object, typically like "Id" or "Name".</param>
-            <param name="excludedPropertyNames">the properties to be excluded from insertion to the database.</param>
+            <param name="excludedPropertyNames">the properties to be excluded from update of the database.</param>
             <param name="dateTimeFormat">the date time format used for DateTime data type.</param>
             <param name="dateTimeFormatMap">the date time format used for DateTime data type per column.</param>
             <returns>result of scalar execution of the UPDATE script.</returns>
@@ -1796,10 +2045,10 @@
             </summary>
             <typeparam name="T">generic type parameter.</typeparam>
             <param name="connectionString">the SQL connection string to open the database connection.</param>
-            <param name="tableName">the target table for the object to be inserted into.</param>
-            <param name="obj">the object to be inserted.</param>
+            <param name="tableName">the target table for the object to be updated.</param>
+            <param name="obj">the object to be updated.</param>
             <param name="idName">the id name for this object, typically like "Id" or "Name".</param>
-            <param name="excludedPropertyNames">the properties to be excluded from insertion to the database.</param>
+            <param name="excludedPropertyNames">the properties to be excluded from update of the database.</param>
             <param name="dateTimeFormat">the date time format used for DateTime data type.</param>
             <param name="dateTimeFormatMap">the date time format used for DateTime data type per column.</param>
             <returns>result of scalar execution of the UPDATE script.</returns>
@@ -1813,12 +2062,12 @@
             </summary>
             <typeparam name="T">generic type parameter.</typeparam>
             <param name="conn">the already opened database connection.</param>
-            <param name="tableName">the target table for the object to be inserted into.</param>
-            <param name="obj">the object to be inserted.</param>
+            <param name="tableName">the target table for the object to be updated.</param>
+            <param name="obj">the object to be updated.</param>
             <param name="idName">the id name for this object, typically like "Id" or "Name".</param>
             <param name="idValue">the id value used to distinguish the updated object from the others.</param>
             <param name="idValueIsString">to indicate if data type of the id is a string.</param>
-            <param name="excludedPropertyNames">the properties to be excluded from insertion to the database.</param>
+            <param name="excludedPropertyNames">the properties to be excluded from update of the database.</param>
             <param name="dateTimeFormat">the date time format used for DateTime data type.</param>
             <param name="dateTimeFormatMap">the date time format used for DateTime data type per column.</param>
             <returns>result of scalar execution of the UPDATE script.</returns>
@@ -1829,12 +2078,12 @@
             </summary>
             <typeparam name="T">generic type parameter.</typeparam>
             <param name="connectionString">the SQL connection string to open the database connection.</param>
-            <param name="tableName">the target table for the object to be inserted into.</param>
-            <param name="obj">the object to be inserted.</param>
+            <param name="tableName">the target table for the object to be updated.</param>
+            <param name="obj">the object to be updated.</param>
             <param name="idName">the id name for this object, typically like "Id" or "Name".</param>
             <param name="idValue">the id value used to distinguish the updated object from the others.</param>
             <param name="idValueIsString">to indicate if data type of the id is a string.</param>
-            <param name="excludedPropertyNames">the properties to be excluded from insertion to the database.</param>
+            <param name="excludedPropertyNames">the properties to be excluded from update of the database.</param>
             <param name="dateTimeFormat">the date time format used for DateTime data type.</param>
             <param name="dateTimeFormatMap">the date time format used for DateTime data type per column.</param>
             <returns>result of scalar execution of the UPDATE script.</returns>
@@ -1848,13 +2097,13 @@
             </summary>
             <typeparam name="T">generic type parameter.</typeparam>
             <param name="conn">the already opened database connection.</param>
-            <param name="tableName">the target table for the objects to be inserted into.</param>
-            <param name="objs">the list of objects to be inserted.</param>
+            <param name="tableName">the target table for the objects to be updated.</param>
+            <param name="objs">the list of objects to be updated.</param>
             <param name="idName">the id name for this object, typically like "Id" or "Name".</param>
-            <param name="excludedPropertyNames">the properties to be excluded from insertion to the database.</param>
+            <param name="excludedPropertyNames">the properties to be excluded from update of the database.</param>
             <param name="dateTimeFormat">the date time format used for DateTime data type.</param>
             <param name="dateTimeFormatMap">the date time format used for DateTime data type per column.</param>
-            <returns>results of scalar execution of the INSERT INTO script.</returns>
+            <returns>results of scalar execution of the UPDATE script.</returns>
         </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.UpdateObjects``1(System.String,System.String,System.Collections.Generic.List{``0},System.String,System.Collections.Generic.List{System.String},System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
             <summary>
@@ -1862,13 +2111,13 @@
             </summary>
             <typeparam name="T">generic type parameter.</typeparam>
             <param name="connectionString">the SQL connection string to open the database connection.</param>
-            <param name="tableName">the target table for the objects to be inserted into.</param>
-            <param name="objs">the list of objects to be inserted.</param>
+            <param name="tableName">the target table for the objects to be updated.</param>
+            <param name="objs">the list of objects to be updated.</param>
             <param name="idName">the id name for this object, typically like "Id" or "Name".</param>
-            <param name="excludedPropertyNames">the properties to be excluded from insertion to the database.</param>
+            <param name="excludedPropertyNames">the properties to be excluded from update of the database.</param>
             <param name="dateTimeFormat">the date time format used for DateTime data type.</param>
             <param name="dateTimeFormatMap">the date time format used for DateTime data type per column.</param>
-            <returns>results of scalar execution of the INSERT INTO script.</returns>
+            <returns>results of scalar execution of the UPDATE script.</returns>
         </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.TransferTable``2(System.Data.SqlClient.SqlConnection,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.String},System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
             <summary>
@@ -1907,7 +2156,7 @@
             <param name="destDateTimeFormatMap">the column-by-column map of custom DateTimeFormats to be used in inserting the DateTime columns to the destination database.</param>
             <returns>results of scalar execution of the INSERT INTO script.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesAndViews(System.Data.SqlClient.SqlConnection,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesAndViews(System.Data.SqlClient.SqlConnection,System.String,System.String)">
             <summary>
             To get list of tables and views from a database connection.
             <para>
@@ -1916,17 +2165,19 @@
             </summary>
             <param name="conn">the already opened database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of tables and views.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesAndViews(System.String,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesAndViews(System.String,System.String,System.String)">
             <summary>
             To get list of tables and views from a database connection.
             </summary>
             <param name="connectionString">the SQL connection string to open the database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of tables and views.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTables(System.Data.SqlClient.SqlConnection,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTables(System.Data.SqlClient.SqlConnection,System.String,System.String)">
             <summary>
             To get list of tables from a database connection.
             <para>
@@ -1935,17 +2186,19 @@
             </summary>
             <param name="conn">the already opened database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of tables.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTables(System.String,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTables(System.String,System.String,System.String)">
             <summary>
             To get list of tables from a database connection.
             </summary>
             <param name="connectionString">the SQL connection string to open the database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of tables.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetViews(System.Data.SqlClient.SqlConnection,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetViews(System.Data.SqlClient.SqlConnection,System.String,System.String)">
             <summary>
             To get list of views from a database connection.
             <para>
@@ -1954,17 +2207,19 @@
             </summary>
             <param name="conn">the already opened database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of views.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetViews(System.String,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetViews(System.String,System.String,System.String)">
             <summary>
             To get list of views from a database connection.
             </summary>
             <param name="connectionString">the SQL connection string to open the database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of views.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesViewsAndColumns(System.Data.SqlClient.SqlConnection,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesViewsAndColumns(System.Data.SqlClient.SqlConnection,System.String,System.String)">
             <summary>
             To get list of tables and views and their respective data columns from a database connection.
             <para>
@@ -1973,17 +2228,19 @@
             </summary>
             <param name="conn">the already opened database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of tables and views and their respective data columns .</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTableViewsAndColumns(System.String,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesViewsAndColumns(System.String,System.String,System.String)">
             <summary>
             To get list of tables and views and their respective data columns from a database connection.
             </summary>
             <param name="connectionString">the SQL connection string to open the database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of tables and views and their respective data columns .</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesAndColumns(System.Data.SqlClient.SqlConnection,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesAndColumns(System.Data.SqlClient.SqlConnection,System.String,System.String)">
             <summary>
             To get list of tables and their respective data columns from a database connection.
             <para>
@@ -1992,17 +2249,19 @@
             </summary>
             <param name="conn">the already opened database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of tables and their respective data columns .</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesAndColumns(System.String,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesAndColumns(System.String,System.String,System.String)">
             <summary>
             To get list of tables and their respective data columns from a database connection.
             </summary>
             <param name="connectionString">the SQL connection string to open the database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of tables and their respective data columns .</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetViewsAndColumns(System.Data.SqlClient.SqlConnection,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetViewsAndColumns(System.Data.SqlClient.SqlConnection,System.String,System.String)">
             <summary>
             To get list of views and their respective data columns from a database connection.
             <para>
@@ -2011,17 +2270,19 @@
             </summary>
             <param name="conn">the already opened database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of views and their respective data columns .</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetViewsAndColumns(System.String,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetViewsAndColumns(System.String,System.String,System.String)">
             <summary>
             To get list of views and their respective data columns from a database connection.
             </summary>
             <param name="connectionString">the SQL connection string to open the database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of views and their respective data columns .</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesViewsAndColumnNames(System.Data.SqlClient.SqlConnection,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesViewsAndColumnNames(System.Data.SqlClient.SqlConnection,System.String,System.String)">
             <summary>
             To get list of tables and views and their respective column names from a database connection.
             <para>
@@ -2030,17 +2291,19 @@
             </summary>
             <param name="conn">the already opened database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of tables and views and their respective column names.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesViewsAndColumnNames(System.String,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesViewsAndColumnNames(System.String,System.String,System.String)">
             <summary>
             To get list of tables and views and their respective column names from a database connection.
             </summary>
             <param name="connectionString">the SQL connection string to open the database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of tables and views and their respective column names.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesAndColumnNames(System.Data.SqlClient.SqlConnection,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesAndColumnNames(System.Data.SqlClient.SqlConnection,System.String,System.String)">
             <summary>
             To get list of tables and their respective column names from a database connection.
             <para>
@@ -2049,17 +2312,19 @@
             </summary>
             <param name="conn">the already opened database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of tables and their respective column names.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesAndColumnNames(System.String,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetTablesAndColumnNames(System.String,System.String,System.String)">
             <summary>
             To get list of tables and their respective column names from a database connection.
             </summary>
             <param name="connectionString">the SQL connection string to open the database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of tables and their respective column names.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetViewsAndColumnNames(System.Data.SqlClient.SqlConnection,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetViewsAndColumnNames(System.Data.SqlClient.SqlConnection,System.String,System.String)">
             <summary>
             To get list of views and their respective column names from a database connection.
             <para>
@@ -2068,14 +2333,16 @@
             </summary>
             <param name="conn">the already opened database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of views and their respective column names.</returns>
         </member>
-        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetViewsAndColumnNames(System.String,System.String)">
+        <member name="M:Extension.Database.SqlServer.SQLServerHandler.GetViewsAndColumnNames(System.String,System.String,System.String)">
             <summary>
             To get list of views and their respective column names from a database connection.
             </summary>
             <param name="connectionString">the SQL connection string to open the database connection.</param>
             <param name="orderByClause">the ORDER BY clause to order the sequence of the data retrieved.</param>
+            <param name="schema">to specify schema to be used other than what has been provided by the current connection.</param>
             <returns>The list of views and their respective column names.</returns>
         </member>
         <member name="M:Extension.Database.SqlServer.SQLServerHandler.HasEquivalentDataType(System.String)">
@@ -2084,7 +2351,7 @@
             <para>
             Obtained from: https://msdn.microsoft.com/en-us/library/cc716729(v=vs.100).aspx and https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/sql-server-data-type-mappings
             </para>
-            Available string: BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Int, Image, Money, NChar, NText, NVarChar, Numeric, Real, RowVersion, Timestamp, SmallDateTime, SmallInt, SmallMoney, Sql_Variant, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar
+            Available string: BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Int, Image, Money, NChar, NText, NVarChar, Numeric, Real, RowVersion, Timestamp, SmallDateTime, SmallInt, SmallMoney, Sql_Variant, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar, Xml
             </summary>
             <param name="dbDataTypeString">the database's data type in string.</param>
             <returns>Equivalent .NET data type.</returns>
@@ -2095,7 +2362,7 @@
             <para>
             Obtained from: https://msdn.microsoft.com/en-us/library/cc716729(v=vs.100).aspx and https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/sql-server-data-type-mappings
             </para>
-            Available string: BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Int, Image, Money, NChar, NText, NVarChar, Numeric, Real, RowVersion, Timestamp, SmallDateTime, SmallInt, SmallMoney, Sql_Variant, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar
+            Available string: BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Int, Image, Money, NChar, NText, NVarChar, Numeric, Real, RowVersion, Timestamp, SmallDateTime, SmallInt, SmallMoney, Sql_Variant, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar, Xml
             </summary>
             <param name="dbDataTypeString">the database's data type in string.</param>
             <returns>Equivalent .NET data type.</returns>
@@ -2106,9 +2373,9 @@
             <para>
             Obtained from: https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/sql-server-data-type-mappings
             </para>
-            Available type(s): BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Image, Int, Money, NChar, NText, NVarChar, Real, SmallDateTime, SmallInt, SmallMoney, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar, Variant
+            Available type(s): BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Image, Int, Money, NChar, NText, NVarChar, Real, SmallDateTime, SmallInt, SmallMoney, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar, Variant, Xml
             <para>
-            Unavailable type(s): Structured, Udt, Xml
+            Unavailable type(s): Structured, Udt
             </para>
             </summary>
             <param name="dbType">the database's data type.</param>
@@ -2120,9 +2387,9 @@
             <para>
             Obtained from: https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/sql-server-data-type-mappings
             </para>
-            Available type(s): BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Image, Int, Money, NChar, NText, NVarChar, Real, SmallDateTime, SmallInt, SmallMoney, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar, Variant
+            Available type(s): BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Image, Int, Money, NChar, NText, NVarChar, Real, SmallDateTime, SmallInt, SmallMoney, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar, Variant, Xml
             <para>
-            Unavailable type(s): Structured, Udt, Xml
+            Unavailable type(s): Structured, Udt
             </para>
             </summary>
             <param name="dbType">the database's data type.</param>
@@ -2132,7 +2399,7 @@
             <summary>
             To check if equivalent SQL Server data type could be obtained from SQL Server's data-type string
             <para>
-            Available string: BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Int, Image, Money, NChar, NText, NVarChar, Numeric, Real, Timestamp, SmallDateTime, SmallInt, SmallMoney, Sql_Variant, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar
+            Available string: BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Int, Image, Money, NChar, NText, NVarChar, Numeric, Real, Timestamp, SmallDateTime, SmallInt, SmallMoney, Sql_Variant, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar, Xml
             </para>
             </summary>
             <param name="dbDataTypeString">the database's data type in string.</param>
@@ -2142,7 +2409,7 @@
             <summary>
             To get equivalent SQL Server data type from SQL Server's data-type string
             <para>
-            Available string: BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Int, Image, Money, NChar, NText, NVarChar, Numeric, Real, Timestamp, SmallDateTime, SmallInt, SmallMoney, Sql_Variant, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar
+            Available string: BigInt, Binary, Bit, Char, Date, DateTime, DateTime2, DateTimeOffset, Decimal, Float, Int, Image, Money, NChar, NText, NVarChar, Numeric, Real, Timestamp, SmallDateTime, SmallInt, SmallMoney, Sql_Variant, Text, Time, Timestamp, TinyInt, UniqueIdentifier, VarBinary, VarChar, Xml
             </para>
             </summary>
             <param name="dbDataTypeString">the database's data type in string.</param>

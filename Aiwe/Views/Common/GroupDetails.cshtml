@@ -175,10 +175,21 @@
                 if (columnInfo.Colorings == null) {
                   <td>@printedVal</td>
                 } else if (columnInfo.Colorings.Any(x => x.ColumnName.EqualsIgnoreCase(columnInfo.Name))) {
-                  ColoringInfo colorItem = columnInfo.Colorings.FirstOrDefault(x => x.ColumnName.EqualsIgnoreCase(columnInfo.Name));
-                  object usedVal = colorItem.ConditionColumnIsDifferentColumn ? row[colorItem.ConditionColumnName] : val;
-                  bool isConditionMet = colorItem.CheckConditionMet(columnInfo.DataType, usedVal, id);
-                  if (isConditionMet) {
+                  //bug up to v1.5.2.1, fixed in v1.5.3.0. Only one condition is allowed per column while the documentation does not say so
+                  //ColoringInfo colorItem = columnInfo.Colorings.FirstOrDefault(x => x.ColumnName.EqualsIgnoreCase(columnInfo.Name))
+                  //object usedVal = colorItem.ConditionColumnIsDifferentColumn ? row[colorItem.ConditionColumnName] : val;
+                  //bool isConditionMet = colorItem.CheckConditionMet(columnInfo.DataType, usedVal, id);
+                  //if (isConditionMet != null) {
+                  //  <td style="background-color:@colorItem.Color">@printedVal</td>
+                  //} else {
+                  //  <td>@printedVal</td>
+                  //}
+
+                  //Now, check all the conditions in all the color items, see which one is met first
+                  List<ColoringInfo> colorItems = columnInfo.Colorings.Where(x => x.ColumnName.EqualsIgnoreCase(columnInfo.Name)).ToList();
+                  ColoringInfo colorItem = colorItems.FirstOrDefault(x => x.CheckConditionMet(columnInfo.DataType,
+                    x.ConditionColumnIsDifferentColumn ? row[x.ConditionColumnName] : val, id));
+                  if (colorItem != null) {
                     <td style="background-color:@colorItem.Color">@printedVal</td>
                   } else {
                     <td>@printedVal</td>
